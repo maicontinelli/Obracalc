@@ -259,11 +259,13 @@ export default function AiAssistant() {
     const [typingSpeed, setTypingSpeed] = useState(150);
 
     const phrases = [
-        "Transforme orçamentos em contratos fechados",
-        "Descreva a obra e receba um custo estimado claro e organizado.",
-        "Receba comissão por serviços indicados",
-        "Crie planilhas prontas para enviar ao cliente",
-        "Destaque seu serviço quando clientes estiverem comparando valores."
+        "Descreva o serviço para gerar o orçamento",
+        "Quanto custa construir xx m2 de laje?",
+        "Gere um orçamento com escopo claro",
+        "Inclua serviços, etapas e acabamentos",
+        "Relatório organizado, pronto para enviar ao cliente",
+        "Use como base para fechar o contrato",
+        "Receba comissão real por serviços indicados"
     ];
 
     useEffect(() => {

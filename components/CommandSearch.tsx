@@ -52,13 +52,14 @@ interface CommandSearchProps {
 // ... imports
 // Add these at the top level or inside the component if you prefer, but outside is better for constants
 const PROMPT_PLACEHOLDERS = [
-    "Veja se não está faltando nada como . . ",
-    "Preparação do terreno",
-    "Demolição ou transporte de material",
-    "Pintura e acabamento",
-    "Limpeza pós-obra",
-    "Adicionar revestimento ou esquadria",
-    "Verifique se o BDI está justo"
+    "Verifique se faltou algum item antes de fechar.",
+    "Incluiu a demolição ou preparação do local?",
+    "Adicionou regularização ou nivelamento?",
+    "Faltou algum acabamento?",
+    "Incluiu pintura ou retoques finais?",
+    "Considerou limpeza pós-obra?",
+    "Vai precisar de retirada de entulho?",
+    "Usuários Pró sempre ajustam o BDI"
 ];
 
 export default function CommandSearch({ items, onSelect, onAddCustom }: CommandSearchProps) {
