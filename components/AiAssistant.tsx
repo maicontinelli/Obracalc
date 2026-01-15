@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, Bot, Loader2, FilePlus, AlertTriangle, BrainCircuit, Map, Camera, ArrowRight, Plus, ScanEye } from 'lucide-react';
+import { Sparkles, Send, Bot, Loader2, FilePlus, AlertTriangle, BrainCircuit, Map, Camera, ArrowRight, Plus, ScanEye, Calculator } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { BOQ_TEMPLATES } from '@/lib/constants';
 import imageCompression from 'browser-image-compression';
@@ -393,6 +393,24 @@ export default function AiAssistant() {
                                     {showToolsMenu && (
                                         <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-gray-700/50 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
                                             <div className="p-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const newId = crypto.randomUUID();
+                                                        router.push(`/editor/${newId}?type=obra_nova`);
+                                                        setShowToolsMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors group text-left"
+                                                >
+                                                    <div className="p-2 bg-[#22c55e]/10 text-[#22c55e] rounded-lg group-hover:scale-110 transition-transform">
+                                                        <Calculator size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">Novo Orçamento</span>
+                                                        <span className="block text-[10px] text-gray-500 dark:text-gray-500">Editor completo</span>
+                                                    </div>
+                                                </button>
+
                                                 <button
                                                     type="button"
                                                     onClick={() => {

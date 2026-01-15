@@ -28,7 +28,7 @@ const features = [
         title: "Relatório Fotográfico",
         description: "IA analisa fotos da obra e gera relatório técnico profissional automaticamente.",
         link: "/relatorio-fotografico",
-        linkText: "Acessar Relatório",
+        linkText: "Iniciar Relatório",
         borderColor: "#6366F1",
         badge: "Novo"
     },
@@ -37,7 +37,7 @@ const features = [
         title: "Memorial de Topografia",
         description: "Gere memorial descritivo técnico + planilha Excel pronta para prefeitura e cartório.",
         link: "/topografia",
-        linkText: "Acessar Topografia",
+        linkText: "Iniciar Topografia",
         borderColor: "#C2410C",
         badge: "Novo"
     }

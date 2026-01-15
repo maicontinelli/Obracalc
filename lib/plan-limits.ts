@@ -21,6 +21,7 @@ export interface UserProfile {
     // Usage stats (could be counted dynamically or cached)
     saved_estimates_count: number;
     points?: number;
+    avatar_url?: string | null;
 }
 
 export const PLAN_LIMITS = {

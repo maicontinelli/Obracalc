@@ -62,21 +62,7 @@ export function LeadsIsland({ tier, budgetsCount, points }: LeadsIslandProps) {
                             </p>
                         </div>
 
-                        {/* ObraPoints Card */}
-                        <div className="bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-xl p-4 flex items-center gap-4 mb-4">
-                            <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
-                                <Users size={20} />
-                            </div>
-                            <div>
-                                <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wide">Meus Pontos</span>
-                                <div className="text-2xl font-black text-indigo-700 dark:text-indigo-300">
-                                    {points} <span className="text-sm font-bold text-indigo-600/60 dark:text-indigo-400/60">pts</span>
-                                </div>
-                                <div className="text-[10px] text-indigo-600/80 dark:text-indigo-400/80 font-medium">
-                                    Renova mensalmente
-                                </div>
-                            </div>
-                        </div>
+
 
                         <div className="relative flex-grow bg-muted/30 dark:bg-black/20 rounded-xl border border-dashed border-border dark:border-white/10 p-4 flex flex-col items-center justify-center text-center group hover:border-primary/50 transition-colors cursor-pointer">
                             <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">

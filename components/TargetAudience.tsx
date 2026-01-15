@@ -32,7 +32,10 @@ export function TargetAudience() {
                     {audiences.map((item, index) => (
                         <div
                             key={index}
-                            className="bg-card hover:bg-accent/5 transition-colors p-6 rounded-2xl border border-border shadow-sm hover:shadow-md flex flex-col items-center text-center group"
+                            className={`p-6 rounded-2xl flex flex-col items-center text-center group transition-all duration-300 ${index === 1
+                                    ? 'bg-card border border-orange-500/20 shadow-xl md:scale-105 z-10 relative'
+                                    : 'bg-transparent border border-gray-200/50 dark:border-white/5 opacity-70 hover:opacity-100 hover:bg-card/50 shadow-none scale-100'
+                                }`}
                         >
                             <div className="mb-4 p-3 bg-[#FF6600]/10 rounded-full group-hover:scale-110 transition-transform duration-300">
                                 {item.icon}
