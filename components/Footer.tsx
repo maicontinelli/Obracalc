@@ -15,7 +15,7 @@ export function Footer() {
             : 'bg-white border-gray-100 dark:bg-background dark:border-white/5'
             }`}>
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
                     <div className="col-span-2 md:col-span-1">
                         <Link href="/" className="mb-4 block">
                             <Image
@@ -27,7 +27,7 @@ export function Footer() {
                             />
                         </Link>
                         <p className="text-sm mb-6 max-w-xs text-gray-500 dark:text-muted-foreground">
-                            Fluxo completo de documentação por IA — do orçamento ao relatório técnico.
+                            Orçamentos de obra claros e relatórios prontos para fechar negócios.
                         </p>
                         <div className="flex gap-4">
                             <a href="#" className="text-gray-400 hover:text-primary transition-colors" aria-label="Github">
@@ -42,15 +42,7 @@ export function Footer() {
                         </div>
                     </div>
 
-                    <div>
-                        <h4 className="font-semibold mb-4 text-gray-900 dark:text-foreground">Produto</h4>
-                        <ul className="space-y-2 text-sm text-gray-600 dark:text-muted-foreground">
-                            <li><Link href="#" className="hover:text-primary">Funcionalidades</Link></li>
-                            <li><Link href="#" className="hover:text-primary">Preços</Link></li>
-                            <li><Link href="#" className="hover:text-primary">Integrações</Link></li>
-                            <li><Link href="#" className="hover:text-primary">Updates</Link></li>
-                        </ul>
-                    </div>
+
 
                     <div>
                         <h4 className="font-semibold mb-4 text-gray-900 dark:text-foreground">Institucional</h4>

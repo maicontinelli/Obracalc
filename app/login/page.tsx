@@ -89,13 +89,14 @@ function LoginForm() {
             {/* FULL PAGE BACKGROUND IMAGE */}
             <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
                 <Image
-                    src="/login-bg-full.webp"
+                    src="/login-bg-v6.webp"
                     alt="Background"
                     fill
-                    className="object-contain object-left-bottom opacity-60"
+                    className="object-contain object-left opacity-50 dark:opacity-30 blur-[1px]"
                     priority
                 />
             </div>
+
 
             {/* LEFT SIDE - Content Only */}
             <div className="hidden lg:flex w-1/2 flex-col justify-start items-start p-12 z-10 h-full pt-0 pb-4">
