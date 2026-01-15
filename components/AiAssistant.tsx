@@ -259,15 +259,11 @@ export default function AiAssistant() {
     const [typingSpeed, setTypingSpeed] = useState(150);
 
     const phrases = [
-        "Descreva o que deseja orçar",
-        "Quero pintar meu apê de 50m²",
-        "Construir muro de 45m²",
-        "Reformar banheiro de 3m²",
-        "Trocar o piso da cozinha",
-        "Custo para fazer uma laje de 10m²?",
-        "Quanto custa murar um terreno médio?",
-        "Quanto sai a fundação de uma casa térrea?",
-        "Quanto custa construir uma casa de 70m² hoje?"
+        "Transforme orçamentos em contratos fechados",
+        "Descreva a obra e receba um custo estimado claro e organizado.",
+        "Receba comissão por serviços indicados",
+        "Crie planilhas prontas para enviar ao cliente",
+        "Destaque seu serviço quando clientes estiverem comparando valores."
     ];
 
     useEffect(() => {
@@ -340,7 +336,7 @@ export default function AiAssistant() {
                             onFocus={() => setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             placeholder={isClarifying ? "Digite sua resposta..." : (isDeleting ? "" : placeholder)}
-                            className="w-full px-6 pt-6 pb-16 rounded-3xl border-none outline-none bg-transparent text-lg text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 font-medium resize-none overflow-hidden"
+                            className="w-full px-6 pt-6 pb-16 rounded-3xl border-none outline-none bg-transparent text-lg text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-400 dark:placeholder-gray-500 font-medium resize-none overflow-hidden"
                             rows={1}
                             style={{ minHeight: '80px' }}
                         />

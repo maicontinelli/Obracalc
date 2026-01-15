@@ -42,6 +42,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
     const [isManualCatalogExpanded, setIsManualCatalogExpanded] = useState(false);
     const [includeMaterials, setIncludeMaterials] = useState(true);
+    const [visibility, setVisibility] = useState('private'); // Default private, overridden by load/save logic
 
     const [defaultItems, setDefaultItems] = useState<BoqItem[]>([]);
 
@@ -107,7 +108,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 try {
                     const { data, error } = await supabase
                         .from('budgets')
-                        .select('content, updated_at')
+                        .select('content, updated_at, visibility')
                         .eq('id', estimateId)
                         .maybeSingle();
 
@@ -115,6 +116,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                         dataToLoad = data.content;
                         fromCloud = true;
                         setLastSaved(new Date(data.updated_at));
+                        // @ts-ignore
+                        setVisibility(data.visibility || 'private');
                         setIsCloudSynced(true);
                     }
                 } catch (err) {
@@ -385,6 +388,18 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
         }));
     };
 
+    const calculateTotal = () => {
+        let total = 0;
+        items.forEach(item => {
+            if (item.included) {
+                const price = item.manualPrice !== undefined ? item.manualPrice : item.price;
+                total += item.quantity * price;
+            }
+        });
+        // Add BDI
+        return total * (1 + (bdi / 100));
+    };
+
     const handleSaveToCloud = async () => {
         if (!user) return;
 
@@ -417,11 +432,18 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             aiRequests
         };
 
+        const currentVisibility = tier === 'free' ? 'marketplace' : visibility;
+
+        // Extract unique categories for summary
+        const uniqueCategories = Array.from(new Set(items.map(item => item.category))).filter(Boolean).slice(0, 8);
+
         try {
             const { error } = await supabase.from('budgets').upsert({
                 id: estimateId,
                 user_id: user.id,
-                title: clientName ? `${clientName}` : 'Sem Título',
+                title: clientName ? `${clientName} - ${projectType || 'Obra'}` : 'Novo Orçamento',
+                services_summary: uniqueCategories,
+                total_value: calculateTotal(),
                 content: dataToSave,
                 updated_at: new Date().toISOString(),
                 client_name: clientName,
@@ -429,17 +451,20 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 project_type: projectType,
                 work_city: workCity,
                 work_state: workState,
-                status: 'draft'
+                status: 'draft',
+                visibility: currentVisibility
             });
 
-            if (!error) {
+            if (error) {
+                console.error("ERRO AO SALVAR NO SUPABASE:", error);
+                alert(`Erro ao salvar: ${error.message}\nVerifique o console para mais detalhes.`);
+            } else {
                 setIsCloudSynced(true);
                 setLastSaved(new Date());
-            } else {
-                console.error('Supabase Save Error:', error);
             }
         } catch (err) {
             console.error('Cloud Save Exception:', err);
+            alert('Erro inesperado ao salvar.');
         }
     };
 

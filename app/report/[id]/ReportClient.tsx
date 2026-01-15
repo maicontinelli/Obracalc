@@ -231,7 +231,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             color: #9ca3af;
             font-weight: 500;
             letter-spacing: 0.5px;
-            text-transform: uppercase;
+            text-transform: none;
             margin-top: 2px;
         }
         .invoice-title {
@@ -436,7 +436,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 <img src="${window.location.origin}/logo-test.webp" alt="Logo" style="height: 32px; width: auto;">
                 <div style="display: flex; flex-direction: column;">
                     <span class="brand-logo">ObraPlana</span>
-                    <span class="brand-subtitle">Tecnologia especialista em construção civil</span>
+                    <span class="brand-subtitle" style="color: #d1d5db; text-transform: none;">Tecnologia especialista em construção civil</span>
                 </div>
             </div>
             <div class="invoice-title">
@@ -753,7 +753,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                             />
                             <div>
                                 <div className="text-xl font-semibold tracking-tight leading-none text-white">ObraPlana</div>
-                                <div className="text-[10px] text-gray-500 font-medium tracking-wide uppercase mt-0.5 leading-none">Tecnologia especialista em construção civil</div>
+                                <div className="text-[10px] text-gray-300 font-medium tracking-wide mt-0.5 leading-none">Tecnologia especialista em construção civil</div>
                             </div>
                         </div>
                         <div className="text-right">

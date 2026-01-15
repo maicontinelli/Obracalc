@@ -131,7 +131,7 @@ export default function PlansPage() {
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center max-w-7xl mx-auto">
                             <h1 className="text-xl md:text-3xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-24">
-                                Comece grátis e evolua para converter <br /> orçamentos em ganhos reais
+                                Comece grátis – evolua para converter <br /> orçamentos em ganhos reais
                             </h1>
                             <p className="text-sm md:text-base font-manrope font-semibold text-foreground mb-0">
                                 Use no seu ritmo. Evolua quando fizer sentido

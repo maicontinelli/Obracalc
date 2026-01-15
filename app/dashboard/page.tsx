@@ -29,11 +29,13 @@ import {
     Landmark
 } from 'lucide-react';
 import Link from 'next/link';
-import { BudgetChart } from '@/components/BudgetChart';
 import { LeadsWall } from '@/components/LeadsWall';
+import { LeadsIsland } from '@/components/LeadsIsland';
 import { useProfile } from '@/hooks/useProfile';
 import { PLAN_LIMITS } from '@/lib/plan-limits';
 import { PlanStatus } from '@/components/PlanStatus';
+import { BudgetChart } from '@/components/BudgetChart';
+import UnlockedLeads from '@/components/UnlockedLeads';
 import Script from 'next/script';
 
 // Add TypeScript support for the custom element
@@ -54,6 +56,9 @@ interface Budget {
     title: string;
     updated_at: string;
     content: any; // JSONB content
+    visibility?: 'marketplace' | 'private';
+    user_id?: string;
+    created_at?: string;
 }
 
 export default function DashboardPage() {
@@ -85,12 +90,7 @@ export default function DashboardPage() {
         state: '',
         profession: '',
         registration_number: '',
-        team_size: '',
-        // Banking
-        pix_key: '',
-        bank_name: '',
-        bank_agency: '',
-        bank_account: ''
+        team_size: ''
     });
 
     // Load Data
@@ -123,10 +123,6 @@ export default function DashboardPage() {
                     profession: '',
                     registration_number: '',
                     team_size: '',
-                    pix_key: '',
-                    bank_name: '',
-                    bank_agency: '',
-                    bank_account: ''
                 };
 
                 if (profile) {
@@ -138,11 +134,7 @@ export default function DashboardPage() {
                         state: profile.state || '',
                         profession: profile.profession || '',
                         registration_number: profile.registration_number || '',
-                        team_size: profile.team_size || '',
-                        pix_key: profile.pix_key || '',
-                        bank_name: profile.bank_name || '',
-                        bank_agency: profile.bank_agency || '',
-                        bank_account: profile.bank_account || ''
+                        team_size: profile.team_size || ''
                     };
                 } else if (user.user_metadata) {
                     // Fallback to auth metadata if profile is empty (migration)
@@ -154,11 +146,7 @@ export default function DashboardPage() {
                         state: user.user_metadata.state || '',
                         profession: '',
                         registration_number: '',
-                        team_size: '',
-                        pix_key: '',
-                        bank_name: '',
-                        bank_agency: '',
-                        bank_account: ''
+                        team_size: ''
                     };
                 }
 
@@ -214,41 +202,74 @@ export default function DashboardPage() {
     const handleSaveProfile = async () => {
         if (!user) return;
         setIsSavingProfile(true);
-        setShowOnboardingMessage(false); // Hide message on save attempt
+        setShowOnboardingMessage(false);
 
         try {
+            const payload = {
+                id: user.id,
+                email: user.email || '',
+                full_name: profileData.full_name,
+                company_name: profileData.company_name,
+                phone: profileData.phone,
+                city: profileData.city,
+                state: profileData.state,
+                profession: profileData.profession,
+                registration_number: profileData.registration_number,
+                team_size: profileData.team_size,
+                // Bank info removed to match existing DB schema
+                updated_at: new Date().toISOString()
+            };
+
+            console.log('Salvando perfil:', payload);
+
             // Update public.profiles (Source of Truth)
             const { error } = await supabase
                 .from('profiles')
-                .upsert({
-                    id: user.id,
-                    email: user.email,
-                    full_name: profileData.full_name,
-                    company_name: profileData.company_name,
-                    phone: profileData.phone,
-                    city: profileData.city,
-                    state: profileData.state,
-                    profession: profileData.profession,
-                    registration_number: profileData.registration_number,
-                    team_size: profileData.team_size,
-                    pix_key: profileData.pix_key,
-                    bank_name: profileData.bank_name,
-                    bank_agency: profileData.bank_agency,
-                    bank_account: profileData.bank_account,
-                    updated_at: new Date().toISOString()
-                });
+                .upsert(payload);
 
             if (error) {
-                console.error('Error updating profile:', error);
-                alert(`Erro ao salvar: ${error.message || 'Verifique sua conexão.'}`);
-            } else {
-                alert('Perfil atualizado com sucesso!');
-                setIsProfileExpanded(false);
+                console.error('Erro Supabase:', error);
+                throw error; // Lança para o catch
             }
-        } catch (e) {
-            console.error(e);
+
+            alert('Perfil atualizado com sucesso!');
+            setIsProfileExpanded(false);
+
+        } catch (error: any) {
+            console.error('Exceção ao salvar:', error);
+            const msg = error.message || 'Erro desconhecido';
+
+            if (msg.includes('Load failed') || msg.includes('Failed to fetch')) {
+                alert('Erro de conexão. Verifique sua internet ou se algum bloqueador de anúncios está impedindo o salvamento.');
+            } else {
+                alert(`Erro ao salvar: ${msg}`);
+            }
         } finally {
             setIsSavingProfile(false);
+        }
+    };
+
+    const toggleBudgetVisibility = async (budget: any) => {
+        const newVisibility: 'marketplace' | 'private' = budget.visibility === 'marketplace' ? 'private' : 'marketplace';
+
+        // Optimistic Update
+        const updatedBudgets = budgets.map(b =>
+            b.id === budget.id ? { ...b, visibility: newVisibility } : b
+        );
+        setBudgets(updatedBudgets);
+
+        try {
+            const { error } = await supabase
+                .from('budgets')
+                .update({ visibility: newVisibility })
+                .eq('id', budget.id);
+
+            if (error) throw error;
+        } catch (error) {
+            console.error('Error toggling visibility:', error);
+            // Revert on error
+            setBudgets(budgets);
+            alert('Erro ao atualizar visibilidade. Tente novamente.');
         }
     };
 
@@ -288,7 +309,7 @@ export default function DashboardPage() {
             <div className="max-w-7xl mx-auto space-y-8">
 
                 {/* Welcome Header Section */}
-                <div className="relative bg-card rounded-3xl p-8 shadow-sm border border-border overflow-hidden group">
+                <div className="relative bg-card dark:bg-[#1A1A1A] rounded-3xl p-8 shadow-sm border border-border dark:border-white/10 overflow-hidden group">
                     {/* Decorative Background */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 dark:bg-orange-900/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
 
@@ -365,7 +386,7 @@ export default function DashboardPage() {
 
                         {/* Stats Grid */}
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                            <div className="bg-card p-5 rounded-2xl shadow-sm border border-border">
+                            <div className="bg-card dark:bg-[#1A1A1A] p-5 rounded-2xl shadow-sm border border-border dark:border-white/10">
                                 <div className="p-2 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg w-fit mb-3">
                                     <FileText size={18} />
                                 </div>
@@ -373,7 +394,7 @@ export default function DashboardPage() {
                                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Orçamentos</span>
                             </div>
 
-                            <div className="bg-card p-5 rounded-2xl shadow-sm border border-border">
+                            <div className="bg-card dark:bg-[#1A1A1A] p-5 rounded-2xl shadow-sm border border-border dark:border-white/10">
                                 <div className="p-2 bg-green-50 dark:bg-green-900/20 text-green-600 rounded-lg w-fit mb-3">
                                     <DollarSign size={18} />
                                 </div>
@@ -383,7 +404,7 @@ export default function DashboardPage() {
                                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Total</span>
                             </div>
 
-                            <div className="bg-card p-5 rounded-2xl shadow-sm border border-border">
+                            <div className="bg-card dark:bg-[#1A1A1A] p-5 rounded-2xl shadow-sm border border-border dark:border-white/10">
                                 <div className="p-2 bg-purple-50 dark:bg-purple-900/20 text-purple-600 rounded-lg w-fit mb-3">
                                     <TrendingUp size={18} />
                                 </div>
@@ -393,7 +414,7 @@ export default function DashboardPage() {
                                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Médio</span>
                             </div>
 
-                            <div className="bg-card p-5 rounded-2xl shadow-sm border border-border">
+                            <div className="bg-card dark:bg-[#1A1A1A] p-5 rounded-2xl shadow-sm border border-border dark:border-white/10">
                                 <div className="p-2 bg-orange-50 dark:bg-orange-900/20 text-orange-600 rounded-lg w-fit mb-3">
                                     <Calendar size={18} />
                                 </div>
@@ -401,6 +422,9 @@ export default function DashboardPage() {
                                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Mês</span>
                             </div>
                         </div>
+
+                        {/* Unlocked Leads Section */}
+                        <UnlockedLeads />
 
                         {/* Recent Budgets List */}
                         <div className="space-y-4">
@@ -417,7 +441,7 @@ export default function DashboardPage() {
                                 </div>
                             </div>
 
-                            <div className="bg-card rounded-2xl shadow-sm border border-white/5 overflow-hidden">
+                            <div className="bg-card dark:bg-[#1A1A1A] rounded-2xl shadow-sm border border-white/5 dark:border-white/10 overflow-hidden">
                                 {budgets.length === 0 ? (
                                     <div className="p-12 text-center text-gray-500">
                                         <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
@@ -483,42 +507,58 @@ export default function DashboardPage() {
                                                     </div>
 
                                                     {/* Actions */}
-                                                    <div className="col-span-3 flex items-center justify-end gap-2 mt-2 md:mt-0 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Link
-                                                            href={`/report/${budget.id}`}
-                                                            className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                                                            title="Ver Relatório"
-                                                        >
-                                                            <FileText size={16} />
-                                                        </Link>
+                                                    <div className="col-span-3 flex items-center justify-end gap-3 mt-2 md:mt-0">
+                                                        {/* Visibility Toggle Switch */}
                                                         <button
                                                             onClick={(e) => {
-                                                                if (profile?.tier !== 'free') return; // Allow if not free, otherwise block link
-                                                                if (profile?.tier === 'free') {
-                                                                    e.preventDefault();
-                                                                    e.stopPropagation();
-                                                                    alert('Edição de orçamentos salvos é exclusiva para assinantes. Upgrade para Pro para desbloquear.');
-                                                                    router.push('/planos');
-                                                                }
+                                                                e.stopPropagation();
+                                                                toggleBudgetVisibility(budget);
                                                             }}
-                                                            className={`p-1.5 rounded-lg transition-colors ${profile?.tier === 'free' ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-orange-600 hover:bg-orange-50'}`}
-                                                            title={profile?.tier === 'free' ? "Bloqueado no Plano Gratuito" : "Editar"}
+                                                            className={`relative w-9 h-5 rounded-full transition-colors duration-200 ease-in-out focus:outline-none ${budget.visibility === 'marketplace' ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
+                                                            title={budget.visibility === 'marketplace' ? "Visível no Marketplace" : "Confidencial"}
                                                         >
-                                                            <Edit3 size={16} />
+                                                            <span
+                                                                className={`absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow-sm transform transition-transform duration-200 ease-in-out ${budget.visibility === 'marketplace' ? 'translate-x-4' : 'translate-x-0'}`}
+                                                            />
                                                         </button>
-                                                        <button
-                                                            onClick={() => {
-                                                                if (profile?.tier === 'free') {
-                                                                    alert('Exclusão bloqueada no plano Gratuito.');
-                                                                    return;
-                                                                }
-                                                                handleDeleteBudget(budget.id);
-                                                            }}
-                                                            className={`p-1.5 rounded-lg transition-colors ${profile?.tier === 'free' ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}`}
-                                                            title={profile?.tier === 'free' ? "Bloqueado no Plano Gratuito" : "Excluir"}
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
+
+                                                        <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Link
+                                                                href={`/report/${budget.id}`}
+                                                                className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                                title="Ver Relatório"
+                                                            >
+                                                                <FileText size={16} />
+                                                            </Link>
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    if (profile?.tier !== 'free') return; // Allow if not free, otherwise block link
+                                                                    if (profile?.tier === 'free') {
+                                                                        e.preventDefault();
+                                                                        e.stopPropagation();
+                                                                        alert('Edição de orçamentos salvos é exclusiva para assinantes. Upgrade para Pro para desbloquear.');
+                                                                        router.push('/planos');
+                                                                    }
+                                                                }}
+                                                                className={`p-1.5 rounded-lg transition-colors ${profile?.tier === 'free' ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-orange-600 hover:bg-orange-50'}`}
+                                                                title={profile?.tier === 'free' ? "Bloqueado no Plano Gratuito" : "Editar"}
+                                                            >
+                                                                <Edit3 size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => {
+                                                                    if (profile?.tier === 'free') {
+                                                                        alert('Exclusão bloqueada no plano Gratuito.');
+                                                                        return;
+                                                                    }
+                                                                    handleDeleteBudget(budget.id);
+                                                                }}
+                                                                className={`p-1.5 rounded-lg transition-colors ${profile?.tier === 'free' ? 'text-gray-600 cursor-not-allowed' : 'text-gray-400 hover:text-red-600 hover:bg-red-50'}`}
+                                                                title={profile?.tier === 'free' ? "Bloqueado no Plano Gratuito" : "Excluir"}
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             );
@@ -532,29 +572,40 @@ export default function DashboardPage() {
                     {/* RIGHT COLUMN: Profile Sidebar */}
                     <div className="lg:col-span-1 lg:sticky lg:top-6 space-y-6">
 
-                        {/* Gamified Plan Status Island */}
-                        <div className="animate-in slide-in-from-right-4 duration-700 delay-100">
-                            <PlanStatus tier={profile?.tier || 'free'} usageCount={budgets.length} />
-                        </div>
-
-                        <div className="bg-card rounded-2xl shadow-sm border border-white/5 overflow-hidden transition-all duration-300">
+                        <div className="bg-card dark:bg-[#1A1A1A] rounded-2xl shadow-sm border border-white/5 dark:border-white/10 overflow-hidden transition-all duration-300">
+                            {/* Unified Header */}
                             <div
-                                className="p-4 border-b border-border flex justify-between items-center cursor-pointer hover:bg-accent/50 transition-colors"
+                                className="p-4 flex justify-between items-center cursor-pointer hover:bg-accent/50 transition-colors"
                                 onClick={() => setIsProfileExpanded(!isProfileExpanded)}
                             >
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/20 flex items-center justify-center text-orange-600">
-                                        <UserIcon size={16} />
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${profile?.tier === 'pro' || profile?.tier === 'business' ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-600' : 'bg-orange-100 dark:bg-orange-900/20 text-orange-600'}`}>
+                                        <UserIcon size={18} />
                                     </div>
-                                    <h3 className="font-heading font-bold text-foreground text-sm">Seus Dados</h3>
+                                    <div>
+                                        <h3 className="font-heading font-bold text-foreground text-sm">
+                                            {profileData.full_name || 'Seu Perfil'}
+                                        </h3>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider ${profile?.tier === 'pro' || profile?.tier === 'business' ? 'text-blue-600 dark:text-blue-400' : 'text-muted-foreground'}`}>
+                                                {profile?.tier === 'business' ? 'Plano Empresarial' : profile?.tier === 'pro' ? 'Plano Pro' : 'Plano Grátis'}
+                                            </span>
+                                            {/* Micro status dot */}
+                                            <span className={`w-1.5 h-1.5 rounded-full ${profile?.tier === 'free' && budgets.length >= 3 ? 'bg-red-500' : 'bg-green-500'}`}></span>
+                                        </div>
+                                    </div>
                                 </div>
-                                {isProfileExpanded ? <ChevronUp size={16} className="text-gray-400" /> : <ChevronDown size={16} className="text-gray-400" />}
+                                <div className={`transition-transform duration-300 ${isProfileExpanded ? 'rotate-180' : ''}`}>
+                                    <ChevronDown size={16} className="text-gray-400" />
+                                </div>
                             </div>
 
+                            {/* Expanded Content */}
                             {isProfileExpanded && (
-                                <div className="bg-card">
+                                <div className="bg-card dark:bg-[#1A1A1A] border-t border-border dark:border-white/5 animate-in slide-in-from-top-2 duration-300 pt-2">
+
                                     {showOnboardingMessage && (
-                                        <div className="mx-4 mt-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-start gap-2 animate-in fade-in slide-in-from-top-2">
+                                        <div className="mx-4 mb-4 p-3 bg-blue-50 border border-blue-100 rounded-lg flex items-start gap-2">
                                             <TrendingUp size={14} className="text-blue-600 shrink-0 mt-0.5" />
                                             <div>
                                                 <p className="text-blue-700 text-xs leading-relaxed">
@@ -564,13 +615,13 @@ export default function DashboardPage() {
                                         </div>
                                     )}
 
-                                    {/* List Style Inputs */}
+                                    {/* 2. Profile Form Inputs */}
                                     <div className="divide-y divide-white/10">
                                         {/* Name */}
-                                        <div className="flex items-center px-4 py-2 group hover:bg-accent/50 transition-colors">
+                                        <div className="flex items-center px-4 py-3 hover:bg-accent/50 transition-colors">
                                             <UserIcon size={14} className="text-gray-300 mr-3 shrink-0" />
                                             <div className="flex-1">
-                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Nome Completo</label>
+                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Nome Completo</label>
                                                 <input
                                                     type="text"
                                                     value={profileData.full_name}
@@ -582,14 +633,31 @@ export default function DashboardPage() {
                                         </div>
 
                                         {/* Phone */}
-                                        <div className="flex items-center px-4 py-2 group hover:bg-accent/50 transition-colors">
+                                        <div className="flex items-center px-4 py-3 hover:bg-accent/50 transition-colors">
                                             <Phone size={14} className="text-gray-300 mr-3 shrink-0" />
                                             <div className="flex-1">
-                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Telefone / WhatsApp</label>
+                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Telefone / WhatsApp</label>
                                                 <input
                                                     type="text"
                                                     value={profileData.phone}
-                                                    onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
+                                                    onChange={(e) => {
+                                                        let v = e.target.value.replace(/\D/g, ''); // Remove non-digits
+                                                        v = v.substring(0, 11); // Limit to 11 chars
+
+                                                        // Apply mask
+                                                        if (v.length > 10) {
+                                                            v = v.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+                                                        } else if (v.length > 5) {
+                                                            v = v.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+                                                        } else if (v.length > 2) {
+                                                            v = v.replace(/^(\d\d)(\d{0,5}).*/, "($1) $2");
+                                                        } else {
+                                                            // Just numbers if too short, or maybe just ($1 if needed, but let's keep simple
+                                                            // v = v; 
+                                                        }
+
+                                                        setProfileData({ ...profileData, phone: v });
+                                                    }}
                                                     className="w-full bg-transparent border-none p-0 text-sm font-medium text-foreground focus:ring-0 placeholder-muted-foreground"
                                                     placeholder="(00) 00000-0000"
                                                 />
@@ -597,11 +665,11 @@ export default function DashboardPage() {
                                         </div>
 
                                         {/* City/State Row */}
-                                        <div className="flex items-center px-4 py-2 group hover:bg-accent/50 transition-colors">
+                                        <div className="flex items-center px-4 py-3 hover:bg-accent/50 transition-colors">
                                             <MapPin size={14} className="text-gray-300 mr-3 shrink-0" />
                                             <div className="flex gap-4 w-full">
                                                 <div className="flex-1">
-                                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Cidade</label>
+                                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Cidade</label>
                                                     <input
                                                         type="text"
                                                         value={profileData.city}
@@ -611,7 +679,7 @@ export default function DashboardPage() {
                                                     />
                                                 </div>
                                                 <div className="w-16">
-                                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">UF</label>
+                                                    <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">UF</label>
                                                     <input
                                                         type="text"
                                                         maxLength={2}
@@ -625,10 +693,10 @@ export default function DashboardPage() {
                                         </div>
 
                                         {/* Profession */}
-                                        <div className="flex items-center px-4 py-2 group hover:bg-accent/50 transition-colors">
+                                        <div className="flex items-center px-4 py-3 hover:bg-accent/50 transition-colors">
                                             <FileText size={14} className="text-gray-300 mr-3 shrink-0" />
                                             <div className="flex-1 relative">
-                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Profissão</label>
+                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Profissão</label>
                                                 <select
                                                     value={profileData.profession}
                                                     onChange={(e) => setProfileData({ ...profileData, profession: e.target.value })}
@@ -645,10 +713,10 @@ export default function DashboardPage() {
                                         </div>
 
                                         {/* Company */}
-                                        <div className="flex items-center px-4 py-2 group hover:bg-accent/50 transition-colors">
+                                        <div className="flex items-center px-4 py-3 hover:bg-accent/50 transition-colors">
                                             <Building2 size={14} className="text-gray-300 mr-3 shrink-0" />
                                             <div className="flex-1">
-                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Empresa</label>
+                                                <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block mb-0.5">Empresa</label>
                                                 <input
                                                     type="text"
                                                     value={profileData.company_name}
@@ -660,7 +728,7 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
 
-                                    <div className="p-4 bg-muted/50">
+                                    <div className="p-4 bg-muted/50 dark:bg-black/20">
                                         <button
                                             onClick={handleSaveProfile}
                                             disabled={isSavingProfile}
@@ -674,15 +742,7 @@ export default function DashboardPage() {
                             )}
                         </div>
 
-                        {/* Tip Widget */}
-                        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-br from-orange-900/10 to-orange-900/5 border border-orange-800/30">
-                            <h4 className="flex items-center gap-2 text-xs font-bold text-orange-300 uppercase tracking-wider mb-2">
-                                <Sparkles size={12} /> Dica Pro
-                            </h4>
-                            <p className="text-xs text-orange-400 leading-relaxed">
-                                Use a busca com IA para adicionar pacotes completos de serviços, como "Reforma de Banheiro" ou "Construção de Muro".
-                            </p>
-                        </div>
+                        {/* Tip Widget Removed */}
 
                         {/* Leads Wall / Upsell Island */}
                         <div className="mt-6">
@@ -704,7 +764,7 @@ export default function DashboardPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <LeadsWall tier={profile?.tier || 'free'} />
+                                <LeadsIsland tier={profile?.tier || 'free'} budgetsCount={budgets.filter(b => b.visibility === 'marketplace').length} points={profile?.points || 0} />
                             )}
                         </div>
                     </div>

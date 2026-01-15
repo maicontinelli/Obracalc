@@ -52,12 +52,13 @@ interface CommandSearchProps {
 // ... imports
 // Add these at the top level or inside the component if you prefer, but outside is better for constants
 const PROMPT_PLACEHOLDERS = [
-    "Descreva itens que faltaram aqui...",
-    "Adicionar pintura interna",
-    "Adicionar instalação elétrica",
-    "Adicionar hidráulica do banheiro",
-    "Adicionar assentamento de piso",
-    "Adicionar reboco e acabamento"
+    "Veja se não está faltando nada como . . ",
+    "Preparação do terreno",
+    "Demolição ou transporte de material",
+    "Pintura e acabamento",
+    "Limpeza pós-obra",
+    "Adicionar revestimento ou esquadria",
+    "Verifique se o BDI está justo"
 ];
 
 export default function CommandSearch({ items, onSelect, onAddCustom }: CommandSearchProps) {
@@ -86,23 +87,15 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                 : fullText.substring(0, placeholder.length + 1)
             );
 
-            // Typing Speed Logic
-            let typeSpeed = 100;
-
-            if (isDeleting) {
-                typeSpeed /= 2; // Delete faster
-            }
+            // Faster typing speeds: 50ms typing, 20ms deleting
+            setTypingSpeed(isDeleting ? 20 : 50);
 
             if (!isDeleting && placeholder === fullText) {
-                typeSpeed = 2000; // Pause at end
-                setIsDeleting(true);
+                setTimeout(() => setIsDeleting(true), 2000); // Wait before deleting
             } else if (isDeleting && placeholder === '') {
                 setIsDeleting(false);
                 setLoopNum(loopNum + 1);
-                typeSpeed = 500; // Pause before new typoe
             }
-
-            setTypingSpeed(typeSpeed);
         };
 
         const timer = setTimeout(handleType, typingSpeed);
@@ -227,8 +220,8 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                                 if (aiResponse) setAiResponse(null);
                             }}
                             onFocus={() => query && !aiResponse && setIsOpen(true)}
-                            placeholder={placeholder}
-                            className="w-full pl-4 pr-32 py-5 rounded-full border-none outline-none bg-transparent text-[13px] text-gray-800 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 font-medium"
+                            placeholder={isDeleting ? "" : placeholder}
+                            className="w-full pl-4 pr-32 py-5 rounded-full border-none outline-none bg-transparent text-[13px] text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium"
                         />
 
                         <button

@@ -20,6 +20,7 @@ export interface UserProfile {
     bank_account?: string;
     // Usage stats (could be counted dynamically or cached)
     saved_estimates_count: number;
+    points?: number;
 }
 
 export const PLAN_LIMITS = {

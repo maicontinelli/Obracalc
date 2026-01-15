@@ -43,27 +43,27 @@ export function PlanStatus({ tier = 'free', usageCount }: PlanStatusProps) {
 
     if (tier === 'pro') {
         return (
-            <div className="bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden group">
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-10 -mb-10 transition-transform group-hover:scale-150 duration-700"></div>
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-[#1A1A1A] dark:to-[#1A1A1A] border border-blue-100 dark:border-blue-900/30 rounded-2xl p-6 shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-transform group-hover:scale-125 duration-700"></div>
 
                 <div className="relative z-10">
                     <div className="flex justify-between items-start mb-4">
-                        <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
-                            <Zap size={24} className="text-blue-100" />
+                        <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-xl">
+                            <Zap size={24} className="text-blue-600 dark:text-blue-400" />
                         </div>
-                        <span className="bg-blue-400/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider backdrop-blur-md border border-white/10">
+                        <span className="bg-blue-100/50 dark:bg-blue-900/20 px-3 py-1 rounded-full text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-wider border border-blue-200/50 dark:border-blue-800/30">
                             Pro Member
                         </span>
                     </div>
 
-                    <h3 className="text-xl font-bold mb-1">Conta Profissional</h3>
-                    <p className="text-blue-100 text-sm mb-6 opacity-90">
+                    <h3 className="text-xl font-bold mb-1 text-foreground">Conta Profissional</h3>
+                    <p className="text-muted-foreground text-sm mb-6">
                         Você desbloqueou orçamentos ilimitados e remoção da marca d'água.
                     </p>
 
-                    <div className="flex items-center gap-2 bg-white/10 p-3 rounded-xl border border-white/5 mb-2">
-                        <Sparkles size={16} className="text-yellow-300" />
-                        <span className="text-sm font-medium">{usageCount} Orçamentos criados</span>
+                    <div className="flex items-center gap-2 bg-background/50 dark:bg-white/5 p-3 rounded-xl border border-blue-100 dark:border-white/5 mb-2">
+                        <Sparkles size={16} className="text-blue-500 dark:text-blue-400" />
+                        <span className="text-sm font-medium text-foreground">{usageCount} Orçamentos criados</span>
                     </div>
                 </div>
             </div>
