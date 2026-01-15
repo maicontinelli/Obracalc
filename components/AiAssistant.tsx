@@ -259,13 +259,13 @@ export default function AiAssistant() {
     const [typingSpeed, setTypingSpeed] = useState(150);
 
     const phrases = [
-        "Descreva o serviço para gerar o orçamento",
-        "Quanto custa construir xx m2 de laje?",
-        "Gere um orçamento com escopo claro",
-        "Inclua serviços, etapas e acabamentos",
-        "Relatório organizado, pronto para enviar ao cliente",
-        "Use como base para fechar o contrato",
-        "Receba comissão real por serviços indicados"
+        "Descreva o serviço que você precisa orçar",
+        "Pode ser algo simples, como uma laje ou reforma",
+        "A gente transforma isso em um orçamento organizado",
+        "Você pode incluir etapas, serviços e acabamentos",
+        "Tudo fica claro e fácil de apresentar ao cliente",
+        "O orçamento já sai em formato de relatório",
+        "Profissionais podem fechar obras com orçamentos registrados e indicar serviços para ganhar comissão."
     ];
 
     useEffect(() => {

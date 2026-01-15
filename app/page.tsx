@@ -54,7 +54,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-primary text-primary-foreground hover:bg-primary/90 h-14 px-8 text-lg font-semibold shadow-lg transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px]"
+                className="bg-[#FF6600] text-white hover:bg-[#FF6600]/90 h-14 px-8 text-lg font-semibold shadow-lg transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px]"
                 data-testid="button-cta"
                 onClick={() => handleStart('obra_nova')}
               >

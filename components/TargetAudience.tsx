@@ -4,7 +4,7 @@ export function TargetAudience() {
     const audiences = [
         {
             icon: <User className="w-8 h-8 text-[#FF6600]" />,
-            title: "Leigos e proprietários",
+            title: "Iniciantes e proprietários",
             description: "Descubra quanto sua obra vai custar, mesmo sem experiência."
         },
         {
