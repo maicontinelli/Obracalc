@@ -235,7 +235,7 @@ export default function RelatorioFotograficoPage() {
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Hero Section */}
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#6366F1]/5 via-background to-[#6366F1]/5 border-b border-white/5 pt-16 pb-12">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#6366F1]/5 via-background to-[#6366F1]/5 border-b border-white/5 pt-16 pb-12 mb-40">
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#6366F1]/10 rounded-full blur-3xl"></div>
                     <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#6366F1]/10 rounded-full blur-3xl"></div>
@@ -260,7 +260,7 @@ export default function RelatorioFotograficoPage() {
                 </div>
             </section>
 
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+            <div className="max-w-4xl mx-auto px-4 pb-20">
 
                 {/* Error Message */}
                 {error && (
@@ -270,115 +270,115 @@ export default function RelatorioFotograficoPage() {
                     </div>
                 )}
 
-                {/* Main Card */}
-                <div className="bg-card rounded-xl shadow-lg border border-white/5 overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-                    {/* Upload Section */}
-                    <div className="p-8">
-                        <div
-                            className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors cursor-pointer ${images.length > 0 ? 'border-[#6366F1]/50 bg-[#6366F1]/5' : 'border-input hover:border-[#6366F1] hover:bg-[#6366F1]/5'
-                                }`}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                accept="image/*"
-                                multiple
-                                className="hidden"
-                            />
+                    {/* Left Column: Image Upload */}
+                    <div className="md:col-span-1 space-y-6">
+                        <div className="bg-card rounded-2xl shadow-xl p-6 border border-border sticky top-24">
+                            <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
+                                <Camera size={20} className="text-[#6366F1]" />
+                                Fotos da Obra
+                            </h3>
 
-                            {isCompressing ? (
-                                <div className="flex flex-col items-center">
-                                    <RefreshCw className="h-12 w-12 text-[#6366F1] mb-4 animate-spin" />
-                                    <h3 className="text-lg font-medium text-foreground">Otimizando imagens...</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Reduzindo tamanho para melhor performance</p>
-                                </div>
-                            ) : images.length > 0 ? (
-                                <div className="flex flex-col items-center">
-                                    <CheckCircle className="h-12 w-12 text-[#6366F1] mb-4" />
-                                    <h3 className="text-lg font-medium text-foreground">{images.length} imagem(ns) selecionada(s)</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">
-                                        {images.length >= 10 ? (
-                                            <span className="text-orange-600 font-medium">Limite máximo atingido (10 imagens)</span>
-                                        ) : (
-                                            `Você pode adicionar até ${10 - images.length} imagens`
-                                        )}
-                                    </p>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center">
-                                    <Upload className="h-12 w-12 text-[#8a8886] mb-4" />
-                                    <h3 className="text-lg font-medium text-foreground">Upload de imagens da obra</h3>
-                                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                                        Arraste ou clique para selecionar fotos da obra (JPG, PNG, etc.)
-                                    </p>
-                                    <p className="text-xs text-[#8a8886] mt-2">
-                                        As imagens serão automaticamente otimizadas
-                                    </p>
+                            <div
+                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${images.length > 0 ? 'border-[#6366F1]/50 bg-[#6366F1]/5' : 'border-input hover:border-[#6366F1] hover:bg-[#6366F1]/5'}`}
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    accept="image/*"
+                                    multiple
+                                    className="hidden"
+                                    aria-label="Upload de fotos"
+                                    title="Upload de fotos"
+                                />
+
+                                {isCompressing ? (
+                                    <div className="flex flex-col items-center">
+                                        <RefreshCw className="h-8 w-8 text-[#6366F1] mb-2 animate-spin" />
+                                        <p className="text-xs text-muted-foreground">Otimizando...</p>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center">
+                                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                                        <p className="text-xs font-medium text-foreground">
+                                            {images.length > 0 ? 'Adicionar mais' : 'Upload de fotos'}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Image Preview Grid (Compact) */}
+                            {images.length > 0 && (
+                                <div className="mt-4 grid grid-cols-2 gap-2">
+                                    {images.map((img, index) => (
+                                        <div key={index} className="relative group aspect-square">
+                                            <img
+                                                src={img.preview}
+                                                alt={`Preview ${index + 1}`}
+                                                className="w-full h-full object-cover rounded-lg border border-white/10"
+                                            />
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    removeImage(index);
+                                                }}
+                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                title="Remover imagem"
+                                                aria-label="Remover imagem"
+                                            >
+                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
-                        </div>
 
-                        {/* Image Preview Grid */}
-                        {images.length > 0 && (
-                            <div className="mt-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {images.map((img, index) => (
-                                    <div key={index} className="relative group">
-                                        <img
-                                            src={img.preview}
-                                            alt={`Preview ${index + 1}`}
-                                            className="w-full h-32 object-cover rounded-lg border border-white/10"
-                                        />
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                removeImage(index);
-                                            }}
-                                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                                            aria-label="Remover imagem"
-                                        >
-                                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                            </svg>
-                                        </button>
-                                        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
-                                            {index + 1}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                            {images.length > 0 && (
+                                <p className="text-xs text-center text-muted-foreground mt-2">
+                                    {images.length} de 10 imagens
+                                </p>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Form Fields */}
-                    <div className="bg-muted dark:bg-[#222120] px-8 py-6 border-t border-border">
-                        <h3 className="text-sm font-bold text-[#8a8886] uppercase tracking-wider mb-4">Dados da Obra</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {/* Right Column: Form */}
+                    <div className="md:col-span-2">
+                        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+                            <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
+                                Dados do Relatório
+                            </h3>
+
                             <div className="space-y-6">
-                                <div>
-                                    <label htmlFor="clientName" className="block text-sm font-medium text-muted-foreground mb-1">Nome do Cliente *</label>
-                                    <input
-                                        id="clientName"
-                                        type="text"
-                                        value={clientName}
-                                        onChange={(e) => setClientName(e.target.value)}
-                                        placeholder="Ex: João Silva"
-                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3"
-                                    />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="clientName" className="block text-sm font-medium text-muted-foreground mb-1">Nome do Cliente *</label>
+                                        <input
+                                            id="clientName"
+                                            type="text"
+                                            value={clientName}
+                                            onChange={(e) => setClientName(e.target.value)}
+                                            placeholder="Ex: João Silva"
+                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="projectAddress" className="block text-sm font-medium text-muted-foreground mb-1">Endereço da Obra *</label>
+                                        <input
+                                            id="projectAddress"
+                                            type="text"
+                                            value={projectAddress}
+                                            onChange={(e) => setProjectAddress(e.target.value)}
+                                            placeholder="Ex: Rua das Flores, 123"
+                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label htmlFor="projectAddress" className="block text-sm font-medium text-muted-foreground mb-1">Endereço da Obra *</label>
-                                    <input
-                                        id="projectAddress"
-                                        type="text"
-                                        value={projectAddress}
-                                        onChange={(e) => setProjectAddress(e.target.value)}
-                                        placeholder="Ex: Rua das Flores, 123 - São Paulo/SP"
-                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3"
-                                    />
-                                </div>
+
                                 <div>
                                     <label htmlFor="inspectionDate" className="block text-sm font-medium text-muted-foreground mb-1">Data da Vistoria</label>
                                     <input
@@ -387,12 +387,10 @@ export default function RelatorioFotograficoPage() {
                                         value={inspectionDate}
                                         onChange={(e) => setInspectionDate(e.target.value)}
                                         placeholder="DD/MM/AAAA"
-                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] py-3"
+                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
                                     />
                                 </div>
-                            </div>
 
-                            <div className="space-y-6">
                                 <SelectionList
                                     label="Tipo de Obra"
                                     value={projectType}
@@ -403,111 +401,106 @@ export default function RelatorioFotograficoPage() {
                                         { value: 'Reforma', label: 'Reforma', icon: <Hammer size={18} /> }
                                     ]}
                                 />
-                            </div>
-                        </div>
 
-                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <SelectionList
-                                label="Etapa da Obra"
-                                value={projectStage}
-                                onChange={(val) => setProjectStage(val as ProjectStage)}
-                                options={[
-                                    { value: 'Inicial', label: 'Inicial', icon: <Flag size={18} /> },
-                                    { value: 'Em andamento', label: 'Em andamento', icon: <TrendingUp size={18} /> },
-                                    { value: 'Final', label: 'Final', icon: <CheckCircle2 size={18} /> }
-                                ]}
-                            />
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <SelectionList
+                                        label="Etapa da Obra"
+                                        value={projectStage}
+                                        onChange={(val) => setProjectStage(val as ProjectStage)}
+                                        options={[
+                                            { value: 'Inicial', label: 'Inicial', icon: <Flag size={18} /> },
+                                            { value: 'Em andamento', label: 'Em andamento', icon: <TrendingUp size={18} /> },
+                                            { value: 'Final', label: 'Final', icon: <CheckCircle2 size={18} /> }
+                                        ]}
+                                    />
 
-                            <SelectionList
-                                label="Modo do Relatório"
-                                value={mode}
-                                onChange={(val) => setMode(val as ReportMode)}
-                                options={[
-                                    { value: 'LEIGO', label: 'Linguagem Simples (Cliente)', icon: <User size={18} /> },
-                                    { value: 'TECNICO', label: 'Linguagem Técnica', icon: <FileText size={18} /> }
-                                ]}
-                            />
-                        </div>
-
-                        {/* Optional Technical Fields */}
-                        {mode === 'TECNICO' && (
-                            <div className="mt-6 pt-6 border-t border-white/10">
-                                <h4 className="text-sm font-bold text-[#8a8886] uppercase tracking-wider mb-4">Dados Técnicos (Opcional)</h4>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div>
-                                        <label htmlFor="technicalResponsible" className="block text-sm font-medium text-muted-foreground mb-1">Responsável Técnico</label>
-                                        <input
-                                            id="technicalResponsible"
-                                            type="text"
-                                            value={technicalResponsible}
-                                            onChange={(e) => setTechnicalResponsible(e.target.value)}
-                                            placeholder="Ex: Eng. Maria Santos"
-                                            className="w-full rounded-md border-input bg-background dark:bg-[#1A1918] text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="creaCAU" className="block text-sm font-medium text-muted-foreground mb-1">CREA/CAU</label>
-                                        <input
-                                            id="creaCAU"
-                                            type="text"
-                                            value={creaCAU}
-                                            onChange={(e) => setCreaCau(e.target.value)}
-                                            placeholder="Ex: CREA-SP 123456"
-                                            className="w-full rounded-md border-input bg-background dark:bg-[#1A1918] text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label htmlFor="builtArea" className="block text-sm font-medium text-muted-foreground mb-1">Área Construída (m²)</label>
-                                        <input
-                                            id="builtArea"
-                                            type="text"
-                                            value={builtArea}
-                                            onChange={(e) => setBuiltArea(e.target.value)}
-                                            placeholder="Ex: 150.00"
-                                            className="w-full rounded-md border-input bg-background dark:bg-[#1A1918] text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground"
-                                        />
-                                    </div>
+                                    <SelectionList
+                                        label="Modo do Relatório"
+                                        value={mode}
+                                        onChange={(val) => setMode(val as ReportMode)}
+                                        options={[
+                                            { value: 'LEIGO', label: 'Linguagem Simples', icon: <User size={18} /> },
+                                            { value: 'TECNICO', label: 'Linguagem Técnica', icon: <FileText size={18} /> }
+                                        ]}
+                                    />
                                 </div>
-                            </div>
-                        )}
 
-                        {/* Observations */}
-                        <div className="mt-6">
-                            <label htmlFor="userObservations" className="block text-sm font-medium text-muted-foreground mb-1">Observações Adicionais (Opcional)</label>
-                            <textarea
-                                id="userObservations"
-                                value={userObservations}
-                                onChange={(e) => setUserObservations(e.target.value)}
-                                placeholder="Adicione observações técnicas relevantes sobre a obra..."
-                                rows={3}
-                                className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground p-3"
-                            />
+                                {/* Optional Technical Fields */}
+                                {mode === 'TECNICO' && (
+                                    <div className="pt-4 border-t border-border">
+                                        <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-4">Dados Técnicos</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label htmlFor="technicalResponsible" className="block text-xs font-medium text-muted-foreground mb-1">Responsável Técnico</label>
+                                                <input
+                                                    id="technicalResponsible"
+                                                    type="text"
+                                                    value={technicalResponsible}
+                                                    onChange={(e) => setTechnicalResponsible(e.target.value)}
+                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="creaCAU" className="block text-xs font-medium text-muted-foreground mb-1">CREA/CAU</label>
+                                                <input
+                                                    id="creaCAU"
+                                                    type="text"
+                                                    value={creaCAU}
+                                                    onChange={(e) => setCreaCau(e.target.value)}
+                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label htmlFor="builtArea" className="block text-xs font-medium text-muted-foreground mb-1">Área Construída (m²)</label>
+                                                <input
+                                                    id="builtArea"
+                                                    type="text"
+                                                    value={builtArea}
+                                                    onChange={(e) => setBuiltArea(e.target.value)}
+                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                <div>
+                                    <label htmlFor="userObservations" className="block text-sm font-medium text-muted-foreground mb-1">Observações Adicionais</label>
+                                    <textarea
+                                        id="userObservations"
+                                        value={userObservations}
+                                        onChange={(e) => setUserObservations(e.target.value)}
+                                        placeholder="Observações..."
+                                        rows={3}
+                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm p-3 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                    />
+                                </div>
+
+                                <button
+                                    onClick={handleGenerateReport}
+                                    disabled={images.length === 0 || !clientName || !projectAddress || isLoading}
+                                    className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 mt-4
+                                        ${images.length === 0 || !clientName || !projectAddress
+                                            ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed'
+                                            : 'bg-[#6366F1] hover:bg-[#4338CA] hover:shadow-indigo-500/20'
+                                        }`}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <RefreshCw className="h-5 w-5 animate-spin" />
+                                            Processando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileText className="h-5 w-5" />
+                                            Gerar Relatório
+                                        </>
+                                    )}
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Action Button */}
-                    <div className="p-8 bg-muted dark:bg-[#222120] border-t border-border flex justify-end">
-                        <button
-                            onClick={handleGenerateReport}
-                            disabled={images.length === 0 || !clientName || !projectAddress || isLoading}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-white shadow-md transition-all
-                                ${images.length === 0 || !clientName || !projectAddress ? 'bg-gray-400 cursor-not-allowed' :
-                                    isLoading ? 'bg-[#6366F1]/80 cursor-wait' :
-                                        'bg-[#6366F1] hover:bg-[#4338CA] hover:shadow-lg active:scale-95'}`}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <RefreshCw className="h-5 w-5 animate-spin" />
-                                    Processando Imagens...
-                                </>
-                            ) : (
-                                <>
-                                    <Camera className="h-5 w-5" />
-                                    Gerar Relatório Fotográfico
-                                </>
-                            )}
-                        </button>
-                    </div>
                 </div>
 
                 {/* Legal Disclaimer */}

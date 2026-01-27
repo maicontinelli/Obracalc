@@ -71,12 +71,20 @@ export async function POST(req: Request) {
 
             // Update User Profile in Supabase
             const supabaseAdmin = getSupabaseAdmin();
+
+            // 1. Fetch current points to add monthly bonus
+            const { data: profileData } = await supabaseAdmin.from('profiles').select('points').eq('id', userId).single();
+            const currentPoints = profileData?.points || 0;
+            const pointsBonus = 500; // Bonus for successful payment
+
+            // 2. Update Profile with new Tier + Bonus Points
             const { error } = await supabaseAdmin
                 .from('profiles')
                 .update({
                     tier: newTier,
                     subscription_status: 'active',
                     subscription_id: subscriptionId,
+                    points: currentPoints + pointsBonus,
                     updated_at: new Date().toISOString()
                 })
                 .eq('id', userId);

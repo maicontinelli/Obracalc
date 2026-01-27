@@ -18,7 +18,7 @@
 ### 1. Iniciar o servidor
 
 ```bash
-cd /Users/maicontinelli/.gemini/antigravity/scratch/obracalc-simple
+cd /Users/maicontinelli/.gemini/antigravity/scratch/ObraPlana-simple
 npm run dev
 ```
 
@@ -188,6 +188,6 @@ npx tsc --noEmit
 
 ---
 
-**Localização**: `/Users/maicontinelli/.gemini/antigravity/scratch/obracalc-simple`  
+**Localização**: `/Users/maicontinelli/.gemini/antigravity/scratch/ObraPlana-simple`  
 **URL Local**: <http://localhost:3001>  
 **Status**: ✅ PRONTO PARA USO!

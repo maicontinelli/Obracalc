@@ -259,13 +259,12 @@ export default function AiAssistant() {
     const [typingSpeed, setTypingSpeed] = useState(150);
 
     const phrases = [
-        "Descreva o serviço que você precisa orçar",
-        "Pode ser algo simples, como uma laje ou reforma",
-        "A gente transforma isso em um orçamento organizado",
-        "Você pode incluir etapas, serviços e acabamentos",
-        "Tudo fica claro e fácil de apresentar ao cliente",
-        "O orçamento já sai em formato de relatório",
-        "Profissionais podem fechar obras com orçamentos registrados e indicar serviços para ganhar comissão."
+        "Comece descrevendo o que precisa executar",
+        "Pode ser algo como: quero fazer uma laje de 20 m².",
+        "Informe as dimensões da obra, e a gente transforma isso em um orçamento organizado.",
+        "Tudo fica claro e fácil de apresentar ao cliente: seu orçamento sai em formato de relatório.",
+        "Comece grátis, evolua quando achar necessário",
+        "Salve seus orçamentos para editar depois, exporte no formato que preferir Word, Excel ou PDF"
     ];
 
     useEffect(() => {
@@ -282,7 +281,7 @@ export default function AiAssistant() {
             setTypingSpeed(isDeleting ? 20 : 50);
 
             if (!isDeleting && placeholder === fullText) {
-                setTimeout(() => setIsDeleting(true), 2000); // Wait before deleting
+                setTimeout(() => setIsDeleting(true), 2600); // Wait before deleting
             } else if (isDeleting && placeholder === '') {
                 setIsDeleting(false);
                 setLoopNum(loopNum + 1);

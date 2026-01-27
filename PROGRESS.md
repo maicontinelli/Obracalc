@@ -4,7 +4,7 @@
 
 ### Setup Inicial
 
-- ✅ Criado projeto obracalc-simple
+- ✅ Criado projeto ObraPlana-simple
 - ✅ Instaladas dependências (npm install)
 - ✅ Copiados arquivos de configuração
 

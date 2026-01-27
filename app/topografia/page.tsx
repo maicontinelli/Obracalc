@@ -127,7 +127,7 @@ export default function MemorialPage() {
         <div className="min-h-screen bg-background text-foreground pb-20">
             {/* Hero Section */}
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#C2410C]/5 via-background to-[#C2410C]/5 border-b border-white/5 pt-16 pb-12">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#C2410C]/5 via-background to-[#C2410C]/5 border-b border-white/5 pt-16 pb-12 mb-40">
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#C2410C]/10 rounded-full blur-3xl"></div>
                     <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#C2410C]/10 rounded-full blur-3xl"></div>
@@ -152,7 +152,7 @@ export default function MemorialPage() {
                 </div>
             </section>
 
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+            <div className="max-w-4xl mx-auto px-4 pb-20">
 
                 {/* Error Message */}
                 {error && (
@@ -162,82 +162,104 @@ export default function MemorialPage() {
                     </div>
                 )}
 
-                {/* Main Card */}
-                <div className="bg-card rounded-xl shadow-lg border border-white/5 overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
 
-                    {/* Upload Section */}
-                    <div className="p-8">
-                        <div
-                            className={`border-2 border-dashed rounded-xl p-10 text-center transition-colors cursor-pointer ${file ? 'border-[#C2410C]/50 bg-[#C2410C]/5' : 'border-white/10 hover:border-[#C2410C] hover:bg-[#C2410C]/5'}`}
-                            onClick={() => fileInputRef.current?.click()}
-                        >
-                            <input
-                                type="file"
-                                ref={fileInputRef}
-                                onChange={handleFileChange}
-                                accept=".kmz"
-                                className="hidden"
-                            />
+                    {/* Left Column: File Upload */}
+                    <div className="md:col-span-1 space-y-6">
+                        <div className="bg-card rounded-2xl shadow-xl p-6 border border-border sticky top-24">
+                            <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
+                                <MapIcon size={20} className="text-[#C2410C]" />
+                                Arquivo da Obra
+                            </h3>
 
-                            {file ? (
-                                <div className="flex flex-col items-center">
-                                    <CheckCircle className="h-12 w-12 text-[#C2410C] mb-4" />
-                                    <h3 className="text-lg font-medium text-foreground">{file.name}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Pronto para processar</p>
-                                    <button
-                                        className="mt-4 text-sm text-[#C2410C] font-medium hover:underline"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setFile(null);
-                                            setData(null);
-                                        }}
-                                    >
-                                        Trocar arquivo
-                                    </button>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center">
-                                    <Upload className="h-12 w-12 text-[#8a8886] mb-4" />
-                                    <h3 className="text-lg font-medium text-foreground">Upload de arquivo KMZ</h3>
-                                    <p className="text-sm text-muted-foreground mt-1 max-w-sm">
-                                        Exporte seu terreno do Google Earth como KMZ e arraste ou clique aqui.
-                                    </p>
-                                </div>
-                            )}
+                            <div
+                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${file ? 'border-[#C2410C]/50 bg-[#C2410C]/5' : 'border-input hover:border-[#C2410C] hover:bg-[#C2410C]/5'}`}
+                                onClick={() => fileInputRef.current?.click()}
+                            >
+                                <input
+                                    type="file"
+                                    ref={fileInputRef}
+                                    onChange={handleFileChange}
+                                    accept=".kmz"
+                                    className="hidden"
+                                    aria-label="Upload KMZ"
+                                    title="Upload KMZ a partir do Google Earth"
+                                />
+
+                                {file ? (
+                                    <div className="flex flex-col items-center">
+                                        <CheckCircle className="h-8 w-8 text-[#C2410C] mb-2" />
+                                        <h3 className="text-sm font-medium text-foreground break-all">{file.name}</h3>
+                                        <p className="text-xs text-muted-foreground mt-1">Pronto para processar</p>
+                                        <button
+                                            className="mt-3 text-xs text-[#C2410C] font-bold hover:underline bg-[#C2410C]/10 px-2 py-1 rounded"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setFile(null);
+                                                setData(null);
+                                            }}
+                                        >
+                                            Trocar arquivo
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex flex-col items-center">
+                                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
+                                        <p className="text-sm font-medium text-foreground">Upload KMZ</p>
+                                        <p className="text-xs text-muted-foreground mt-1 text-center">
+                                            Exporte do Google Earth
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
 
-                    {/* Options */}
-                    <div className="bg-muted dark:bg-[#222120] px-8 py-6 border-t border-border">
-                        <h3 className="text-sm font-bold text-[#8a8886] uppercase tracking-wider mb-4">Configurações do Documento</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-sm font-medium text-muted-foreground mb-1">Município</label>
-                                <input
-                                    type="text"
-                                    value={city}
-                                    onChange={(e) => setCity(e.target.value)}
-                                    placeholder="Ex: São Paulo"
-                                    className="w-full rounded-md border-input bg-background dark:bg-[#1A1918] text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-muted-foreground mb-1">Estado</label>
-                                <input
-                                    type="text"
-                                    value={state}
-                                    onChange={(e) => setState(e.target.value)}
-                                    placeholder="Ex: SP"
-                                    className="w-full rounded-md border-input bg-background dark:bg-[#1A1918] text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-muted-foreground mb-1">Sistema de Coordenadas</label>
-                                <select disabled className="w-full rounded-md border-input bg-muted text-muted-foreground shadow-sm cursor-not-allowed">
-                                    <option>SIRGAS 2000 / UTM (Automático)</option>
-                                </select>
-                            </div>
-                            <div>
+                    {/* Right Column: Configuration Form */}
+                    <div className="md:col-span-2">
+                        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+                            <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
+                                Configurações do Documento
+                            </h3>
+
+                            <div className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label htmlFor="city" className="block text-sm font-medium text-muted-foreground mb-1">Município</label>
+                                        <input
+                                            id="city"
+                                            type="text"
+                                            value={city}
+                                            onChange={(e) => setCity(e.target.value)}
+                                            placeholder="Ex: São Paulo"
+                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-orange-500/50 outline-none transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label htmlFor="state" className="block text-sm font-medium text-muted-foreground mb-1">Estado</label>
+                                        <input
+                                            id="state"
+                                            type="text"
+                                            value={state}
+                                            onChange={(e) => setState(e.target.value)}
+                                            placeholder="Ex: SP"
+                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-orange-500/50 outline-none transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label htmlFor="coordinateSystem" className="block text-sm font-medium text-muted-foreground mb-1">Sistema de Coordenadas</label>
+                                    <select
+                                        id="coordinateSystem"
+                                        disabled
+                                        className="w-full rounded-xl border-input bg-muted text-muted-foreground shadow-sm cursor-not-allowed py-3 px-4 outline-none opacity-70"
+                                        aria-label="Sistema de Coordenadas"
+                                    >
+                                        <option>SIRGAS 2000 / UTM (Automático)</option>
+                                    </select>
+                                </div>
+
                                 <div>
                                     <SelectionList
                                         label="Sentido do Perímetro"
@@ -249,94 +271,91 @@ export default function MemorialPage() {
                                         ]}
                                     />
                                 </div>
+
+                                <button
+                                    onClick={handleProcess}
+                                    disabled={!file || isLoading}
+                                    className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 mt-4
+                                        ${!file ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' :
+                                            isLoading ? 'bg-[#C2410C]/80 cursor-wait' :
+                                                'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-orange-500/20'}`}
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <RefreshCw className="h-5 w-5 animate-spin" />
+                                            Processando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FileText className="h-5 w-5" />
+                                            Gerar Memorial Descritivo
+                                        </>
+                                    )}
+                                </button>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Action Button */}
-                    <div className="p-8 bg-muted dark:bg-[#222120] border-t border-border flex justify-end">
-                        <button
-                            onClick={handleProcess}
-                            disabled={!file || isLoading}
-                            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-bold text-white shadow-md transition-all
-                                ${!file ? 'bg-gray-600 cursor-not-allowed' :
-                                    isLoading ? 'bg-[#C2410C]/80 cursor-wait' :
-                                        'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-lg active:scale-95'}`}
-                        >
-                            {isLoading ? (
-                                <>
-                                    <RefreshCw className="h-5 w-5 animate-spin" />
-                                    Processando...
-                                </>
-                            ) : (
-                                <>
-                                    <MapIcon className="h-5 w-5" />
-                                    Gerar Memorial Descritivo
-                                </>
-                            )}
-                        </button>
                     </div>
                 </div>
 
                 {/* Results Section */}
                 {data && (
-                    <div className="mt-10 space-y-8 animate-slideUp">
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
                         {/* Memorial Text */}
-                        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+                        <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-heading font-bold text-gray-900 flex items-center gap-2">
+                                <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                                     <FileText className="h-6 w-6 text-[#C2410C]" />
                                     Memorial Descritivo
                                 </h2>
                                 <button
                                     onClick={() => navigator.clipboard.writeText(generateMemorialText())}
-                                    className="text-sm font-medium text-[#C2410C] hover:bg-[#C2410C]/10 px-3 py-1.5 rounded-md transition-colors"
+                                    className="text-sm font-medium text-[#C2410C] hover:bg-[#C2410C]/10 px-3 py-1.5 rounded-lg transition-colors border border-[#C2410C]/20"
                                 >
                                     Copiar Texto
                                 </button>
                             </div>
 
-                            <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 font-mono text-sm leading-relaxed whitespace-pre-wrap text-gray-700 max-h-[400px] overflow-y-auto">
+                            <div className="bg-muted/50 p-6 rounded-xl border border-border font-mono text-sm leading-relaxed whitespace-pre-wrap text-foreground max-h-[400px] overflow-y-auto custom-scrollbar">
                                 {generateMemorialText()}
                             </div>
                         </div>
 
                         {/* Technical Table */}
-                        <div className="bg-white rounded-xl shadow-md border border-gray-200 p-8">
+                        <div className="bg-card rounded-2xl shadow-xl border border-border p-8">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-heading font-bold text-gray-900 flex items-center gap-2">
+                                <h2 className="text-xl font-heading font-bold text-foreground flex items-center gap-2">
                                     <Download className="h-6 w-6 text-[#C2410C]" />
                                     Tabela Técnica
                                 </h2>
                                 <button
                                     onClick={downloadExcel}
-                                    className="flex items-center gap-2 px-4 py-2 bg-[#C2410C] text-white text-sm font-bold rounded-lg hover:bg-[#9A3412] transition-colors"
+                                    className="flex items-center gap-2 px-4 py-2 bg-[#C2410C] text-white text-sm font-bold rounded-lg hover:bg-[#9A3412] transition-colors shadow-md"
                                 >
                                     <Download className="h-4 w-4" />
                                     Baixar Excel (.xlsx)
                                 </button>
                             </div>
 
-                            <div className="overflow-x-auto rounded-lg border border-gray-200">
-                                <table className="min-w-full divide-y divide-gray-200">
-                                    <thead className="bg-gray-50">
+                            <div className="overflow-x-auto rounded-lg border border-border">
+                                <table className="min-w-full divide-y divide-border">
+                                    <thead className="bg-muted">
                                         <tr>
-                                            <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Trecho</th>
-                                            <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Azimute</th>
-                                            <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Distância (m)</th>
-                                            <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">N Inicial</th>
-                                            <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">E Inicial</th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Trecho</th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Azimute</th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">Distância (m)</th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">N Inicial</th>
+                                            <th className="px-6 py-3 text-left text-xs font-bold text-muted-foreground uppercase tracking-wider">E Inicial</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="bg-white divide-y divide-gray-200">
+                                    <tbody className="bg-card divide-y divide-border">
                                         {data.segments.map((seg, i) => (
-                                            <tr key={i} className="hover:bg-gray-50">
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{seg.from}-{seg.to}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{seg.azimuth}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{seg.distance.toFixed(3)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{seg.startN.toFixed(3)}</td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{seg.startE.toFixed(3)}</td>
+                                            <tr key={i} className="hover:bg-muted/50 transition-colors">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">{seg.from}-{seg.to}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{seg.azimuth}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{seg.distance.toFixed(3)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{seg.startN.toFixed(3)}</td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">{seg.startE.toFixed(3)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -345,7 +364,7 @@ export default function MemorialPage() {
                         </div>
 
                         {/* Legal Disclaimer */}
-                        <div className="text-center text-xs text-gray-500 max-w-2xl mx-auto">
+                        <div className="text-center text-xs text-muted-foreground max-w-2xl mx-auto">
                             <p>Documento gerado automaticamente. Para uso oficial, recomenda-se a conferência e assinatura com ART ou RRT por profissional habilitado.</p>
                         </div>
                     </div>

@@ -12,13 +12,13 @@
 
 ## 🔄 BACKUP V1 - EM ANDAMENTO
 
-### obracalc-simple → obracalc-simple-V1
+### ObraPlana-simple → ObraPlana-simple-V1
 
 **Status**: 🔄 Copiando...
 
 **Tamanho**: ~720 MB (inclui node_modules)
 
-**Comando**: `cp -r obracalc-simple obracalc-simple-V1`
+**Comando**: `cp -r ObraPlana-simple ObraPlana-simple-V1`
 
 **Progresso**: Aguardando conclusão...
 
@@ -35,8 +35,8 @@
 ```
 /Users/maicontinelli/.gemini/antigravity/scratch/
 ├── .agent/
-├── obracalc-simple/          ← PROJETO ATIVO
-├── obracalc-simple-V1/        ← BACKUP (copiando...)
+├── ObraPlana-simple/          ← PROJETO ATIVO
+├── ObraPlana-simple-V1/        ← BACKUP (copiando...)
 └── saas-auth-system/
 ```
 
@@ -46,13 +46,13 @@
 
 ### Você terá
 
-1. ✅ **obracalc-simple** - Projeto ativo para desenvolvimento
-2. ✅ **obracalc-simple-V1** - Backup completo da versão 1
+1. ✅ **ObraPlana-simple** - Projeto ativo para desenvolvimento
+2. ✅ **ObraPlana-simple-V1** - Backup completo da versão 1
 
 ### Pode trabalhar em
 
-- `obracalc-simple/` - Fazer alterações aqui
-- `obracalc-simple-V1/` - Backup intocado
+- `ObraPlana-simple/` - Fazer alterações aqui
+- `ObraPlana-simple-V1/` - Backup intocado
 
 ---
 

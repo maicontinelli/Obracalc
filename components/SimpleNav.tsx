@@ -106,13 +106,13 @@ export default function SimpleNav() {
                                     href="/dashboard"
                                     title="Painel"
                                     className={`transition-all p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 ${pathname === '/dashboard'
-                                        ? 'text-[#E89E37] bg-gray-50 dark:bg-gray-800/50'
+                                        ? 'text-orange-600 bg-gray-50 dark:bg-gray-800/50'
                                         : 'text-gray-500 dark:text-gray-400'
-                                        } hover:text-[#E89E37] group`}
+                                        } hover:text-orange-600 group`}
                                 >
                                     <User
                                         size={20}
-                                        className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(232,158,55,0.6)] ${pathname === '/dashboard' ? 'fill-[#E89E37]' : 'fill-transparent'
+                                        className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(234,88,12,0.6)] ${pathname === '/dashboard' ? 'fill-orange-600' : 'fill-transparent'
                                             }`}
                                     />
                                     <span className="sr-only">Painel</span>

@@ -117,7 +117,7 @@ export default function NovoDiagnostico() {
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#FF6600]/5 via-background to-[#FF6600]/5 border-b border-white/5 pt-16 pb-12 mb-10">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#FF6600]/5 via-background to-[#FF6600]/5 border-b border-white/5 pt-16 pb-12 mb-40">
                 <div className="absolute inset-0 overflow-hidden">
                     <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#FF6600]/10 rounded-full blur-3xl"></div>
                     <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#FF6600]/10 rounded-full blur-3xl"></div>
@@ -160,6 +160,8 @@ export default function NovoDiagnostico() {
                                         <button
                                             onClick={() => setImage(null)}
                                             className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white p-2 rounded-full transition-colors backdrop-blur-sm"
+                                            aria-label="Remover imagem"
+                                            title="Remover imagem"
                                         >
                                             <Upload size={16} className="rotate-45" />
                                         </button>

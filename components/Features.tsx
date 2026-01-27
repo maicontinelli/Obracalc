@@ -58,10 +58,10 @@ export function Features() {
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-2xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                        Fluxo Completo de Documentação com IA
+                        Fluxo completo de documentos técnicos, do orçamento ao contrato
                     </h2>
                     <p className="text-gray-600 dark:text-gray-400 text-lg">
-                        Do orçamento ao relatório técnico — ferramentas integradas e prontas para usar.
+                        Gere orçamentos, relatórios e documentos claros em um processo contínuo e padronizado.
                     </p>
                 </div>
 

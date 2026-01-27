@@ -52,14 +52,13 @@ interface CommandSearchProps {
 // ... imports
 // Add these at the top level or inside the component if you prefer, but outside is better for constants
 const PROMPT_PLACEHOLDERS = [
-    "Verifique se faltou algum item antes de fechar.",
-    "Incluiu a demolição ou preparação do local?",
-    "Adicionou regularização ou nivelamento?",
-    "Faltou algum acabamento?",
-    "Incluiu pintura ou retoques finais?",
-    "Considerou limpeza pós-obra?",
-    "Vai precisar de retirada de entulho?",
-    "Usuários Pró sempre ajustam o BDI"
+    "Podemos continuar a partir daqui . . .",
+    "Veja se não faltou nada antes de finalizar",
+    "Incluiu a demolição local?",
+    "Considerou a retirada de entulho?",
+    "Adicionou a regularização do terreno?",
+    "Haverá pintura ou limpeza final?",
+    "Quem será o engenheiro responsável pela obra?"
 ];
 
 export default function CommandSearch({ items, onSelect, onAddCustom }: CommandSearchProps) {
@@ -206,12 +205,12 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                     <div className="relative flex items-center w-full rounded-full transition-all duration-300
                             bg-white dark:bg-[#1A1A1A] 
                             shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border border-blue-500/30
+                            border border-orange-500/50
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-                            focus-within:ring-4 focus-within:ring-blue-500/10 focus-within:border-blue-500/50"
+                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500"
                     >
                         <div className="pl-6 text-gray-400 dark:text-gray-500">
-                            <Sparkles size={20} className="animate-pulse text-blue-500" />
+                            <Sparkles size={20} className="animate-pulse text-orange-500" />
                         </div>
                         <input
                             type="text"
@@ -228,7 +227,7 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                         <button
                             type="submit"
                             disabled={isAiLoading || !query.trim()}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-blue-500 dark:hover:text-blue-400 hover:bg-gray-100 dark:hover:bg-[#333130] rounded-full transition-all duration-300"
+                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-[#333130] rounded-full transition-all duration-300"
                         >
                             {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}
                         </button>

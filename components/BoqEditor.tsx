@@ -32,6 +32,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [deadline, setDeadline] = useState('');
     const [providerPhone, setProviderPhone] = useState('');
     const [clientPhone, setClientPhone] = useState('');
+    const [clientDocument, setClientDocument] = useState(''); // New: CPF/CNPJ
+    const [clientAddress, setClientAddress] = useState('');   // New: Endereço
+    const [includeContract, setIncludeContract] = useState(true); // New: Toggle (Default Active)
     const [workCity, setWorkCity] = useState('');
     const [workState, setWorkState] = useState('');
     const [aiRequests, setAiRequests] = useState<any[]>([]);
@@ -167,6 +170,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     setIncludeMaterials(parsed.includeMaterials !== undefined ? parsed.includeMaterials : true);
                     setProviderPhone(parsed.providerPhone || '');
                     setClientPhone(parsed.clientPhone || '');
+                    setClientDocument(parsed.clientDocument || '');
+                    setClientAddress(parsed.clientAddress || '');
+                    setIncludeContract(parsed.includeContract !== undefined ? parsed.includeContract : true);
                     setWorkCity(parsed.workCity || '');
                     setWorkState(parsed.workState || '');
                     setAiRequests(parsed.aiRequests || []);
@@ -429,6 +435,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             workState,
             updatedAt: new Date().toISOString(),
             includeMaterials,
+            includeContract,
+            clientDocument,
+            clientAddress,
             aiRequests
         };
 
@@ -484,6 +493,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             workCity,
             workState,
             includeMaterials,
+            includeContract,
+            clientDocument,
+            clientAddress,
             updatedAt: new Date().toISOString(),
             aiRequests
         };
@@ -953,11 +965,11 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                             className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${!isExpanded ? '-rotate-90' : ''}`}
                                                         />
                                                         <div className="flex items-baseline gap-2">
-                                                            <h3 className="text-xs font-bold text-foreground/80 dark:text-[#F5E6D3] uppercase tracking-wide">
+                                                            <h3 className={`text-xs font-bold uppercase tracking-wide transition-colors ${categoryItems.filter(i => (i.quantity || 0) > 0).length > 0 ? 'text-foreground dark:text-[#F5E6D3]' : 'text-muted-foreground/60 dark:text-gray-500 font-medium'}`}>
                                                                 {category}
                                                             </h3>
                                                             <span className="text-[10px] text-muted-foreground font-normal">
-                                                                ({categoryItems.length})
+                                                                ({categoryItems.filter(i => (i.quantity || 0) > 0).length})
                                                             </span>
                                                         </div>
                                                     </div>
@@ -1166,6 +1178,19 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                         <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeMaterials ? 'left-6' : 'left-1'}`} />
                                     </button>
                                 </div>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-foreground">Gerar Contrato de Serviço</span>
+                                        <span className="text-[10px] text-muted-foreground">Anexa um modelo jurídico padrão ao final.</span>
+                                    </div>
+                                    <button
+                                        onClick={() => setIncludeContract(!includeContract)}
+                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeContract ? 'bg-blue-600' : 'bg-[#4A4A4A]'}`}
+                                    >
+                                        <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeContract ? 'left-6' : 'left-1'}`} />
+                                    </button>
+                                </div>
                             </div>
 
 
@@ -1220,6 +1245,24 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                             placeholder="(00) 00000 - 0000"
                                             maxLength={15}
                                         />
+                                        {includeContract && (
+                                            <>
+                                                <input
+                                                    type="text"
+                                                    value={clientDocument}
+                                                    onChange={(e) => setClientDocument(e.target.value)}
+                                                    className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
+                                                    placeholder="CPF ou CNPJ do Cliente"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={clientAddress}
+                                                    onChange={(e) => setClientAddress(e.target.value)}
+                                                    className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
+                                                    placeholder="Endereço Completo do Cliente"
+                                                />
+                                            </>
+                                        )}
                                     </div>
                                 </div>
 
@@ -1264,6 +1307,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     </div>
                                 </div>
                             </div>
+
+
 
 
 

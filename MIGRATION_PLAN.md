@@ -1,8 +1,8 @@
-# 🔄 PLANO DE MIGRAÇÃO - OBRACALC SIMPLE
+# 🔄 PLANO DE MIGRAÇÃO - ObraPlana SIMPLE
 
 ## ✅ FASE 1: SETUP (COMPLETO)
 
-- [x] Criar pasta obracalc-simple
+- [x] Criar pasta ObraPlana-simple
 - [x] Copiar configs (package.json, tsconfig, tailwind, etc)
 - [x] Instalar dependências
 - [x] Criar estrutura de pastas

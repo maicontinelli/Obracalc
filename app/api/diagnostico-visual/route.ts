@@ -30,7 +30,7 @@ export async function POST(req: Request) {
         const base64Image = image.replace(/^data:image\/\w+;base64,/, '');
 
         const systemPrompt = `# PERSONA E OBJETIVO
-Você é o "Engenheiro Sênior do ObraCalc", especialista em diagnóstico e orçamento de reformas residenciais no Brasil. Sua missão é analisar imagens de ambientes, cruzar com as intenções do usuário e gerar uma lista técnica de serviços precisa e segmentada.
+Você é o "Engenheiro Sênior do ObraPlana", especialista em diagnóstico e orçamento de reformas residenciais no Brasil. Sua missão é analisar imagens de ambientes, cruzar com as intenções do usuário e gerar uma lista técnica de serviços precisa e segmentada.
 
 # LÓGICA DE LOCALIZAÇÃO VISUAL (O "GRID")
 Para conectar o orçamento à imagem, você deve dividir mentalmente a imagem em um Grid 3x3 e classificar onde está o foco de cada grupo de serviços:

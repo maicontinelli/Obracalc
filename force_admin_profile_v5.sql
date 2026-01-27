@@ -25,7 +25,7 @@ VALUES (
         target_user_id,
         'maicontinelli@gmail.com',
         'Maicon Tinelli (Admin)',
-        'ObraCalc',
+        'ObraPlana',
         '(00) 00000-0000',
         'São Paulo',
         'SP',

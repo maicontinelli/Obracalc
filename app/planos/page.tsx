@@ -8,10 +8,11 @@ import { createClient } from '@/lib/supabase/client';
 
 export default function PlansPage() {
     const [loading, setLoading] = useState<string | null>(null);
+    const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
     const supabase = createClient();
 
-    const handleSubscribe = async (priceId: string) => {
-        setLoading(priceId);
+    const handleSubscribe = async (planName: string) => {
+        setLoading(planName);
         try {
             const { data: { user } } = await supabase.auth.getUser();
 
@@ -23,13 +24,28 @@ export default function PlansPage() {
                 return;
             }
 
-            const response = await fetch('/api/stripe/checkout', {
+            // Check if user has document_id (CPF/CNPJ)
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('document_id')
+                .eq('id', user.id)
+                .single();
+
+            if (!profile?.document_id) {
+                if (typeof window !== 'undefined') {
+                    alert('Para gerar a cobrança, precisamos que você informe seu CPF ou CNPJ. Vamos te redirecionar para preencher esse dado.');
+                    window.location.href = `/dashboard?openProfile=true`;
+                }
+                return;
+            }
+
+            const response = await fetch('/api/abacatepay/checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    priceId,
+                    plan: planName,
                     userId: user.id
                 }),
             });
@@ -40,11 +56,11 @@ export default function PlansPage() {
                 window.location.href = data.url;
             } else {
                 console.error('Erro ao criar sessão de checkout:', data.error);
-                alert(`Erro ao iniciar pagamento: ${data.error}`);
+                alert(`Erro ao iniciar pagamento: ${data.error || 'Tente novamente.'}`);
             }
-        } catch (error) {
-            console.error('Erro:', error);
-            alert('Erro de conexão. Verifique sua internet.');
+        } catch (error: any) {
+            console.error('Erro detalhado:', error);
+            alert(`Erro técnico: ${error.message || JSON.stringify(error)}`);
         } finally {
             setLoading(null);
         }
@@ -53,65 +69,69 @@ export default function PlansPage() {
     const plans = [
         {
             name: 'Grátis',
-            price: 'R$ 0',
-            period: '/mês',
-            description: 'Crie orçamentos completos gratuitamente e explore o poder do ObraPlana.',
+            priceDisplay: 'R$ 0',
+            period: '/sempre',
+            subtext: null,
+            description: 'Para conhecer o ObraPlana e gerar orçamentos simples.',
             features: [
-                'Crie até 5 orçamentos completos',
-                'Exporte em PDF e HTML',
-                'Acesso liberado ao Painel de Controle',
-                'Processamento de itens e custos por IA',
+                'Criação de orçamentos técnicos com IA',
+                'Até 5 orçamentos ativos',
+                'Visualização no dashboard',
+                'Edição básica de itens',
+                'Histórico limitado',
             ],
             limitations: [
+                'Exportação limitada (PDF / Word / Excel)',
+                'Marca d’água ObraPlana',
                 'Limite de itens por orçamento',
-                'Marca d’água do ObraPlana',
-                'Sem acesso a leads de clientes',
-                'Sem a função de comissões',
             ],
             cta: 'Começar agora',
-            ctaCaption: 'Para criar orçamentos',
+            ctaCaption: 'Para conhecer a ferramenta',
             href: '/login',
             priceId: null,
             popular: false,
         },
         {
             name: 'Profissional',
-            price: 'R$ 29,90',
-            period: '/mês',
-            description: 'Crie relatórios técnicos e ainda ganhe comissões ao indicar orçamentos reais',
+            priceDisplay: billingCycle === 'monthly' ? 'R$ 9,17' : 'R$ 110,00',
+            period: billingCycle === 'monthly' ? '/mês' : '/ano',
+            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 110,00)' : 'Equivalente a R$ 9,17/mês',
+            description: 'Para profissionais e pequenas empresas que fazem orçamentos com frequência.',
             features: [
-                'Acesso exclusivo ao sistema de indicação',
-                'Faça orçamentos ilimitados, sem restrição',
-                'Personalize os relatórios com sua marca',
-                'Tenha histórico completo de obras e clientes',
-                'Ganhe comissões ao conectar clientes',
-                'Suporte prioritário via WhatsApp',
+                'Até 60 orçamentos por ano',
+                'Orçamentos completos e detalhados',
+                'Exportação em PDF, Word e Excel',
+                'Histórico completo de clientes e obras',
+                'Edição e reaproveitamento de orçamentos',
+                'Relatórios sem marca d’água',
+                'Suporte padrão',
+                'Flexibilidade inteligente para orçamentos extras e picos de demanda',
             ],
-            limitations: [
-                'Sem contato direto com Leads',
-            ],
+            limitations: [],
             cta: 'Evoluir para Profissional',
-            ctaCaption: 'Para ganhar com indicações',
+            ctaCaption: 'E ganhar tempo orçando',
             href: null,
             priceId: 'price_1Sl8fkGZfnvqYwvYTdmFAUM4',
             popular: true,
         },
         {
             name: 'Empresarial',
-            price: 'R$ 149,90',
-            period: '/mês',
-            description: 'Receba clientes prontos para contratar e feche projetos, obras e serviços.',
+            priceDisplay: billingCycle === 'monthly' ? 'R$ 70,00' : 'R$ 840,00',
+            period: billingCycle === 'monthly' ? '/mês' : '/ano',
+            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 840,00)' : 'Equivalente a R$ 70,00/mês',
+            description: 'Para empresas que tratam orçamento como parte crítica do negócio.',
             features: [
-                'Todos os benefícios do Plano Profissional',
-                'Ideal para fechar projetos, obras e serviços de execução',
-                'Receba leads prontos para fechar proposta comercial',
-                'Tenha contato direto com clientes reais',
-                'Destaque máximo no buscador de profissionais',
-                'Receba demandas criadas por usuários de toda a plataforma',
-                'Conta verificada com selo de autoridade',
+                'Orçamentos ilimitados',
+                'Exportações ilimitadas',
+                'Histórico completo e permanente',
+                'Padronização de linguagem e estrutura',
+                'Documentos complementares',
+                'Relatórios profissionais prontos para envio',
+                'Suporte prioritário',
+                'Multiuso interno (até 3 usuários)',
             ],
             limitations: [],
-            cta: 'Quero receber clientes',
+            cta: 'Participar como empresa',
             ctaCaption: 'Para fechar negócios',
             href: null,
             priceId: 'price_1Sl8gZGZfnvqYwvYSqt716Vm',
@@ -131,7 +151,7 @@ export default function PlansPage() {
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center max-w-7xl mx-auto">
                             <h1 className="text-xl md:text-3xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-24">
-                                Comece grátis – evolua para converter <br /> orçamentos em ganhos reais
+                                A ferramenta definitiva para orçamentos técnicos, <br /> padronizados e prontos para fechar contrato.
                             </h1>
                             <p className="text-sm md:text-base font-manrope font-semibold text-foreground mb-0">
                                 Use no seu ritmo. Evolua quando fizer sentido
@@ -139,6 +159,27 @@ export default function PlansPage() {
                         </div>
                     </div>
                 </section>
+
+                <div className="container mx-auto px-4 mb-12">
+                    <div className="flex justify-center items-center gap-4">
+                        <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
+                            Mensal
+                        </span>
+                        <button
+                            onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'yearly' : 'monthly')}
+                            className={`w-14 h-7 rounded-full p-1 transition-colors duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-[#74D2E7] ${billingCycle === 'yearly' ? 'bg-[#74D2E7]' : 'bg-gray-300 dark:bg-gray-600'}`}
+                            aria-label="Alternar entre cobrança mensal e anual"
+                        >
+                            <div
+                                className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 ease-in-out ${billingCycle === 'yearly' ? 'translate-x-7' : 'translate-x-0'}`}
+                            />
+                        </button>
+                        <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
+                            Anual
+                        </span>
+                    </div>
+                    {/* Badge for Yearly Savings if needed in future */}
+                </div>
 
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -152,31 +193,22 @@ export default function PlansPage() {
                             >
                                 {plan.popular && (
                                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                        <span className="absolute top-[10%] left-[10%] inline-flex h-[80%] w-[80%] rounded-full bg-[#FF6600] opacity-75 animate-ping"></span>
                                         <div className="relative px-4 py-1 bg-[#FF6600] text-white text-sm font-medium rounded-full">
                                             Mais Popular
                                         </div>
                                     </div>
                                 )}
 
-                                <div className="mb-8">
+                                <div className="mb-4">
                                     <h3 className="text-2xl font-bold text-foreground mb-2">
                                         {plan.name}
                                     </h3>
-                                    <div className="flex items-baseline gap-1 mb-4">
-                                        <span className="text-4xl font-bold text-foreground">
-                                            {plan.price}
-                                        </span>
-                                        <span className="text-muted-foreground">
-                                            {plan.period}
-                                        </span>
-                                    </div>
-                                    <p className="text-muted-foreground">
+                                    <p className="text-muted-foreground min-h-[48px]">
                                         {plan.description}
                                     </p>
                                 </div>
 
-                                <div className="flex-grow mb-8">
+                                <div className="flex-grow mb-8 border-t border-border/50 pt-6">
                                     <ul className="space-y-4">
                                         {plan.features.map((feature) => (
                                             <li key={feature} className="flex items-start gap-3">
@@ -184,7 +216,7 @@ export default function PlansPage() {
                                                     ? 'text-[#74D2E7] stroke-[3]'
                                                     : 'text-blue-500'
                                                     }`} />
-                                                <span className={`text-foreground text-sm ${feature === 'Acesso exclusivo ao sistema de indicação' ? 'font-bold' : ''}`}>
+                                                <span className={`text-foreground text-sm ${(feature === 'Acesso exclusivo ao sistema de indicação' || feature === 'Orçamentos ilimitados') ? 'font-bold' : ''}`}>
                                                     {feature}
                                                 </span>
                                             </li>
@@ -200,6 +232,22 @@ export default function PlansPage() {
                                     </ul>
                                 </div>
 
+                                <div className="mb-6 flex flex-col items-center justify-center min-h-[5rem]">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-bold text-foreground">
+                                            {plan.priceDisplay}
+                                        </span>
+                                        <span className="text-muted-foreground">
+                                            {plan.period}
+                                        </span>
+                                    </div>
+                                    {plan.subtext && (
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                            {plan.subtext}
+                                        </p>
+                                    )}
+                                </div>
+
                                 {plan.href ? (
                                     <div className="w-full">
                                         <Link
@@ -208,11 +256,15 @@ export default function PlansPage() {
                                             target={plan.href.startsWith('http') ? '_blank' : '_self'}
                                         >
                                             <Button
-                                                className={`w-full h-12 text-base font-bold transition-all duration-300 ${plan.popular
+                                                className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full ${plan.popular
                                                     ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border-none'
-                                                    : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                                                    : plan.name === 'Grátis'
+                                                        ? 'bg-[#74D2E7]/10 dark:bg-[#74D2E7]/20 border-2 border-[#74D2E7] text-foreground hover:bg-[#74D2E7]/20 dark:hover:bg-[#74D2E7]/30'
+                                                        : plan.name === 'Empresarial'
+                                                            ? 'bg-[#1e293b] text-white border border-[#1e293b] hover:bg-[#0f172a] hover:border-[#0f172a]'
+                                                            : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                                                     }`}
-                                                variant={plan.popular ? 'default' : 'outline'}
+                                                variant={plan.popular || plan.name === 'Empresarial' ? 'default' : (plan.name === 'Grátis' ? 'ghost' : 'outline')}
                                             >
                                                 {plan.cta}
                                             </Button>
@@ -224,15 +276,17 @@ export default function PlansPage() {
                                 ) : (
                                     <div className="w-full">
                                         <Button
-                                            className={`w-full h-12 text-base font-bold transition-all duration-300 ${plan.popular
-                                                ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border-none'
-                                                : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
+                                            className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full shadow-md hover:shadow-xl hover:-translate-y-0.5 ${plan.popular
+                                                ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border border-transparent shadow-[#FF6600]/20'
+                                                : plan.name === 'Empresarial'
+                                                    ? 'bg-[#1e293b] text-white border border-gray-700 hover:bg-[#0f172a] shadow-gray-900/20'
+                                                    : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
                                                 }`}
-                                            variant={plan.popular ? 'default' : 'outline'}
-                                            onClick={() => plan.priceId && handleSubscribe(plan.priceId)}
-                                            disabled={loading === plan.priceId}
+                                            variant={plan.popular || plan.name === 'Empresarial' ? 'default' : 'outline'}
+                                            onClick={() => handleSubscribe(plan.name)}
+                                            disabled={loading === plan.name}
                                         >
-                                            {loading === plan.priceId ? 'Processando...' : plan.cta}
+                                            {loading === plan.name ? 'Processando...' : plan.cta}
                                         </Button>
                                         <p className="mt-2 text-xs text-center text-muted-foreground font-medium">
                                             {plan.ctaCaption}

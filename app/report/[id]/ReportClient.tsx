@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { FileText, Printer, ArrowLeft, User as UserIcon, Phone, Building2, Calendar, Sparkles, Cloud } from 'lucide-react';
+import { FileText, Printer, ArrowLeft, User as UserIcon, Phone, Building2, Calendar, Sparkles, Cloud, FileSpreadsheet } from 'lucide-react';
 import { getDddInfo } from '@/lib/ddd-data';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
@@ -14,6 +14,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState<User | null>(null);
+    const [showToast, setShowToast] = useState(false);
 
     const supabase = createClient();
     const { profile, isLoading: isProfileLoading } = useProfile();
@@ -84,11 +85,99 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
         return includeMaterials ? baseP : safeLabor;
     };
 
+    const checkPlan = () => {
+        if (!profile || profile.tier === 'free') {
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000); // Auto hide after 3s
+            return false;
+        }
+        return true;
+    };
+
     const handlePrint = () => {
         window.print();
     };
 
+    const handleExportExcel = async () => {
+        if (!checkPlan()) return;
+        if (!data) return;
+
+        const XLSX = await import('xlsx');
+
+        // Prepare Data for Budget Sheet
+        const includedItems = data.items?.filter((i: any) => i.included) || [];
+        const excelRows = includedItems.map((item: any) => ({
+            'Categoria': item.category,
+            'Item': item.name,
+            'Tipo': item.type === 'service' ? 'Serviço' : item.type === 'material' ? 'Material' : 'Composição',
+            'Unidade': item.unit,
+            'Quantidade': Number(item.quantity),
+            'Preço Unitário': getFinalPrice(item),
+            'Total': getFinalPrice(item) * Number(item.quantity)
+        }));
+
+        // Create Workbook
+        const wb = XLSX.utils.book_new();
+        const ws = XLSX.utils.json_to_sheet(excelRows);
+
+        // Styling widths
+        ws['!cols'] = [
+            { wch: 20 }, // Category
+            { wch: 50 }, // Name
+            { wch: 15 }, // Type
+            { wch: 10 }, // Unit
+            { wch: 10 }, // Qty
+            { wch: 15 }, // Price
+            { wch: 15 }  // Total
+        ];
+
+        XLSX.utils.book_append_sheet(wb, ws, "Orçamento");
+
+        // Write File
+        XLSX.writeFile(wb, `Orcamento_${data.clientName || 'Cliente'}.xlsx`);
+    };
+
+    const handleExportWord = () => {
+        if (!checkPlan()) return;
+        if (!data || !data.includeContract) return;
+
+        const contractContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>Contrato</title></head>
+            <body>
+                <h1>Contrato de Prestação de Serviços</h1>
+                <p><strong>Contratante:</strong> ${data.clientName || '__________________'}</p>
+                <p><strong>Contratado:</strong> ${displayProviderName}</p>
+                <hr/>
+                <p>Este documento contém o modelo de contrato padrão gerado via ObraPlana.</p>
+                ${/* Reuse the contract text logic roughly */ ''}
+                <h3>1. Objeto</h3>
+                <p>Execução de serviços de ${data.projectType || 'Engenharia'}.</p>
+                <h3>2. Valor</h3>
+                <p>Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+            (data.items?.filter((i: any) => i.included).reduce((a: number, b: any) => a + (getFinalPrice(b) * b.quantity), 0) * (1 + (data.bdi || 20) / 100))
+        )}</p>
+                <br/>
+                <p><em>(Conteúdo completo do contrato disponível na versão PDF/HTML)</em></p>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob(['\ufeff', contractContent], {
+            type: 'application/msword'
+        });
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Contrato_${data.clientName || 'Cliente'}.doc`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const handleExportHTML = () => {
+        if (!checkPlan()) return;
         if (!data) return;
 
         // Calculate values for export
@@ -114,6 +203,8 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
         // Get DDD info
         const providerDddInfo = data.providerPhone ? getDddInfo(data.providerPhone) : null;
         const clientDddInfo = data.clientPhone ? getDddInfo(data.clientPhone) : null;
+
+        // Generate items HTML
 
         // Generate items HTML
         const itemsHTML = categories.map(category => {
@@ -177,6 +268,123 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 </div>
             `;
         }).join('');
+
+        // Contract HTML Generation for Export
+        const contractHTML = data.includeContract ? `
+            <div class="contract-page" style="page-break-before: always; padding: 40px; margin-top: 0; background: white;">
+                <div style="text-align: center; margin-bottom: 40px;">
+                    <h1 style="font-size: 24px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px;">Contrato de Prestação de Serviços</h1>
+                    <p style="font-size: 14px; color: #6b7280;">Instrumento Particular de Contratação de Obras e Serviços</p>
+                </div>
+
+                <div style="font-size: 14px; line-height: 1.6; text-align: justify; color: #374151;">
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">1. Identificação das Partes</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f9fafb; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                            <div>
+                                <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Contratante (Cliente)</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">${data.clientName || '__________________________________'}</div>
+                                <div style="font-size: 12px; color: #4b5563;">
+                                    CPF/CNPJ: ${data.clientDocument || '___________________________'}<br/>
+                                    Endereço: ${data.clientAddress || '____________________________________________________'}
+                                </div>
+                            </div>
+                            <div>
+                                <div style="font-size: 10px; font-weight: bold; color: #9ca3af; text-transform: uppercase; margin-bottom: 4px;">Contratado (Prestador)</div>
+                                <div style="font-weight: 600; margin-bottom: 4px;">${displayProviderName}</div>
+                                <div style="font-size: 12px; color: #4b5563;">
+                                    CPF/CNPJ: ${profile?.document_id || '___________________________'}<br/>
+                                    Endereço: ${profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">2. Objeto do Contrato</h3>
+                        <p>O presente contrato tem por objeto a execução dos serviços de <strong>${data.projectType || 'Engenharia/Reforma'}</strong>, conforme detalhado no Orçamento nº <strong>${estimateId?.slice(0, 8).toUpperCase()}</strong>, anexo a este instrumento.</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">3. Escopo dos Serviços</h3>
+                        <p>Os serviços serão executados estritamente conforme a descrição, quantitativos e especificações técnicas constantes no orçamento anexo. Qualquer serviço não listado no referido documento será considerado <strong>adicional</strong>, devendo ser objeto de nova negociação e orçamento complementar.</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">4. Prazo de Execução</h3>
+                        <p>O prazo estimado para início dos serviços é <strong>${data.deadline || 'a combinar'}</strong>, contados a partir da assinatura deste contrato e do pagamento da primeira parcela (se aplicável).<br/><span style="font-size: 12px; color: #6b7280; font-style: italic;">Parágrafo único: O prazo poderá ser prorrogado em casos de força maior, chuvas intensas que impeçam trabalhos externos, ou atraso na entrega de materiais fornecidos pelo CONTRATANTE.</span></p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">5. Valor e Forma de Pagamento</h3>
+                        <p>Pela execução dos serviços, o CONTRATANTE pagará ao CONTRATADO o valor total de <strong>${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}</strong>.</p>
+                        <div style="margin-top: 8px; font-size: 12px; color: #4b5563; background: #f9fafb; padding: 12px; border: 1px dashed #d1d5db; border-radius: 4px;">
+                            <strong>Condições de Pagamento:</strong><br/><br/>
+                            (   ) À vista com desconto<br/>
+                            (   ) Entrada de R$ ___________ + ___ parcelas de R$ ___________<br/>
+                            (   ) Conforme medição quinzenal/mensal<br/><br/>
+                            <strong>Dados para Pagamento:</strong><br/>
+                            ${profile?.pix_key ? `PIX: ${profile.pix_key}<br/>` : ''}
+                            ${profile?.bank_account ? `Banco: ${profile.bank_name || '___'} | Ag: ${profile.bank_agency || '___'} | Cc: ${profile.bank_account || '___'}` : (!profile?.pix_key ? 'Banco: _________________ | Ag: ______ | Cc: ______________' : '')}
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">6. Obrigações do Contratado</h3>
+                            <ul style="padding-left: 20px; margin: 0; font-size: 12px;">
+                                <li>Executar os serviços com zelo e técnica adequada.</li>
+                                <li>Utilizar profissionais qualificados e equipamentos de segurança.</li>
+                                <li>Manter o local da obra limpo e organizado.</li>
+                                <li>Respeitar as normas de vizinhança.</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">7. Obrigações do Contratante</h3>
+                            <ul style="padding-left: 20px; margin: 0; font-size: 12px;">
+                                <li>Garantir livre acesso da equipe ao local.</li>
+                                <li>Fornecer água, energia e local para armazenamento.</li>
+                                <li>Efetuar os pagamentos nos prazos combinados.</li>
+                                <li>Fornecer materiais de sua responsabilidade a tempo.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">8. Alterações e Serviços Extras</h3>
+                        <p>Solicitações de alterações ou serviços extras deverão ser formalizadas. O CONTRATADO apresentará os custos adicionais, que deverão ser aprovados pelo CONTRATANTE antes da execução.</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">9. Rescisão</h3>
+                        <p>O contrato poderá ser rescindido mediante aviso prévio de 7 dias. Em caso de rescisão, será realizado um levantamento dos serviços executados para acerto financeiro proporcional ("medição final").</p>
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <h3 style="font-size: 12px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; color: #111827;">10. Foro</h3>
+                        <p>Fica eleito o foro da comarca de <strong>${profile?.city || data.workCity || '____________________'}</strong> para dirimir quaisquer dúvidas oriundas deste contrato.</p>
+                    </div>
+
+                    <div style="margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb; text-align: center;">
+                        <p style="margin-bottom: 40px;">${profile?.city || data.workCity || 'Cidade'}, ${new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}.</p>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
+                            <div>
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto 8px auto;"></div>
+                                <div style="font-weight: bold; font-size: 14px;">${displayProviderName}</div>
+                                <div style="font-size: 12px; color: #6b7280;">CONTRATADO</div>
+                            </div>
+                            <div>
+                                <div style="border-top: 1px solid #000; width: 80%; margin: 0 auto 8px auto;"></div>
+                                <div style="font-weight: bold; font-size: 14px;">${data.clientName || 'Cliente'}</div>
+                                <div style="font-size: 12px; color: #6b7280;">CONTRATANTE</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        ` : '';
 
         const htmlContent = `
 <!DOCTYPE html>
@@ -533,6 +741,8 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 </div>
             </div>
         </div>
+        
+        ${contractHTML}
     </div>
     ${(!profile || profile.tier === 'free') ? '<div class="watermark">Gerado gratuitamente por ObraPlana</div>' : ''}
 </body>
@@ -603,6 +813,172 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     });
 
     const categories = Object.keys(groupedItems);
+
+    // Helpers for Contract Dates
+    const today = new Date();
+    const formattedDate = today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    // CONTRACT JSX (Reused logic for cleaner render)
+    const ContractSection = () => data.includeContract ? (
+        <div className="contract-page max-w-none mx-auto p-8 mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 print:shadow-none print:border-none print:m-0 print:p-0">
+            <style jsx>{`
+                @media print {
+                    .contract-page { 
+                        page-break-before: always; 
+                        margin-top: 0 !important;
+                        padding-top: 40px !important;
+                    }
+                }
+            `}</style>
+
+            <div className="text-center mb-10">
+                <h1 className="text-2xl font-bold uppercase text-gray-900 dark:text-gray-100">Contrato de Prestação de Serviços</h1>
+                <p className="text-sm text-gray-500 mt-2">Instrumento Particular de Contratação de Obras e Serviços</p>
+            </div>
+
+            <div className="space-y-8 text-sm text-gray-800 dark:text-gray-200 leading-relaxed text-justify">
+
+                {/* 1. Identification */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">1. Identificação das Partes</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                        <div>
+                            <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Contratante (Cliente)</span>
+                            <div className="font-semibold">{data.clientName || '__________________________________'}</div>
+                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                CPF/CNPJ: {data.clientDocument || '___________________________'}<br />
+                                Endereço: {data.clientAddress || '____________________________________________________'}
+                            </div>
+                        </div>
+                        <div>
+                            <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Contratado (Prestador)</span>
+                            <div className="font-semibold">{displayProviderName}</div>
+                            <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                                CPF/CNPJ: {profile?.document_id || '___________________________'}<br />
+                                Endereço: {profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________'}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* 2. Object */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">2. Objeto do Contrato</h3>
+                    <p>
+                        O presente contrato tem por objeto a execução dos serviços de <strong>{data.projectType || 'Engenharia/Reforma'}</strong>, conforme detalhado no Orçamento nº <strong>{estimateId?.slice(0, 8).toUpperCase()}</strong>, anexo a este instrumento.
+                    </p>
+                </section>
+
+                {/* 3. Scope */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">3. Escopo dos Serviços</h3>
+                    <p>
+                        Os serviços serão executados estritamente conforme a descrição, quantitativos e especificações técnicas constantes no orçamento anexo. Qualquer serviço não listado no referido documento será considerado <strong>adicional</strong>, devendo ser objeto de nova negociação e orçamento complementar.
+                    </p>
+                </section>
+
+                {/* 4. Prazo */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">4. Prazo de Execução</h3>
+                    <p>
+                        O prazo estimado para início dos serviços é <strong>{data.deadline || 'a combinar'}</strong>, contados a partir da assinatura deste contrato e do pagamento da primeira parcela (se aplicável).
+                        <br />
+                        <span className="text-xs text-gray-500 italic">Parágrafo único: O prazo poderá ser prorrogado em casos de força maior, chuvas intensas que impeçam trabalhos externos, ou atraso na entrega de materiais fornecidos pelo CONTRATANTE.</span>
+                    </p>
+                </section>
+
+                {/* 5. Valor e Pagamento */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">5. Valor e Forma de Pagamento</h3>
+                    <p>
+                        Pela execução dos serviços, o CONTRATANTE pagará ao CONTRATADO o valor total de <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}</strong>.
+                    </p>
+                    <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded border border-dashed border-gray-300 dark:border-gray-700">
+                        <strong>Condições de Pagamento:</strong><br /><br />
+                        (   ) À vista com desconto<br />
+                        (   ) Entrada de R$ ___________ + ___ parcelas de R$ ___________<br />
+                        (   ) Conforme medição quinzenal/mensal<br />
+                        <br />
+                        <strong>Dados para Pagamento:</strong><br />
+                        {profile?.pix_key && (
+                            <div className="mb-1">PIX: {profile.pix_key}</div>
+                        )}
+                        {profile?.bank_account ? (
+                            <div>Banco: {profile.bank_name} | Ag: {profile.bank_agency} | Cc: {profile.bank_account}</div>
+                        ) : !profile?.pix_key && (
+                            <div>Banco: _________________ | Ag: ______ | Cc: ______________</div>
+                        )}
+                    </div>
+                </section>
+
+                {/* 6. Obrigações */}
+                <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">6. Obrigações do Contratado</h3>
+                        <ul className="list-disc pl-4 space-y-1 text-xs">
+                            <li>Executar os serviços com zelo e técnica adequada.</li>
+                            <li>Utilizar profissionais qualificados e equipamentos de segurança.</li>
+                            <li>Manter o local da obra limpo e organizado.</li>
+                            <li>Respeitar as normas do condomínio/vizinhança (horários, ruído).</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">7. Obrigações do Contratante</h3>
+                        <ul className="list-disc pl-4 space-y-1 text-xs">
+                            <li>Garantir livre acesso da equipe ao local da obra.</li>
+                            <li>Fornecer água, energia elétrica e local para armazenamento.</li>
+                            <li>Efetuar os pagamentos nos prazos combinados.</li>
+                            <li>Fornecer materiais de sua responsabilidade em tempo hábil.</li>
+                        </ul>
+                    </div>
+                </section>
+
+                {/* 8. Adicionais */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">8. Alterações e Serviços Extras</h3>
+                    <p>
+                        Solicitações de alterações no projeto ou serviços extras não previstos no orçamento original deverão ser formalizadas. O CONTRATADO apresentará os custos adicionais, que deverão ser aprovados pelo CONTRATANTE antes da execução.
+                    </p>
+                </section>
+
+                {/* 9. Rescisão */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">9. Rescisão</h3>
+                    <p>
+                        O contrato poderá ser rescindido por qualquer das partes mediante aviso prévio de 7 dias. Em caso de rescisão, será realizado um levantamento dos serviços executados para acerto financeiro proporcional ("medição final").
+                    </p>
+                </section>
+
+                {/* 10. Foro */}
+                <section>
+                    <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">10. Foro</h3>
+                    <p>
+                        Fica eleito o foro da comarca de <strong>{profile?.city || data.workCity || '____________________'}</strong> para dirimir quaisquer dúvidas oriundas deste contrato.
+                    </p>
+                </section>
+
+                {/* Signatures */}
+                <div className="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <p className="text-center mb-12">
+                        {profile?.city || data.workCity || 'Cidade'}, {formattedDate}.
+                    </p>
+                    <div className="grid grid-cols-2 gap-12 text-center">
+                        <div>
+                            <div className="border-t border-black dark:border-white w-3/4 mx-auto mb-2"></div>
+                            <div className="font-bold text-sm">{displayProviderName}</div>
+                            <div className="text-xs text-gray-500">CONTRATADO</div>
+                        </div>
+                        <div>
+                            <div className="border-t border-black dark:border-white w-3/4 mx-auto mb-2"></div>
+                            <div className="font-bold text-sm">{data.clientName || 'Cliente'}</div>
+                            <div className="text-xs text-gray-500">CONTRATANTE</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    ) : null;
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 print:bg-white print:min-h-0 print:h-auto">
@@ -723,11 +1099,28 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                             )}
 
                             <button
+                                onClick={handleExportExcel}
+                                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
+                            >
+                                <FileSpreadsheet size={14} /> Excel
+                            </button>
+                            {data?.includeContract && (
+                                <button
+                                    onClick={handleExportWord}
+                                    className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
+                                >
+                                    <FileText size={14} /> Word
+                                </button>
+                            )}
+
+                            <button
                                 onClick={handleExportHTML}
                                 className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
                             >
                                 <FileText size={14} /> Html
                             </button>
+
+
                             <button
                                 onClick={handlePrint}
                                 className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors shadow-sm"
@@ -950,7 +1343,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                 <div className="flex flex-col gap-2 text-[10px] text-gray-500 uppercase tracking-wide font-medium">
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm">✨</span>
-                                        <span>Gerado por ObraCalc</span>
+                                        <span>Gerado por ObraPlana</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-sm">🔒</span>
@@ -991,6 +1384,22 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     </div>
                 </div>
             </div>
-        </div>
+
+            <ContractSection />
+
+            {showToast && (
+                <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg z-[100] flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <Sparkles className="text-amber-400" size={18} />
+                    <span className="text-sm font-medium">Funcionalidade exclusiva dos planos pagos</span>
+                    <button
+                        onClick={() => router.push('/planos')}
+                        className="ml-2 text-xs bg-white text-gray-900 px-2 py-1 rounded-full font-bold hover:bg-gray-100 transition-colors"
+                    >
+                        Ver Planos
+                    </button>
+                </div>
+            )}
+
+        </div >
     );
 }

@@ -348,3 +348,16 @@ export const BOQ_TEMPLATES = {
 };
 
 export const DEFAULT_BOQ_CATEGORIES = BOQ_TEMPLATES.obra_nova;
+
+
+// --- GAMIFICATION / PRICING CONSTANTS ---
+
+export const LEAD_PRICES = {
+    STANDARD: 75,
+    HIGH_VALUE: 150,
+    THRESHOLD: 50000 // R$ 50.000,00
+};
+
+export function getLeadPrice(totalValue: number): number {
+    return totalValue >= LEAD_PRICES.THRESHOLD ? LEAD_PRICES.HIGH_VALUE : LEAD_PRICES.STANDARD;
+}
