@@ -1458,9 +1458,14 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                    {/* Left Column: Schedule + ABC */}
                     <div className="flex flex-col gap-6">
                         <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} />
+                        <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                    </div>
+
+                    {/* Right Column: BDI + Market */}
+                    <div className="flex flex-col gap-6">
                         <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
                         <ComparativoMercado total={total} />
                     </div>
