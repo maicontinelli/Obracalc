@@ -155,12 +155,13 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
                         }}>{item.classe}</span>
                         <div style={{ flex: 1, fontSize: 12, color: COLORS.text, minWidth: 100, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.cat}</div>
                         <div style={{
-                            flex: 2, height: 16, background: '#f3f4f6', borderRadius: 8, overflow: "hidden",
+                            flex: 2, height: 22, background: '#f3f4f6', borderRadius: 4, overflow: "hidden", position: 'relative'
                         }}>
                             <div style={{
                                 width: `${(item.val / maxVal) * 100}%`, height: "100%",
                                 background: `linear-gradient(90deg, ${item.color}, ${item.color})`,
-                                borderRadius: 8,
+                                borderRadius: 4,
+                                opacity: 0.8,
                             }} />
                         </div>
                         <span style={{ fontSize: 12, color: COLORS.textMuted, width: 45, textAlign: "right", fontWeight: 600 }}>
@@ -325,12 +326,13 @@ export function ComparativoMercado({ total }: { total: number }) {
                             }}>{bar.label}</span>
                             <span style={{ fontSize: 12, color: COLORS.text, fontWeight: 600 }}>{formatCurrency(bar.valor)}</span>
                         </div>
-                        <div style={{ height: 14, background: '#f3f4f6', borderRadius: 7, overflow: "hidden" }}>
+                        <div style={{ height: 22, background: '#f3f4f6', borderRadius: 4, overflow: "hidden", position: 'relative' }}>
                             <div style={{
-                                width: `${(bar.valor / maxBar) * 100}%`, height: "100%", borderRadius: 7,
+                                width: `${(bar.valor / maxBar) * 100}%`, height: "100%", borderRadius: 4,
                                 background: bar.highlight
                                     ? `linear-gradient(90deg, ${COLORS.green}, ${COLORS.green}88)`
                                     : bar.color,
+                                opacity: 0.8,
                             }} />
                         </div>
                     </div>
