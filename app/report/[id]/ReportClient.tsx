@@ -1169,57 +1169,86 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     {/* Info Grid - Split Panel */}
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Prestador (Left) */}
-                        <div className="p-5 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/50 print:bg-gray-50">
-                            <div className="mb-3 pb-1 border-b border-gray-200 dark:border-gray-700">
-                                <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest leading-none">Prestador de Serviços</h3>
+                        <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 print:bg-white">
+                            <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Prestador de Serviços</h3>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-4">
                                 <div>
-                                    <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Nome / Empresa</div>
-                                    <div className="text-gray-900 dark:text-white font-normal text-sm leading-tight">{displayProviderName}</div>
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Nome / Empresa</div>
+                                    <div className="text-gray-900 dark:text-white font-medium text-base leading-tight">{displayProviderName}</div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Telefone</div>
-                                        <div className="text-gray-800 dark:text-gray-200 font-normal text-sm leading-none">{displayProviderPhone}</div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Telefone</div>
+                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{displayProviderPhone}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Tipo de Obra</div>
-                                        <div className="text-gray-800 dark:text-gray-200 font-normal text-sm leading-none">{data.projectType || '-'}</div>
-                                    </div>
-                                    <div className="col-span-2 mt-2 pt-2 border-t border-gray-100 dark:border-gray-700">
-                                        <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Regime de Contratação</div>
-                                        <div className={`text-xs font-bold leading-none ${data.includeMaterials === false ? 'text-amber-600 dark:text-amber-500' : 'text-green-600 dark:text-green-500'}`}>
-                                            {data.includeMaterials === false ? 'APENAS MÃO DE OBRA (SEM MATERIAIS)' : 'EMPREITADA GLOBAL (MATERIAIS INCLUSOS)'}
-                                        </div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Tipo de Obra</div>
+                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{data.projectType || 'Reforma'}</div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Cliente (Right) */}
-                        <div className="p-5 bg-white dark:bg-gray-800 print:bg-white">
-                            <div className="mb-3 pb-1 border-b border-gray-100 dark:border-gray-700">
-                                <h3 className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest leading-none">Dados do Cliente</h3>
+                        <div className="p-6 bg-white dark:bg-gray-800 print:bg-white">
+                            <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
+                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Dados do Cliente</h3>
                             </div>
 
-                            <div className="space-y-2">
+                            <div className="space-y-4">
                                 <div>
-                                    <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Cliente</div>
-                                    <div className="text-gray-900 dark:text-white font-normal text-sm leading-tight">{data.clientName || '-'}</div>
+                                    <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Cliente</div>
+                                    <div className="text-gray-900 dark:text-white font-medium text-base leading-tight">{data.clientName || '-'}</div>
                                 </div>
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div>
-                                        <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Telefone</div>
-                                        <div className="text-gray-800 dark:text-gray-200 font-normal text-sm leading-none">{data.clientPhone || '-'}</div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Telefone</div>
+                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{data.clientPhone || '-'}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[9px] font-medium text-gray-400 uppercase mb-0.5 leading-none">Prazo</div>
-                                        <div className="text-gray-800 dark:text-gray-200 font-normal text-sm leading-none">{data.deadline || '-'}</div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Prazo</div>
+                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{data.deadline || '-'}</div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    {/* Integrated Resumo Cards in Header */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 pb-6 pt-2 bg-white dark:bg-gray-800 print:bg-white border-t border-gray-50 dark:border-gray-700/50">
+                        <div className="p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-orange-500">🏗️</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">Tipo</span>
+                            </div>
+                            <div className="font-bold text-sm text-gray-800 dark:text-gray-200 leading-tight">{data.projectType || 'Obra Geral'}</div>
+                        </div>
+
+                        <div className="p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-blue-500">📐</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">Área Total</span>
+                            </div>
+                            <div className="font-bold text-sm text-gray-800 dark:text-gray-200 leading-tight">{data.projectArea ? `${data.projectArea} m²` : 'Não informada'}</div>
+                        </div>
+
+                        <div className="p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-green-500">💰</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">Valor Total</span>
+                            </div>
+                            <div className="font-bold text-sm text-gray-800 dark:text-gray-200 leading-tight">{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(total)}</div>
+                        </div>
+
+                        <div className="p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="text-purple-500">📊</span>
+                                <span className="text-[10px] font-bold text-gray-400 uppercase">BDI Estimado</span>
+                            </div>
+                            <div className="font-bold text-sm text-gray-800 dark:text-gray-200 leading-tight">{data.bdi || 0}%</div>
                         </div>
                     </div>
                 </div>
@@ -1393,6 +1422,13 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
                                 </span>
                             </div>
+
+                            <div className="mt-4 pt-2 border-t border-dashed border-gray-200 dark:border-gray-700 text-right">
+                                <div className="text-[9px] font-bold text-gray-400 uppercase mb-0.5 leading-none">Regime de Contratação</div>
+                                <div className={`text-[10px] font-bold leading-none ${data.includeMaterials === false ? 'text-amber-600 dark:text-amber-500' : 'text-green-600 dark:text-green-500'}`}>
+                                    {data.includeMaterials === false ? 'MÃO DE OBRA' : 'EMPREITADA (GLOBAL)'}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1406,7 +1442,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 <div className="no-print mb-4 border-t border-gray-200 dark:border-gray-700 pt-8"></div>
 
                 <div className="print:mt-0">
-                    <ResumoExecutivo data={data} total={total} bdi={data.bdi || 0} />
+                    {/* Resumo Executivo moved to Header - Removing duplicate */}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
