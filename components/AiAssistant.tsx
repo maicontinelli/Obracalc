@@ -390,77 +390,6 @@ export default function AiAssistant() {
                                     </button>
 
                                     {/* Expanded Tools Menu - Repositioned for bottom left anchor */}
-                                    {showToolsMenu && (
-                                        <div className="absolute top-full left-0 mt-2 w-64 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] dark:shadow-[0_4px_20px_rgba(255,102,0,0.1)] overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200 origin-top-left">
-                                            <div className="p-1">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        const newId = crypto.randomUUID();
-                                                        router.push(`/editor/${newId}?type=obra_nova`);
-                                                        setShowToolsMenu(false);
-                                                    }}
-                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors group text-left"
-                                                >
-                                                    <div className="p-2 text-[#22c55e] group-hover:scale-110 transition-transform">
-                                                        <Calculator size={18} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">Novo Orçamento</span>
-                                                        <span className="block text-[10px] text-gray-500 dark:text-gray-500">Editor completo</span>
-                                                    </div>
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => {
-                                                        router.push('/novo-diagnostico');
-                                                        setShowToolsMenu(false);
-                                                    }}
-                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group text-left"
-                                                >
-                                                    <div className="p-2 text-[#FF6600] group-hover:scale-110 transition-transform">
-                                                        <ScanEye size={18} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">
-                                                            Diagnóstico Visual
-                                                            <span className="ml-2 text-[10px] bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Beta</span>
-                                                        </span>
-                                                        <span className="block text-[10px] text-gray-500 dark:text-gray-500">IA analisando fotos da obra</span>
-                                                    </div>
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => router.push('/relatorio-fotografico')}
-                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/10 transition-colors group text-left"
-                                                >
-                                                    <div className="p-2 text-[#6366F1] group-hover:scale-110 transition-transform">
-                                                        <Camera size={18} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">Relatório Fotográfico</span>
-                                                        <span className="block text-[10px] text-gray-500 dark:text-gray-500">Documentação de obra</span>
-                                                    </div>
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    onClick={() => router.push('/topografia')}
-                                                    className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group text-left"
-                                                >
-                                                    <div className="p-2 text-[#C2410C] group-hover:scale-110 transition-transform">
-                                                        <Map size={18} />
-                                                    </div>
-                                                    <div>
-                                                        <span className="block text-sm font-semibold text-gray-800 dark:text-gray-200">Topografia</span>
-                                                        <span className="block text-[10px] text-gray-500 dark:text-gray-500">Conversor de coordenadas</span>
-                                                    </div>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
 
@@ -479,6 +408,79 @@ export default function AiAssistant() {
                         </div>
                     </div>
                 </form>
+
+                {/* Expanded Tools Menu - Repositioned to Main Container */}
+                {showToolsMenu && (
+                    <div className="absolute top-full left-0 right-0 w-full mt-2 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] dark:shadow-[0_4px_20px_rgba(255,102,0,0.1)] overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200 origin-top">
+                        <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const newId = crypto.randomUUID();
+                                    router.push(`/editor/${newId}?type=obra_nova`);
+                                    setShowToolsMenu(false);
+                                }}
+                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
+                            >
+                                <div className="p-2.5 bg-green-100/50 dark:bg-green-900/20 text-[#22c55e] rounded-lg group-hover:scale-110 transition-transform">
+                                    <Calculator size={20} />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Novo Orçamento</span>
+                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Editor completo de orçamentos</span>
+                                </div>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    router.push('/novo-diagnostico');
+                                    setShowToolsMenu(false);
+                                }}
+                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
+                            >
+                                <div className="p-2.5 bg-orange-100/50 dark:bg-orange-900/20 text-[#FF6600] rounded-lg group-hover:scale-110 transition-transform">
+                                    <ScanEye size={20} />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">
+                                        Diagnóstico Visual
+                                        <span className="ml-2 text-[9px] bg-[#FF6600] text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Beta</span>
+                                    </span>
+                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">IA analisando fotos da obra</span>
+                                </div>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => router.push('/relatorio-fotografico')}
+                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
+                            >
+                                <div className="p-2.5 bg-indigo-100/50 dark:bg-indigo-900/20 text-[#6366F1] rounded-lg group-hover:scale-110 transition-transform">
+                                    <Camera size={20} />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Relatório Fotográfico</span>
+                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Documentação visual</span>
+                                </div>
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => router.push('/topografia')}
+                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
+                            >
+                                <div className="p-2.5 bg-red-100/50 dark:bg-red-900/20 text-[#C2410C] rounded-lg group-hover:scale-110 transition-transform">
+                                    <Map size={20} />
+                                </div>
+                                <div>
+                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Topografia</span>
+                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Ferramentas de terreno</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Local Suggestions Dropdown */}
                 {showSuggestions && filteredItems.length > 0 && !response && !isLoading && (

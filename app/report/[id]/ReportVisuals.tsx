@@ -88,33 +88,40 @@ export function ResumoExecutivo({ data, total, bdi }: { data: any, total: number
 }
 
 // ─── CURVA ABC ────────────────
+// ─── CURVA ABC ────────────────
 export function CurvaABC({ items, includeMaterials }: { items: any[], includeMaterials: boolean }) {
+    // 1. First pass: Check Categories Count
+    const uniqueCategories = new Set(items.filter(i => i.included).map(i => i.category || 'Outros'));
+    const useItemMode = uniqueCategories.size < 3;
+
     // Aggregate Logic
-    const categories: Record<string, number> = {};
+    const aggregated: Record<string, number> = {};
     let totalDirect = 0;
 
     items.forEach(item => {
         if (!item.included) return;
         const price = item.manualPrice ?? (includeMaterials ? item.price : (item.laborPrice || 0));
         const val = price * item.quantity;
-        const cat = item.category || 'Outros';
 
-        categories[cat] = (categories[cat] || 0) + val;
+        // Decide key based on mode
+        const key = useItemMode ? item.name : (item.category || 'Outros');
+
+        aggregated[key] = (aggregated[key] || 0) + val;
         totalDirect += val;
     });
 
     if (totalDirect === 0) return null;
 
-    const sortedCats = Object.entries(categories)
+    const sortedEntries = Object.entries(aggregated)
         .sort(([, a], [, b]) => b - a)
-        .map(([cat, val]) => ({ cat, val, percent: (val / totalDirect) * 100 }));
+        .map(([key, val]) => ({ key, val, percent: (val / totalDirect) * 100 }));
 
     // Limit to top 8 + others
-    let displayList = sortedCats.slice(0, 8);
-    const others = sortedCats.slice(8).reduce((acc, curr) => acc + curr.val, 0);
+    let displayList = sortedEntries.slice(0, 8);
+    const others = sortedEntries.slice(8).reduce((acc, curr) => acc + curr.val, 0);
 
     if (others > 0) {
-        displayList.push({ cat: 'Outros', val: others, percent: (others / totalDirect) * 100 });
+        displayList.push({ key: 'Outros', val: others, percent: (others / totalDirect) * 100 });
     }
 
     // Assign Classes (A: top 60%, B: next 30%, C: last 10%)
@@ -124,7 +131,7 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
         let classe = '';
         let color = '';
 
-        if (item.cat === 'Outros') {
+        if (item.key === 'Outros') {
             classe = 'C';
             color = COLORS.textDim; // Gray
         } else if (accumulated <= 60 || (accumulated - item.percent) < 50) { // A bit loose for A
@@ -146,8 +153,10 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
     return (
         <Card>
             <SectionHeader
-                title="Curva ABC – Itens por Relevância"
-                subtitle="Analise onde está a maior parte do investimento"
+                title={`Curva ABC – ${useItemMode ? 'Itens' : 'Grupos'} por Relevância`}
+                subtitle={useItemMode
+                    ? "Detalhamento por item (Orçamento simplificado)"
+                    : "Analise onde está a maior parte do investimento por etapa"}
             />
             <div className="flex flex-col gap-[7px]">
                 {processedList.map((item, i) => (
@@ -159,7 +168,9 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
                                 background: item.color + "22",
                             }}
                         >{item.classe}</span>
-                        <div className="flex-1 text-xs text-gray-800 dark:text-gray-200 print:text-black min-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">{item.cat}</div>
+                        <div className="flex-1 text-xs text-gray-800 dark:text-gray-200 print:text-black min-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis" title={item.key}>
+                            {item.key}
+                        </div>
                         <div className="flex-[2] h-[22px] bg-gray-100 dark:bg-gray-800 print:bg-gray-100 rounded relative overflow-hidden print-color-exact">
                             <div style={{
                                 width: `${(item.val / maxVal) * 100}%`, height: "100%",
