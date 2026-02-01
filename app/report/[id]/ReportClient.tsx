@@ -1069,6 +1069,15 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                             left: 0;
                             width: 100%;
                         }
+                        
+                        /* Explicit Page Break Utility */
+                        .print-page-break {
+                            display: block;
+                            height: 1px;
+                            page-break-before: always;
+                            break-before: page;
+                            margin: 0;
+                        }
                     }
                 }
             `}</style>
@@ -1389,8 +1398,11 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 </div>
             </div>
 
-            {/* NEW REPORT VISUALS SECTION (MOVED TO END with Page Break) */}
-            <div className="space-y-6 mb-8 mt-12 page-break-before print:block">
+            {/* EXPLICIT PAGE BREAK FOR VISUALS */}
+            <div className="print-page-break"></div>
+
+            {/* NEW REPORT VISUALS SECTION */}
+            <div className="space-y-6 mb-8 mt-12 print:block">
                 <div className="no-print mb-4 border-t border-gray-200 dark:border-gray-700 pt-8"></div>
 
                 <div className="print:mt-0">
