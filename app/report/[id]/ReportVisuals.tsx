@@ -123,14 +123,17 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
     let accumulated = 0;
     const processedList = displayList.map(item => {
         accumulated += item.percent;
-        let classe = 'C';
-        let color = COLORS.textDim;
-
-        if (accumulated <= 60 || (accumulated - item.percent) < 50) { // A bit loose for A
+        if (item.cat === 'Outros') {
+            classe = 'C';
+            color = COLORS.textDim; // Gray
+        } else if (accumulated <= 60 || (accumulated - item.percent) < 50) { // A bit loose for A
             classe = 'A';
-            color = COLORS.orange;
+            color = COLORS.red;
         } else if (accumulated <= 90) {
             classe = 'B';
+            color = COLORS.orange;
+        } else {
+            classe = 'C';
             color = COLORS.yellow;
         }
 
