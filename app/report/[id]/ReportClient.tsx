@@ -1185,18 +1185,18 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                         <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{displayProviderPhone}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Localização</div>
-                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-sm leading-tight">
-                                            {profile?.address ? (
-                                                <span className="line-clamp-2">{profile.address}{profile.city ? ` - ${profile.city}` : ''}{profile.state ? `/${profile.state}` : ''}</span>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Email</div>
+                                        <div className="text-gray-800 dark:text-gray-200 font-medium text-sm leading-tight truncate">
+                                            {user?.email ? (
+                                                <span>{user.email}</span>
                                             ) : (
-                                                <span onClick={() => router.push(user ? '/dashboard' : '/login')} className="text-blue-500 hover:text-blue-600 cursor-pointer text-xs print:hidden hover:underline">
-                                                    {user ? 'Complete seu endereço' : 'Cadastre-se para personalizar'}
+                                                <span onClick={() => router.push('/login')} className="text-blue-500 hover:text-blue-600 cursor-pointer text-xs print:hidden hover:underline">
+                                                    Cadastre-se para salvar
                                                 </span>
                                             )}
-                                            {/* Hide CTA in print, show dash if empty */}
+                                            {/* Hide if empty in print */}
                                             <span className="hidden print:block print:text-gray-400">
-                                                {!profile?.address ? '-' : ''}
+                                                {!user?.email ? '-' : ''}
                                             </span>
                                         </div>
                                     </div>
