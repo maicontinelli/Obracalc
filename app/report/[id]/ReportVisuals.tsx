@@ -214,7 +214,7 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
                 </div>
             </div>
             {phases.map((phase, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", marginBottom: 5 }}>
+                <div key={i} style={{ display: "flex", alignItems: "center", marginBottom: 10 }}>
                     <div style={{ width: 110, fontSize: 11, color: COLORS.text, fontWeight: 500 }}>{phase.name}</div>
                     <div style={{ flex: 1, height: 22, position: "relative", background: '#f3f4f6', borderRadius: 4 }}>
                         <div style={{
