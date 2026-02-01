@@ -1450,7 +1450,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             <div className="print-page-break"></div>
 
             {/* NEW REPORT VISUALS SECTION */}
-            <div className="space-y-6 mb-8 mt-12 print:block">
+            <div className="space-y-6 mb-8 mt-12 print:mb-0 print:mt-0 print:block">
                 <div className="no-print mb-4 border-t border-gray-200 dark:border-gray-700 pt-8"></div>
 
                 <div className="print:mt-0">
