@@ -1276,15 +1276,25 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                                 {/* Project Context */}
                                 <div className="space-y-3 pt-2 border-t border-white/5">
-                                    <div className="grid grid-cols-1 gap-3">
-                                        <div>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <div className="col-span-1">
                                             <label className="block text-[9px] text-muted-foreground uppercase mb-1">Tipo de Serviço</label>
                                             <input
                                                 type="text"
                                                 value={projectType}
                                                 onChange={(e) => setProjectType(e.target.value)}
                                                 className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-black/20 dark:focus:border-white/20 focus:ring-0 transition-all placeholder-black/30 dark:placeholder-white/20"
-                                                placeholder="Ex: Reforma Banheiro"
+                                                placeholder="Ex: Reforma"
+                                            />
+                                        </div>
+                                        <div className="col-span-1">
+                                            <label className="block text-[9px] text-muted-foreground uppercase mb-1">Área (m²)</label>
+                                            <input
+                                                type="number"
+                                                value={projectArea || ''}
+                                                onChange={(e) => setProjectArea(Number(e.target.value))}
+                                                className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-black/20 dark:focus:border-white/20 focus:ring-0 transition-all placeholder-black/30 dark:placeholder-white/20"
+                                                placeholder="0 m²"
                                             />
                                         </div>
                                         <div>
