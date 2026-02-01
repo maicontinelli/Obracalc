@@ -303,7 +303,8 @@ export default function AiAssistant() {
                             border border-[#FF6600]/50
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
                             focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
-                            cursor-text overflow-hidden"
+                            focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
+                            cursor-text"
                         style={{ minHeight: '120px' }}
                         onClick={() => {
                             // Focus the textarea when clicking anywhere on the container
@@ -390,7 +391,7 @@ export default function AiAssistant() {
 
                                     {/* Expanded Tools Menu - Repositioned for bottom left anchor */}
                                     {showToolsMenu && (
-                                        <div className="absolute top-full left-0 mt-2 w-64 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-gray-700/50 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200 origin-top-left">
+                                        <div className="absolute top-full left-0 mt-2 w-64 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] dark:shadow-[0_4px_20px_rgba(255,102,0,0.1)] overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200 origin-top-left">
                                             <div className="p-1">
                                                 <button
                                                     type="button"
