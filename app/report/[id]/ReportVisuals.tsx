@@ -292,11 +292,14 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
 }
 
 // ─── COMPARATIVO (Mock) ────────────────
-export function ComparativoMercado({ total }: { total: number }) {
+export function ComparativoMercado({ total, area }: { total: number, area: number }) {
     // Logic: Market average is usually 10-15% higher than optimized budget
     const marketAvg = total * 1.12;
     const minVal = total * 0.95;
     const maxVal = total * 1.35;
+
+    // Calculate cost per sqm if area exists
+    const costPerSqm = area > 0 ? total / area : 0;
 
     const bars = [
         { label: "Seu Orçamento", valor: total, color: COLORS.green, highlight: true },
@@ -305,6 +308,7 @@ export function ComparativoMercado({ total }: { total: number }) {
     ];
 
     const maxBar = Math.max(...bars.map(b => b.valor));
+    const percentBelow = (100 - (total / marketAvg) * 100).toFixed(1);
 
     return (
         <Card>
@@ -312,6 +316,19 @@ export function ComparativoMercado({ total }: { total: number }) {
                 title="Posicionamento de Mercado"
                 subtitle="Estimativa comparativa com valores médios regionais (Estimativa)"
             />
+
+            {/* Price per Square Meter Highlight */}
+            {costPerSqm > 0 && (
+                <div className="mb-5 p-3 bg-blue-50 dark:bg-blue-900/20 print:bg-blue-50 border border-blue-100 dark:border-blue-800 print:border-blue-100 rounded-lg flex justify-between items-center print-color-exact">
+                    <span className="text-xs font-semibold text-blue-700 dark:text-blue-300 print:text-blue-700 uppercase tracking-wide">
+                        Seu Custo por m²
+                    </span>
+                    <span className="text-sm font-bold text-blue-800 dark:text-blue-200 print:text-blue-800">
+                        {formatCurrency(costPerSqm)}/m²
+                    </span>
+                </div>
+            )}
+
             <div className="flex flex-col gap-2.5">
                 {bars.map((bar, i) => (
                     <div key={i}>
@@ -338,8 +355,8 @@ export function ComparativoMercado({ total }: { total: number }) {
                 ))}
             </div>
             <div className="mt-3.5 p-2.5 bg-green-500/10 border border-green-500/20 rounded-lg text-center print-color-exact">
-                <span className="text-xs text-green-600 dark:text-green-500 font-semibold">
-                    ✓ Seu preço está {(100 - (total / marketAvg) * 100).toFixed(1)}% abaixo da média estimada
+                <span className="text-xs text-green-600 dark:text-green-500 print:text-green-600 font-semibold">
+                    ✓ Este orçamento está {percentBelow}% abaixo da média de mercado
                 </span>
             </div>
         </Card>

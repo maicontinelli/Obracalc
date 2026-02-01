@@ -1463,7 +1463,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
                 {/* Bottom Columns */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <ComparativoMercado total={total} />
+                    <ComparativoMercado total={total} area={data.projectArea || 0} />
                     <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
                 </div>
             </div>
