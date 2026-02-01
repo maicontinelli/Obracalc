@@ -1226,10 +1226,17 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                         <Link href="/dashboard" className="text-[10px] text-muted-foreground underline hover:text-blue-400">Gerenciar Dados no Perfil</Link>
                                     </div>
                                 ) : (
-                                    <div className="p-3 bg-orange-50/10 border border-orange-500/20 rounded-lg mb-4">
-                                        <p className="text-[10px] text-orange-400 font-bold uppercase tracking-wide mb-1">Modo Visitante</p>
-                                        <p className="text-[10px] text-muted-foreground">Crie uma conta grátis para personalizar seus dados no relatório.</p>
-                                    </div>
+                                    <Link href="/login" className="block p-3 bg-orange-50/10 border border-orange-500/20 rounded-lg mb-4 hover:bg-orange-50/20 transition-colors cursor-pointer group">
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <p className="text-[10px] text-orange-400 font-bold uppercase tracking-wide mb-1">Modo Visitante</p>
+                                                <p className="text-[10px] text-muted-foreground group-hover:text-orange-200/80 transition-colors">Crie uma conta grátis para personalizar seus dados no relatório.</p>
+                                            </div>
+                                            <div className="text-orange-400 opacity-50 group-hover:opacity-100 transition-opacity">
+                                                →
+                                            </div>
+                                        </div>
+                                    </Link>
                                 )}
 
                                 {/* Client Info */}
