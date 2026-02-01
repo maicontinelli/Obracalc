@@ -1128,7 +1128,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                     {/* RIGHT COLUMN: Resumo Financeiro (Fixed/Sticky) */}
                     <div className="lg:col-span-1">
-                        <div className="bg-card rounded-lg p-6 sticky top-6 border border-white/5 shadow-2xl">
+                        <div className="bg-card rounded-lg p-6 border border-white/5 shadow-2xl">
                             <h2 className="text-sm font-bold text-foreground dark:text-[#F5E6D3] uppercase tracking-wider mb-6 pb-2 border-b border-black/10 dark:border-white/10">
                                 📊 Resumo Financeiro
                             </h2>
@@ -1211,7 +1211,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                         </div>
 
                         {/* LEAD CAPTURE FORM (Moved to Sidebar) */}
-                        <div className="bg-card rounded-lg p-6 mt-6 border border-white/5 shadow-2xl sticky top-[450px]">
+                        <div className="bg-card rounded-lg p-6 mt-6 border border-white/5 shadow-2xl">
                             <h2 className="text-sm font-bold text-foreground dark:text-[#F5E6D3] uppercase tracking-wider mb-4 pb-2 border-b border-black/10 dark:border-white/10 flex items-center gap-2">
                                 📝 Detalhes da Obra
                             </h2>
