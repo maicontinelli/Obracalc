@@ -26,30 +26,31 @@ const formatCurrency = (val: number) => {
 
 // COMPOSED COMPONENTS
 
+
+// COMPOSED COMPONENTS
+
 function SectionHeader({ title, subtitle, badge }: { title: string, subtitle?: string, badge?: string }) {
     return (
-        <div style={{ marginBottom: 20 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <h3 style={{ margin: 0, fontSize: 17, color: COLORS.text, fontWeight: 700 }}>{title}</h3>
+        <div className="mb-5">
+            <div className="flex items-center gap-2.5">
+                <h3 className="m-0 text-[17px] font-bold text-gray-900 dark:text-gray-100">{title}</h3>
                 {badge && (
-                    <span style={{
-                        fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1,
-                        background: COLORS.orange + "22", color: COLORS.orange,
-                        padding: "3px 8px", borderRadius: 20,
-                    }}>{badge}</span>
+                    <span className="text-[10px] font-bold uppercase tracking-widest bg-orange-500/20 text-orange-500 px-2 py-0.5 rounded-full">
+                        {badge}
+                    </span>
                 )}
             </div>
-            {subtitle && <p style={{ margin: "4px 0 0", fontSize: 12, color: COLORS.textMuted }}>{subtitle}</p>}
+            {subtitle && <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">{subtitle}</p>}
         </div>
     );
 }
 
-function Card({ children, style }: { children: React.ReactNode, style?: React.CSSProperties }) {
+function Card({ children, className, style }: { children: React.ReactNode, className?: string, style?: React.CSSProperties }) {
     return (
-        <div style={{
-            background: COLORS.card, borderRadius: 14, border: `1px solid ${COLORS.border}`,
-            padding: 22, ...style
-        }}>
+        <div
+            className={`bg-white dark:bg-[#262423] rounded-[14px] border border-gray-200 dark:border-white/10 p-[22px] ${className || ''}`}
+            style={style}
+        >
             {children}
         </div>
     );
@@ -70,18 +71,15 @@ export function ResumoExecutivo({ data, total, bdi }: { data: any, total: number
     ];
 
     return (
-        <Card style={{ background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+        <Card className="bg-slate-50 border-slate-200 dark:bg-[#262423] dark:border-white/10">
             <SectionHeader title="Resumo Executivo" subtitle="Visão geral do projeto" />
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+            <div className="grid grid-cols-3 gap-2.5">
                 {items.map((item, i) => (
-                    <div key={i} style={{
-                        background: '#ffffff', borderRadius: 8, padding: "12px 14px",
-                        border: `1px solid ${COLORS.border}`,
-                    }}>
-                        <div style={{ fontSize: 11, color: COLORS.textMuted, marginBottom: 3 }}>
-                            {item.icon} {item.label}
+                    <div key={i} className="bg-white dark:bg-[#1c1917] rounded-lg p-3 border border-gray-200 dark:border-gray-800">
+                        <div className="text-[11px] text-gray-500 dark:text-gray-400 mb-1 flex items-center gap-1">
+                            <span>{item.icon}</span> {item.label}
                         </div>
-                        <div style={{ fontSize: 14, color: COLORS.text, fontWeight: 700 }}>{item.valor}</div>
+                        <div className="text-sm text-gray-900 dark:text-gray-100 font-bold">{item.valor}</div>
                     </div>
                 ))}
             </div>
@@ -151,18 +149,18 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
                 title="Curva ABC – Itens por Relevância"
                 subtitle="Analise onde está a maior parte do investimento"
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 7 }}>
+            <div className="flex flex-col gap-[7px]">
                 {processedList.map((item, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                        <span style={{
-                            fontSize: 10, fontWeight: 700, color: item.color,
-                            width: 18, textAlign: "center",
-                            background: item.color + "22", borderRadius: 4, padding: "2px 0",
-                        }}>{item.classe}</span>
-                        <div style={{ flex: 1, fontSize: 12, color: COLORS.text, minWidth: 100, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{item.cat}</div>
-                        <div style={{
-                            flex: 2, height: 22, background: '#f3f4f6', borderRadius: 4, overflow: "hidden", position: 'relative'
-                        }}>
+                    <div key={i} className="flex items-center gap-2.5">
+                        <span
+                            className="text-[10px] font-bold w-[18px] text-center rounded py-0.5"
+                            style={{
+                                color: item.color,
+                                background: item.color + "22",
+                            }}
+                        >{item.classe}</span>
+                        <div className="flex-1 text-xs text-gray-800 dark:text-gray-200 min-w-[100px] whitespace-nowrap overflow-hidden text-ellipsis">{item.cat}</div>
+                        <div className="flex-[2] h-[22px] bg-gray-100 dark:bg-gray-800 rounded relative overflow-hidden">
                             <div style={{
                                 width: `${(item.val / maxVal) * 100}%`, height: "100%",
                                 background: `linear-gradient(90deg, ${item.color}, ${item.color})`,
@@ -170,7 +168,7 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
                                 opacity: 0.8,
                             }} />
                         </div>
-                        <span style={{ fontSize: 12, color: COLORS.textMuted, width: 45, textAlign: "right", fontWeight: 600 }}>
+                        <span className="text-xs text-gray-500 dark:text-gray-400 w-[45px] text-right font-semibold">
                             {item.percent.toFixed(1)}%
                         </span>
                     </div>
@@ -211,9 +209,8 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
                 title="Cronograma Estimado Macro"
                 subtitle={`Previsão baseada em prazo de ${Math.ceil(months)} meses`}
             />
-            <div style={{ display: "flex", marginBottom: 6 }}>
-                <div style={{ width: 110 }} />
-                <div style={{ flex: 1, display: "flex", justifyContent: 'space-between', fontSize: 10, color: COLORS.textDim }}>
+            <div className="flex mb-1.5 pl-[110px]">
+                <div className="flex-1 flex justify-between text-[10px] text-gray-400 dark:text-gray-500">
                     <span>Início</span>
                     <span>Meio</span>
                     <span>Fim</span>
@@ -221,8 +218,8 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
             </div>
             {phases.map((phase, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", marginBottom: 12 }}>
-                    <div style={{ width: 110, fontSize: 11, color: COLORS.text, fontWeight: 500 }}>{phase.name}</div>
-                    <div style={{ flex: 1, height: 22, position: "relative", background: '#f3f4f6', borderRadius: 4 }}>
+                    <div className="w-[110px] text-[11px] text-gray-800 dark:text-gray-200 font-medium">{phase.name}</div>
+                    <div className="flex-1 h-[22px] relative bg-gray-100 dark:bg-gray-800 rounded overflow-hidden">
                         <div style={{
                             position: "absolute", left: `${phase.startPct}%`, width: `${phase.durPct}%`,
                             height: "100%", borderRadius: 4,
@@ -260,40 +257,33 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
                 title="Composição do BDI"
                 subtitle="Entenda como o Lucro e Despesas Indiretas são distribuídos"
             />
-            <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: 'wrap' }}>
-                <div style={{ flex: 1, minWidth: 200 }}>
+            <div className="flex gap-4 items-start flex-wrap">
+                <div className="flex-1 min-w-[200px]">
                     {bdiItems.map((item, i) => (
-                        <div key={i} style={{
-                            display: "flex", justifyContent: "space-between", alignItems: "center",
-                            padding: "7px 0", borderBottom: `1px solid ${COLORS.border}`,
-                        }}>
-                            <span style={{ fontSize: 12, color: COLORS.text }}>{item.label}</span>
-                            <span style={{ fontSize: 12, color: COLORS.orange, fontWeight: 600 }}>{item.valor.toFixed(2)}%</span>
+                        <div key={i} className="flex justify-between items-center py-[7px] border-b border-gray-200 dark:border-gray-700">
+                            <span className="text-xs text-gray-800 dark:text-gray-200">{item.label}</span>
+                            <span className="text-xs text-orange-500 font-semibold">{item.valor.toFixed(2)}%</span>
                         </div>
                     ))}
-                    <div style={{
-                        marginTop: 10, padding: "10px 12px", background: COLORS.orange + "15",
-                        border: `1px solid ${COLORS.orange}44`, borderRadius: 8,
-                        display: "flex", justifyContent: "space-between",
-                    }}>
-                        <span style={{ fontSize: 13, color: COLORS.orange, fontWeight: 700 }}>BDI Total</span>
-                        <span style={{ fontSize: 15, color: COLORS.orange, fontWeight: 800 }}>{bdiPct.toFixed(2)}%</span>
+                    <div className="mt-2.5 p-3 bg-orange-500/10 border border-orange-500/30 rounded-lg flex justify-between">
+                        <span className="text-[13px] text-orange-500 font-bold">BDI Total</span>
+                        <span className="text-[15px] text-orange-500 font-extrabold">{bdiPct.toFixed(2)}%</span>
                     </div>
                 </div>
 
                 {/* Simple Waterfall */}
-                <div style={{ width: '100%', maxWidth: 150, padding: 10, background: '#f8fafc', borderRadius: 8, fontSize: 11 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+                <div className="w-full max-w-[150px] p-2.5 bg-gray-50 dark:bg-gray-800 rounded-lg text-[11px] text-gray-700 dark:text-gray-300">
+                    <div className="flex justify-between mb-1.5">
                         <span>Direto:</span>
-                        <span style={{ fontWeight: 'bold' }}>{formatCurrency(totalDirect)}</span>
+                        <span className="font-bold">{formatCurrency(totalDirect)}</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5, color: COLORS.orange }}>
+                    <div className="flex justify-between mb-1.5 text-orange-500">
                         <span>+ BDI:</span>
-                        <span style={{ fontWeight: 'bold' }}>{formatCurrency(totalWithBDI - totalDirect)}</span>
+                        <span className="font-bold">{formatCurrency(totalWithBDI - totalDirect)}</span>
                     </div>
-                    <div style={{ borderTop: '1px solid #ddd', paddingTop: 5, display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
+                    <div className="border-t border-gray-200 dark:border-gray-600 pt-1.5 flex justify-between text-xs">
                         <span>Final:</span>
-                        <span style={{ fontWeight: 'bold', color: COLORS.green }}>{formatCurrency(totalWithBDI)}</span>
+                        <span className="font-bold text-green-600 dark:text-green-500">{formatCurrency(totalWithBDI)}</span>
                     </div>
                 </div>
             </div>
@@ -322,17 +312,20 @@ export function ComparativoMercado({ total }: { total: number }) {
                 title="Posicionamento de Mercado"
                 subtitle="Estimativa comparativa com valores médios regionais (Estimativa)"
             />
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            <div className="flex flex-col gap-2.5">
                 {bars.map((bar, i) => (
                     <div key={i}>
-                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
-                            <span style={{
-                                fontSize: 12, fontWeight: bar.highlight ? 700 : 500,
-                                color: bar.highlight ? COLORS.green : COLORS.textMuted,
-                            }}>{bar.label}</span>
-                            <span style={{ fontSize: 12, color: COLORS.text, fontWeight: 600 }}>{formatCurrency(bar.valor)}</span>
+                        <div className="flex justify-between mb-1">
+                            <span
+                                className="text-xs font-medium"
+                                style={{
+                                    fontWeight: bar.highlight ? 700 : 500,
+                                    color: bar.highlight ? COLORS.green : undefined,
+                                }}
+                            >{bar.label}</span>
+                            <span className="text-xs text-gray-800 dark:text-gray-200 font-semibold">{formatCurrency(bar.valor)}</span>
                         </div>
-                        <div style={{ height: 22, background: '#f3f4f6', borderRadius: 4, overflow: "hidden", position: 'relative' }}>
+                        <div className="h-[22px] bg-gray-100 dark:bg-gray-800 rounded overflow-hidden relative">
                             <div style={{
                                 width: `${(bar.valor / maxBar) * 100}%`, height: "100%", borderRadius: 4,
                                 background: bar.highlight
@@ -344,11 +337,8 @@ export function ComparativoMercado({ total }: { total: number }) {
                     </div>
                 ))}
             </div>
-            <div style={{
-                marginTop: 14, padding: "10px 12px", background: COLORS.green + "12",
-                border: `1px solid ${COLORS.green}33`, borderRadius: 8, textAlign: "center",
-            }}>
-                <span style={{ fontSize: 12, color: COLORS.green, fontWeight: 600 }}>
+            <div className="mt-3.5 p-2.5 bg-green-500/10 border border-green-500/20 rounded-lg text-center">
+                <span className="text-xs text-green-600 dark:text-green-500 font-semibold">
                     ✓ Seu preço está {(100 - (total / marketAvg) * 100).toFixed(1)}% abaixo da média estimada
                 </span>
             </div>

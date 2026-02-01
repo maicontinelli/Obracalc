@@ -821,7 +821,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
     // CONTRACT JSX (Reused logic for cleaner render)
     const ContractSection = () => data.includeContract ? (
-        <div className="contract-page max-w-none mx-auto p-8 mt-12 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 print:shadow-none print:border-none print:m-0 print:p-0">
+        <div className="contract-page max-w-none mx-auto p-8 mt-12 bg-white dark:bg-[#262423] rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 print:shadow-none print:border-none print:m-0 print:p-0">
             <style jsx>{`
                 @media print {
                     .contract-page { 
@@ -843,7 +843,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 {/* 1. Identification */}
                 <section>
                     <h3 className="font-bold text-gray-900 dark:text-white uppercase mb-2 text-xs tracking-wider">1. Identificação das Partes</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-gray-50 dark:bg-[#262423]/50 p-4 rounded-lg border border-gray-100 dark:border-gray-700">
                         <div>
                             <span className="block text-[10px] font-bold text-gray-400 uppercase mb-1">Contratante (Cliente)</span>
                             <div className="font-semibold">{data.clientName || '__________________________________'}</div>
@@ -895,7 +895,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     <p>
                         Pela execução dos serviços, o CONTRATANTE pagará ao CONTRATADO o valor total de <strong>{new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}</strong>.
                     </p>
-                    <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded border border-dashed border-gray-300 dark:border-gray-700">
+                    <div className="mt-2 text-xs text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-[#262423]/50 p-3 rounded border border-dashed border-gray-300 dark:border-gray-700">
                         <strong>Condições de Pagamento:</strong><br /><br />
                         (   ) À vista com desconto<br />
                         (   ) Entrada de R$ ___________ + ___ parcelas de R$ ___________<br />
@@ -983,7 +983,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     ) : null;
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 print:bg-white print:min-h-0 print:h-auto">
+        <div className="min-h-screen bg-gray-50 dark:bg-[#1c1917] print:bg-white print:min-h-0 print:h-auto">
             <style jsx global>{`
                 @media print {
                     @page { 
@@ -1083,7 +1083,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             `}</style>
 
             {/* Toolbar */}
-            <div className="no-print bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-50">
+            <div className="no-print bg-white dark:bg-[#262423] border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-50">
                 <div className="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center gap-4">
                     <button
                         onClick={() => router.push(`/editor/${estimateId}`)}
@@ -1146,7 +1146,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             {/* Report Content */}
             <div id="report-content" className="max-w-none mx-auto p-4 lg:p-8 print-content print:p-0 print:max-w-full">
                 {/* Header - Premium Invoice Style (Compact 40%) */}
-                <div className="mb-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden break-inside-avoid print:border print:shadow-none print:rounded-xl">
+                <div className="mb-6 bg-white dark:bg-[#262423] rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden break-inside-avoid print:border print:shadow-none print:rounded-xl">
                     {/* Top Bar - Brand & Title */}
                     <div className="bg-[#374151] text-white px-6 py-4 flex justify-between items-center print:bg-[#374151] print:text-white">
                         <div className="flex items-center gap-3">
@@ -1169,7 +1169,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     {/* Info Grid - Split Panel */}
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Prestador (Left) */}
-                        <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 print:bg-white">
+                        <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-[#262423] print:bg-white">
                             <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
                                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Prestador de Serviços</h3>
                             </div>
@@ -1205,7 +1205,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         </div>
 
                         {/* Cliente (Right) */}
-                        <div className="p-6 bg-white dark:bg-gray-800 print:bg-white">
+                        <div className="p-6 bg-white dark:bg-[#262423] print:bg-white">
                             <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
                                 <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Dados do Cliente</h3>
                             </div>
@@ -1230,7 +1230,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     </div>
 
                     {/* Integrated Resumo Cards in Header */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 pb-6 pt-2 bg-white dark:bg-gray-800 print:bg-white border-t border-gray-50 dark:border-gray-700/50">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-6 pb-6 pt-2 bg-white dark:bg-[#262423] print:bg-white border-t border-gray-50 dark:border-gray-700/50">
                         <div className="p-3 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-100 dark:border-gray-700">
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="text-orange-500">🏗️</span>
@@ -1279,7 +1279,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         return (
                             <div key={category}>
                                 {/* Category Header */}
-                                <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                                <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-[#262423] border-b border-gray-200 dark:border-gray-700">
                                     <h3 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
                                         {category}
                                     </h3>
@@ -1289,7 +1289,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                 </div>
 
                                 {/* Sections by Type */}
-                                <div className="bg-white dark:bg-gray-900">
+                                <div className="bg-white dark:bg-[#262423]">
                                     {(() => {
                                         // Group items
                                         const groups: Record<string, any[]> = { composition: [], service: [], material: [] };
@@ -1310,7 +1310,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                         return orderedGroups.map(g => (
                                             <div key={g.id}>
                                                 {/* Group Header as Column Header */}
-                                                <div className="grid grid-cols-12 gap-4 px-4 py-2 text-[9px] font-bold text-gray-400 uppercase tracking-wider bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 mt-2 first:mt-0">
+                                                <div className="grid grid-cols-12 gap-4 px-4 py-2 text-[9px] font-bold text-gray-400 uppercase tracking-wider bg-white dark:bg-[#262423] border-b border-gray-100 dark:border-gray-800 mt-2 first:mt-0">
                                                     <div className="col-span-5 flex items-center gap-2 text-gray-600 dark:text-gray-400">
                                                         <span className="text-sm leading-none">{g.icon}</span>
                                                         <span>{g.title}</span>
@@ -1363,7 +1363,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         {/* Branding/Watermark Island (Hidden for Paid Plans) */}
                         {/* Bank Info Island (If available) */}
                         {profile && (profile.pix_key || profile.bank_account) && (
-                            <div className="w-full md:w-72 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col justify-center">
+                            <div className="w-full md:w-72 bg-white dark:bg-[#262423] rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col justify-center">
                                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Dados Bancários / Pagamento:</h3>
                                 <div className="flex flex-col gap-2 text-[10px] text-gray-700 dark:text-gray-300 uppercase tracking-wide font-medium">
                                     {profile.pix_key && (
@@ -1392,7 +1392,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
                         {/* Branding/Watermark Island (Free/Anonymous) */}
                         {(!profile || profile.tier === 'free') && (
-                            <div className="w-full md:w-72 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col justify-center">
+                            <div className="w-full md:w-72 bg-white dark:bg-[#262423] rounded-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col justify-center">
                                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Plano Gratuito:</h3>
                                 <div className="flex flex-col gap-2 text-[10px] text-gray-500 uppercase tracking-wide font-medium">
                                     <div className="flex items-center gap-2">
@@ -1414,7 +1414,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     </div>
 
                     {/* Totals Box (Right) */}
-                    <div className="w-full md:w-80 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6">
+                    <div className="w-full md:w-80 bg-white dark:bg-[#262423] rounded-lg border border-gray-200 dark:border-gray-700 p-6">
                         <div className="space-y-3">
                             <div className="flex justify-between text-xs">
                                 <span className="font-bold text-gray-700 dark:text-gray-400 uppercase text-[10px]">Subtotal</span>
