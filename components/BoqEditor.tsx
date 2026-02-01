@@ -1297,7 +1297,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                 placeholder="0 m²"
                                             />
                                         </div>
-                                        <div>
+                                        <div className="col-span-2">
                                             <label className="block text-[9px] text-muted-foreground uppercase mb-2">Previsão de Início</label>
                                             <div className="flex flex-wrap gap-2">
                                                 {['Imediato', '30 dias', '60 dias', '90 dias'].map((option) => (
