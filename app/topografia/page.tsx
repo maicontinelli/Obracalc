@@ -6,6 +6,7 @@ import { Upload, FileText, Download, CheckCircle, Map as MapIcon, RefreshCw, Ale
 import * as XLSX from 'xlsx';
 import { parseKMZ, processMemorialData, MemorialData, ddToDms } from '@/lib/memorial-utils';
 import { SelectionList } from '@/components/SelectionList';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 import { RefreshCcw, RotateCw } from 'lucide-react';
 
 export default function MemorialPage() {
@@ -142,7 +143,7 @@ export default function MemorialPage() {
                             <ArrowLeft size={16} />
                             Voltar para o Início
                         </button>
-                        <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
+                        <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
                             Memorial Descritivo de <span className="text-[#C2410C]">Topografia</span>
                         </h1>
                         <p className="text-xl font-manrope text-muted-foreground max-w-2xl mx-auto">
@@ -163,17 +164,16 @@ export default function MemorialPage() {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
-
                     {/* Left Column: File Upload */}
                     <div className="md:col-span-1 space-y-6">
-                        <div className="bg-card rounded-2xl shadow-xl p-6 border border-border sticky top-24">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(194, 65, 12, 0.15)">
                             <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
                                 <MapIcon size={20} className="text-[#C2410C]" />
                                 Arquivo da Obra
                             </h3>
 
                             <div
-                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${file ? 'border-[#C2410C]/50 bg-[#C2410C]/5' : 'border-input hover:border-[#C2410C] hover:bg-[#C2410C]/5'}`}
+                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer group ${file ? 'border-[#C2410C]/50 bg-[#C2410C]/5' : 'border-neutral-200 dark:border-white/10 hover:border-[#C2410C] hover:bg-[#C2410C]/5'}`}
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <input
@@ -204,20 +204,20 @@ export default function MemorialPage() {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center">
-                                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                                        <p className="text-sm font-medium text-foreground">Upload KMZ</p>
+                                        <Upload className="h-8 w-8 text-neutral-400 group-hover:text-[#C2410C] transition-colors mb-2" />
+                                        <p className="text-sm font-medium text-foreground group-hover:text-[#C2410C] transition-colors">Upload KMZ</p>
                                         <p className="text-xs text-muted-foreground mt-1 text-center">
                                             Exporte do Google Earth
                                         </p>
                                     </div>
                                 )}
                             </div>
-                        </div>
+                        </SpotlightCard>
                     </div>
 
                     {/* Right Column: Configuration Form */}
                     <div className="md:col-span-2">
-                        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-8 border border-neutral-200 dark:border-white/10" spotlightColor="rgba(194, 65, 12, 0.15)">
                             <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
                                 Configurações do Documento
                             </h3>
@@ -232,7 +232,7 @@ export default function MemorialPage() {
                                             value={city}
                                             onChange={(e) => setCity(e.target.value)}
                                             placeholder="Ex: São Paulo"
-                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-orange-500/50 outline-none transition-all"
+                                            className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-1 outline-none transition-all"
                                         />
                                     </div>
                                     <div>
@@ -243,7 +243,7 @@ export default function MemorialPage() {
                                             value={state}
                                             onChange={(e) => setState(e.target.value)}
                                             placeholder="Ex: SP"
-                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-orange-500/50 outline-none transition-all"
+                                            className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm focus:border-[#C2410C] focus:ring-[#C2410C] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-1 outline-none transition-all"
                                         />
                                     </div>
                                 </div>
@@ -253,7 +253,7 @@ export default function MemorialPage() {
                                     <select
                                         id="coordinateSystem"
                                         disabled
-                                        className="w-full rounded-xl border-input bg-muted text-muted-foreground shadow-sm cursor-not-allowed py-3 px-4 outline-none opacity-70"
+                                        className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-100 dark:bg-neutral-800/50 text-muted-foreground shadow-sm cursor-not-allowed py-3 px-4 outline-none opacity-70"
                                         aria-label="Sistema de Coordenadas"
                                     >
                                         <option>SIRGAS 2000 / UTM (Automático)</option>
@@ -278,7 +278,7 @@ export default function MemorialPage() {
                                     className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 mt-4
                                         ${!file ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' :
                                             isLoading ? 'bg-[#C2410C]/80 cursor-wait' :
-                                                'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-orange-500/20'}`}
+                                                'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-orange-500/20 active:scale-[0.98]'}`}
                                 >
                                     {isLoading ? (
                                         <>
@@ -293,7 +293,7 @@ export default function MemorialPage() {
                                     )}
                                 </button>
                             </div>
-                        </div>
+                        </SpotlightCard>
                     </div>
                 </div>
 

@@ -8,6 +8,7 @@ import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
 import { useProfile } from '@/hooks/useProfile';
 import { PLAN_LIMITS } from '@/lib/plan-limits';
+import { ResumoExecutivo, CurvaABC, CronogramaEstimado, ComposicaoBDI, ComparativoMercado } from './ReportVisuals';
 
 export default function ReportClient({ estimateId }: { estimateId: string }) {
     const router = useRouter();
@@ -295,7 +296,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                 <div style="font-weight: 600; margin-bottom: 4px;">${displayProviderName}</div>
                                 <div style="font-size: 12px; color: #4b5563;">
                                     CPF/CNPJ: ${profile?.document_id || '___________________________'}<br/>
-                                    Endereço: ${profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________'}
+                                    Endereço: ${profile?.address ? `${profile.address} - ${profile.city}/${profile.state}` : (profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________')}
                                 </div>
                             </div>
                         </div>
@@ -855,7 +856,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                             <div className="font-semibold">{displayProviderName}</div>
                             <div className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                                 CPF/CNPJ: {profile?.document_id || '___________________________'}<br />
-                                Endereço: {profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________'}
+                                Endereço: {profile?.address ? `${profile.address} - ${profile.city}/${profile.state}` : (profile?.city ? `${profile.city}/${profile.state}` : '____________________________________________________')}
                             </div>
                         </div>
                     </div>
@@ -1209,6 +1210,20 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* NEW REPORT VISUALS SECTION */}
+                <div className="space-y-6 mb-8 break-inside-avoid">
+                    <ResumoExecutivo data={data} total={total} bdi={data.bdi || 0} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                        <div className="flex flex-col gap-6">
+                            <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} />
+                            <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
+                            <ComparativoMercado total={total} />
                         </div>
                     </div>
                 </div>

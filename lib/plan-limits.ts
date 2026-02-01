@@ -22,6 +22,8 @@ export interface UserProfile {
     saved_estimates_count: number;
     points?: number;
     avatar_url?: string | null;
+    address?: string;
+    cep?: string;
 }
 
 export const PLAN_LIMITS = {

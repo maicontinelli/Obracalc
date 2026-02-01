@@ -140,6 +140,7 @@ IMPORTANTE:
   "suggestedBudget": {
     "title": "Nome do grupo de serviços",
     "type": "material_labor",
+    "projectArea": 100,
     "items": [
       {
         "name": "Nome do Serviço",
@@ -158,11 +159,12 @@ IMPORTANTE:
 
 REGRAS FINAIS:
 - SE o pedido for vago (ex: "construir casa", "pintar sala", "fazer muro") SEM dimensões ou quantidades:
-  → PREENCHA o campo "clarificationRequest" com uma pergunta educada e direta para obter o dado faltante.
+  → PREENCHA o campo "clarificationRequest" com uma pergunta educada e direta para obter o dado faltante. PRIORIDADE: Perguntar a ÁREA (m²) se não informada.
   → DEIXE "suggestedBudget" como null.
 - SE o pedido tiver dados suficientes para uma estimativa honesta:
   → DEIXE "clarificationRequest" como null.
   → PREENCHA "suggestedBudget".
+  → TENTE EXTRAR a área total do projeto (em m²) se mencionada ou dedutível, e coloque em "projectArea" dentro de "suggestedBudget". Se não, 0.
 - O array "items" DEVE estar em ordem cronológica de execução.
 - OBRIGATÓRIO: Calcule sempre 'laborPrice' (aprox. 40%) e 'materialPrice' (aprox. 60%) do preço total.
 - Use "type": "service" para quase tudo.

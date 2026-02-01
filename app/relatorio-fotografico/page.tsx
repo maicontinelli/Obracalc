@@ -5,6 +5,7 @@ import { Upload, CheckCircle, Camera, RefreshCw, AlertCircle, Home, Building2, H
 import { useRouter } from 'next/navigation';
 import imageCompression from 'browser-image-compression';
 import { SelectionList } from '@/components/SelectionList';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
 type ReportMode = 'LEIGO' | 'TECNICO';
 type ProjectType = 'Residencial' | 'Comercial' | 'Reforma';
@@ -250,7 +251,7 @@ export default function RelatorioFotograficoPage() {
                             <ArrowLeft size={16} />
                             Voltar para o Início
                         </button>
-                        <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
+                        <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
                             Relatório Fotográfico de Obra com <span className="text-[#6366F1]">IA</span>
                         </h1>
                         <p className="text-xl font-manrope text-muted-foreground max-w-2xl mx-auto">
@@ -274,14 +275,14 @@ export default function RelatorioFotograficoPage() {
 
                     {/* Left Column: Image Upload */}
                     <div className="md:col-span-1 space-y-6">
-                        <div className="bg-card rounded-2xl shadow-xl p-6 border border-border sticky top-24">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(99, 102, 241, 0.15)">
                             <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
                                 <Camera size={20} className="text-[#6366F1]" />
                                 Fotos da Obra
                             </h3>
 
                             <div
-                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${images.length > 0 ? 'border-[#6366F1]/50 bg-[#6366F1]/5' : 'border-input hover:border-[#6366F1] hover:bg-[#6366F1]/5'}`}
+                                className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer group ${images.length > 0 ? 'border-[#6366F1]/50 bg-[#6366F1]/5' : 'border-neutral-200 dark:border-white/10 hover:border-[#6366F1] hover:bg-[#6366F1]/5'}`}
                                 onClick={() => fileInputRef.current?.click()}
                             >
                                 <input
@@ -302,8 +303,8 @@ export default function RelatorioFotograficoPage() {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center">
-                                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                                        <p className="text-xs font-medium text-foreground">
+                                        <Upload className="h-8 w-8 text-muted-foreground group-hover:text-[#6366F1] transition-colors mb-2" />
+                                        <p className="text-xs font-medium text-foreground group-hover:text-[#6366F1] transition-colors">
                                             {images.length > 0 ? 'Adicionar mais' : 'Upload de fotos'}
                                         </p>
                                     </div>
@@ -318,7 +319,7 @@ export default function RelatorioFotograficoPage() {
                                             <img
                                                 src={img.preview}
                                                 alt={`Preview ${index + 1}`}
-                                                className="w-full h-full object-cover rounded-lg border border-white/10"
+                                                className="w-full h-full object-cover rounded-lg border border-black/10 dark:border-white/10"
                                             />
                                             <button
                                                 onClick={(e) => {
@@ -343,12 +344,12 @@ export default function RelatorioFotograficoPage() {
                                     {images.length} de 10 imagens
                                 </p>
                             )}
-                        </div>
+                        </SpotlightCard>
                     </div>
 
                     {/* Right Column: Form */}
                     <div className="md:col-span-2">
-                        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-8 border border-neutral-200 dark:border-white/10" spotlightColor="rgba(99, 102, 241, 0.15)">
                             <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
                                 Dados do Relatório
                             </h3>
@@ -363,7 +364,7 @@ export default function RelatorioFotograficoPage() {
                                             value={clientName}
                                             onChange={(e) => setClientName(e.target.value)}
                                             placeholder="Ex: João Silva"
-                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                            className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-1 outline-none transition-all"
                                         />
                                     </div>
                                     <div>
@@ -374,7 +375,7 @@ export default function RelatorioFotograficoPage() {
                                             value={projectAddress}
                                             onChange={(e) => setProjectAddress(e.target.value)}
                                             placeholder="Ex: Rua das Flores, 123"
-                                            className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                            className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] placeholder-muted-foreground py-3 px-4 resize-none focus:ring-1 outline-none transition-all"
                                         />
                                     </div>
                                 </div>
@@ -387,7 +388,7 @@ export default function RelatorioFotograficoPage() {
                                         value={inspectionDate}
                                         onChange={(e) => setInspectionDate(e.target.value)}
                                         placeholder="DD/MM/AAAA"
-                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] py-3 px-4 resize-none focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm focus:border-[#6366F1] focus:ring-[#6366F1] py-3 px-4 resize-none focus:ring-1 outline-none transition-all"
                                     />
                                 </div>
 
@@ -437,7 +438,7 @@ export default function RelatorioFotograficoPage() {
                                                     type="text"
                                                     value={technicalResponsible}
                                                     onChange={(e) => setTechnicalResponsible(e.target.value)}
-                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                    className="w-full rounded-lg border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground p-2 text-sm focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -447,7 +448,7 @@ export default function RelatorioFotograficoPage() {
                                                     type="text"
                                                     value={creaCAU}
                                                     onChange={(e) => setCreaCau(e.target.value)}
-                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                    className="w-full rounded-lg border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground p-2 text-sm focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] outline-none"
                                                 />
                                             </div>
                                             <div>
@@ -457,7 +458,7 @@ export default function RelatorioFotograficoPage() {
                                                     type="text"
                                                     value={builtArea}
                                                     onChange={(e) => setBuiltArea(e.target.value)}
-                                                    className="w-full rounded-lg border-input bg-background text-foreground p-2 text-sm"
+                                                    className="w-full rounded-lg border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground p-2 text-sm focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -472,7 +473,7 @@ export default function RelatorioFotograficoPage() {
                                         onChange={(e) => setUserObservations(e.target.value)}
                                         placeholder="Observações..."
                                         rows={3}
-                                        className="w-full rounded-xl border-input bg-background text-foreground shadow-sm p-3 focus:ring-2 focus:ring-indigo-500/50 outline-none transition-all"
+                                        className="w-full rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground shadow-sm p-3 focus:border-[#6366F1] focus:ring-1 focus:ring-[#6366F1] outline-none transition-all"
                                     />
                                 </div>
 
@@ -498,7 +499,7 @@ export default function RelatorioFotograficoPage() {
                                     )}
                                 </button>
                             </div>
-                        </div>
+                        </SpotlightCard>
                     </div>
 
                 </div>

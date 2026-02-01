@@ -47,14 +47,16 @@ export default function Home() {
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold mb-6 tracking-tight text-foreground">Pronto para otimizar seus orçamentos?</h2>
+            <h2 className="text-3xl md:text-5xl font-heading font-bold mb-6 tracking-tight text-foreground">
+              Pronto para <span className="text-[#FF6600]">otimizar</span> seus orçamentos?
+            </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Junte-se a mais de 5.000 engenheiros e arquitetos que economizam 80% do tempo de orçamento.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-[#FF6600] text-white hover:bg-[#FF6600]/90 h-14 px-8 text-lg font-semibold shadow-lg transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px]"
+                className="bg-[#E9813C] text-white hover:bg-[#d67332] h-14 px-8 text-lg font-semibold shadow-lg transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px]"
                 data-testid="button-cta"
                 onClick={() => handleStart('obra_nova')}
               >
@@ -64,7 +66,7 @@ export default function Home() {
                 <Button
                   size="lg"
                   variant="outline"
-                  className="border-input hover:bg-accent hover:text-accent-foreground h-14 px-8 text-lg font-semibold bg-transparent w-full sm:w-auto min-w-[200px]"
+                  className="border-2 border-neutral-300 dark:border-neutral-600 bg-white/50 dark:bg-black/40 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-foreground h-14 px-8 text-lg font-semibold w-full sm:w-auto min-w-[200px] backdrop-blur-sm transition-all"
                 >
                   Fazer Cadastro
                 </Button>

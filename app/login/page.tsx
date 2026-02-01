@@ -255,7 +255,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#D85B2F] hover:bg-[#bf4d26] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#D85B2F]/20 hover:shadow-[#D85B2F]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2"
+                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : 'Enviar Instruções'}
                             </button>
@@ -343,7 +343,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#D85B2F] hover:bg-[#bf4d26] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#D85B2F]/20 hover:shadow-[#D85B2F]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2 mt-2"
+                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2 mt-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : (
                                     <>

@@ -18,11 +18,13 @@ import {
     Briefcase,
     ChevronDown,
     Building2,
-    MoreVertical,
-    BarChart3
+    BarChart3,
+    DollarSign,
+    Mail
 } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
 import Script from 'next/script';
+import { BudgetOverview } from '@/components/dashboard/BudgetOverview';
 
 
 
@@ -52,12 +54,15 @@ export default function DashboardPage() {
     // Profile State
     const [isProfileExpanded, setIsProfileExpanded] = useState(false);
     const [isSavingProfile, setIsSavingProfile] = useState(false);
+    const [saveSuccess, setSaveSuccess] = useState(false);
     const [showOnboardingMessage, setShowOnboardingMessage] = useState(false);
     const { profile } = useProfile(); // tier loading
     const [profileData, setProfileData] = useState({
         full_name: '',
         company_name: '',
         phone: '',
+        cep: '',
+        address: '',
         city: '',
         state: '',
         profession: '',
@@ -135,6 +140,8 @@ export default function DashboardPage() {
                         full_name: dbProfile.full_name || '',
                         company_name: dbProfile.company_name || '',
                         phone: dbProfile.phone || '',
+                        cep: dbProfile.cep || '',
+                        address: dbProfile.address || '',
                         city: dbProfile.city || '',
                         state: dbProfile.state || '',
                         profession: dbProfile.profession || '',
@@ -161,6 +168,8 @@ export default function DashboardPage() {
                         full_name: user.user_metadata.full_name || '',
                         company_name: user.user_metadata.company_name || '',
                         phone: user.user_metadata.phone || '',
+                        cep: user.user_metadata.cep || '',
+                        address: user.user_metadata.address || '',
                         city: user.user_metadata.city || '',
                         state: user.user_metadata.state || '',
                         profession: '',
@@ -237,9 +246,11 @@ export default function DashboardPage() {
     };
 
     // Handle Profile Save
+    // Handle Profile Save
     const handleSaveProfile = async () => {
         if (!user) return;
         setIsSavingProfile(true);
+        setSaveSuccess(false);
         setShowOnboardingMessage(false);
 
         try {
@@ -253,8 +264,12 @@ export default function DashboardPage() {
             const { error } = await supabase.from('profiles').upsert(payload);
             if (error) throw error;
 
-            alert('Perfil atualizado com sucesso!');
-            setIsProfileExpanded(false);
+            setSaveSuccess(true);
+            setTimeout(() => {
+                setIsProfileExpanded(false);
+                setSaveSuccess(false);
+            }, 2000);
+
         } catch (error: any) {
             alert(`Erro ao salvar: ${error.message}`);
         } finally {
@@ -291,7 +306,7 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-black font-sans box-border p-4 md:p-8 relative overflow-hidden">
+        <div className="min-h-screen bg-gray-50 dark:bg-background font-sans box-border p-4 md:p-8 relative overflow-hidden">
             {/* Background decoration */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 opacity-40 pointer-events-none">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] invert dark:invert-0 opacity-10"></div>
@@ -326,77 +341,125 @@ export default function DashboardPage() {
                     <div className="lg:col-span-4 xl:col-span-3 space-y-6">
                         <div className="bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-[2rem] p-4 shadow-sm border border-white/40 dark:border-white/5 relative overflow-hidden group">
                             {/* Simple Profile Logic Reused */}
-                            <div className="relative aspect-[4/5] rounded-[1.5rem] overflow-hidden bg-gray-100 dark:bg-gray-800 isolate">
-                                {profileData.avatar_url ? (
-                                    <img src={profileData.avatar_url} alt="Profile" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                ) : (
-                                    <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
-                                        <UserIcon size={64} strokeWidth={1} />
-                                        <span className="text-xs">Sem foto</span>
-                                    </div>
-                                )}
-                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10" />
-                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity z-20 cursor-pointer">
-                                    <label className="cursor-pointer flex flex-col items-center gap-2 text-white">
-                                        <Camera size={24} />
-                                        <span className="text-xs font-bold">Alterar Foto</span>
-                                        <input type="file" className="hidden" onChange={handleAvatarUpload} accept="image/*" disabled={isUploadingAvatar} />
-                                    </label>
-                                </div>
-                                {isUploadingAvatar && <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-30"><Loader2 className="animate-spin text-white" /></div>}
+                            {/* Profile Card Content - Toggles between View and Edit to allow full height */}
+                            {!isProfileExpanded ? (
+                                <>
+                                    <div className="relative h-56 w-full rounded-[1.5rem] overflow-hidden bg-gray-100 dark:bg-gray-800 isolate">
+                                        {profileData.avatar_url ? (
+                                            <img src={profileData.avatar_url} alt="Profile" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
+                                                <UserIcon size={64} strokeWidth={1} />
+                                                <span className="text-xs">Sem foto</span>
+                                            </div>
+                                        )}
+                                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10" />
 
-                                <div className="absolute bottom-4 left-4 right-4 z-20 text-white">
-                                    <h2 className="text-xl font-bold truncate">{profileData.full_name || 'Seu Nome'}</h2>
-                                    <p className="text-xs text-white/80 uppercase tracking-wider">{profileData.profession || 'Profissional'}</p>
-                                </div>
-                                <div className="absolute top-4 right-4 z-20">
-                                    <button
-                                        onClick={() => setIsProfileExpanded(!isProfileExpanded)}
-                                        className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-full transition-colors border border-white/20"
-                                    >
-                                        <Edit3 size={16} />
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="mt-4 px-2 space-y-3">
-                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                    <Phone size={14} className="text-orange-600" />
-                                    <span className="truncate">{profileData.phone || 'Sem telefone'}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                    <MapPin size={14} className="text-blue-600" />
-                                    <span className="truncate">{profileData.city || 'Sem cidade'} • {profileData.state || 'UF'}</span>
-                                </div>
-                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                    <Briefcase size={14} className="text-purple-600" />
-                                    <span className="truncate">{profileData.company_name || 'Sem empresa'}</span>
-                                </div>
-                            </div>
-                            {/* ... (Keep Edit Drawer if needed, removed for brevity) ... */}
-                            {isProfileExpanded && (
-                                <div className="absolute inset-0 z-50 bg-white dark:bg-[#1A1A1A] p-4 flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-10 overflow-auto">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h3 className="font-bold">Editar Dados</h3>
-                                        <button onClick={() => setIsProfileExpanded(false)} className="text-muted-foreground p-1"><ChevronDown /></button>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <h4 className="text-xs font-bold uppercase text-muted-foreground mt-4">Dados Pessoais</h4>
-                                        <input value={profileData.full_name} onChange={e => setProfileData({ ...profileData, full_name: e.target.value })} placeholder="Nome Completo" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                        <input value={profileData.document_id} onChange={e => setProfileData({ ...profileData, document_id: e.target.value })} placeholder="CPF ou CNPJ" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                        <input value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })} placeholder="Telefone" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                        <input value={profileData.city} onChange={e => setProfileData({ ...profileData, city: e.target.value })} placeholder="Endereço Completo (Rua, Nº, Bairro, Cidade/UF)" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                        <input value={profileData.company_name} onChange={e => setProfileData({ ...profileData, company_name: e.target.value })} placeholder="Nome da Empresa (Opcional)" className="w-full p-2 text-sm bg-muted rounded-lg" />
-
-                                        <h4 className="text-xs font-bold uppercase text-muted-foreground mt-4">Dados Bancários (Para Contrato)</h4>
-                                        <input value={profileData.pix_key} onChange={e => setProfileData({ ...profileData, pix_key: e.target.value })} placeholder="Chave PIX" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <input value={profileData.bank_name} onChange={e => setProfileData({ ...profileData, bank_name: e.target.value })} placeholder="Nome do Banco" className="col-span-2 w-full p-2 text-sm bg-muted rounded-lg" />
-                                            <input value={profileData.bank_agency} onChange={e => setProfileData({ ...profileData, bank_agency: e.target.value })} placeholder="Agência" className="w-full p-2 text-sm bg-muted rounded-lg" />
-                                            <input value={profileData.bank_account} onChange={e => setProfileData({ ...profileData, bank_account: e.target.value })} placeholder="Conta" className="w-full p-2 text-sm bg-muted rounded-lg" />
+                                        <div className="absolute bottom-4 left-4 right-4 z-20 text-white">
+                                            <h2 className="text-xl font-bold truncate">{profileData.full_name || 'Seu Nome'}</h2>
+                                            <p className="text-xs text-white/80 uppercase tracking-wider">{profileData.profession || 'Profissional'}</p>
+                                        </div>
+                                        <div className="absolute top-4 right-4 z-20">
+                                            <button
+                                                onClick={() => setIsProfileExpanded(true)}
+                                                className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-full transition-colors border border-white/20"
+                                            >
+                                                <Edit3 size={16} />
+                                            </button>
                                         </div>
                                     </div>
-                                    <button onClick={handleSaveProfile} disabled={isSavingProfile} className="mt-auto bg-green-600 text-white py-2 rounded-full font-bold">{isSavingProfile ? '...' : 'Salvar'}</button>
+
+                                    <div className="mt-4 px-2 space-y-3">
+                                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                            <Phone size={14} className="text-gray-700 dark:text-gray-300" />
+                                            <span className="truncate">{profileData.phone || 'Sem telefone'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                            <MapPin size={14} className="text-gray-700 dark:text-gray-300" />
+                                            <span className="truncate">
+                                                {profileData.city ? `${profileData.city} - ${profileData.state}` : 'Localização não definida'}
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                            <Briefcase size={14} className="text-gray-700 dark:text-gray-300" />
+                                            <span className="truncate">{profileData.company_name || 'Sem empresa'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                            <Mail size={14} className="text-gray-700 dark:text-gray-300" />
+                                            <span className="truncate">{user?.email || 'Sem email'}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                                            <FileText size={14} className="text-gray-700 dark:text-gray-300" />
+                                            <span className="truncate">{profileData.document_id || 'CPF/CNPJ não informado'}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6">
+                                        <button
+                                            onClick={() => setIsProfileExpanded(true)}
+                                            className="w-full py-2.5 rounded-xl bg-muted/50 hover:bg-muted text-xs font-bold uppercase tracking-wide transition-colors text-muted-foreground hover:text-foreground border border-transparent hover:border-black/5"
+                                        >
+                                            Editar Dados
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2">
+                                    <div className="flex justify-between items-center mb-2 pb-2 border-b border-border/50">
+                                        <h3 className="font-bold text-lg">Editar Perfil</h3>
+                                        <button onClick={() => setIsProfileExpanded(false)} className="text-muted-foreground hover:text-foreground p-1">
+                                            <ChevronDown className="rotate-180" />
+                                        </button>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        {/* Avatar Upload in Edit Mode */}
+                                        <div className="flex items-center gap-4">
+                                            <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0">
+                                                {profileData.avatar_url ? <img src={profileData.avatar_url} className="w-full h-full object-cover" /> : <UserIcon className="w-8 h-8 m-auto text-gray-400" />}
+                                                {isUploadingAvatar && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><Loader2 className="animate-spin text-white w-4 h-4" /></div>}
+                                            </div>
+                                            <label className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-4 py-2 rounded-lg transition-colors">
+                                                Alterar Foto
+                                                <input type="file" className="hidden" onChange={handleAvatarUpload} accept="image/*" disabled={isUploadingAvatar} />
+                                            </label>
+                                        </div>
+
+                                        <div className="space-y-3">
+                                            <h4 className="text-[10px] font-bold uppercase text-muted-foreground flex items-center gap-1"><UserIcon size={10} /> Dados Pessoais</h4>
+                                            <input value={profileData.full_name} onChange={e => setProfileData({ ...profileData, full_name: e.target.value })} placeholder="Nome Completo" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            <input value={profileData.profession} onChange={e => setProfileData({ ...profileData, profession: e.target.value })} placeholder="Profissão (Ex: Eng. Civil)" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <input value={profileData.document_id} onChange={e => setProfileData({ ...profileData, document_id: e.target.value })} placeholder="CPF/CNPJ" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                                <input value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })} placeholder="Telefone" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            </div>
+
+                                            <h4 className="text-[10px] font-bold uppercase text-muted-foreground mt-2 flex items-center gap-1"><MapPin size={10} /> Endereço</h4>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                <input value={profileData.cep || ''} onChange={e => setProfileData({ ...profileData, cep: e.target.value })} placeholder="CEP" className="col-span-1 w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                                <input value={profileData.city} onChange={e => setProfileData({ ...profileData, city: e.target.value })} placeholder="Cidade" className="col-span-2 w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            </div>
+                                            <input value={profileData.address || ''} onChange={e => setProfileData({ ...profileData, address: e.target.value })} placeholder="Endereço (Rua, Nº, Bairro)" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+
+                                            <input value={profileData.company_name} onChange={e => setProfileData({ ...profileData, company_name: e.target.value })} placeholder="Nome da Empresa (Opcional)" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+
+                                            <h4 className="text-[10px] font-bold uppercase text-muted-foreground mt-2 flex items-center gap-1"><DollarSign size={10} /> Dados Bancários</h4>
+                                            <input value={profileData.pix_key} onChange={e => setProfileData({ ...profileData, pix_key: e.target.value })} placeholder="Chave PIX" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            <input value={profileData.bank_name} onChange={e => setProfileData({ ...profileData, bank_name: e.target.value })} placeholder="Nome do Banco" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <input value={profileData.bank_agency} onChange={e => setProfileData({ ...profileData, bank_agency: e.target.value })} placeholder="Agência" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                                <input value={profileData.bank_account} onChange={e => setProfileData({ ...profileData, bank_account: e.target.value })} placeholder="Conta" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                            </div>
+                                        </div>
+
+                                        <div className="flex gap-2 pt-2">
+                                            <button onClick={() => setIsProfileExpanded(false)} className="flex-1 py-3 text-sm font-bold text-[#E9813C] hover:bg-[#E9813C]/10 rounded-full transition-colors">Cancelar</button>
+                                            <button onClick={handleSaveProfile} disabled={isSavingProfile || saveSuccess} className={`flex-1 py-3 font-bold rounded-full shadow-lg transition-all active:scale-95 text-white ${saveSuccess ? 'bg-green-500 hover:bg-green-600 shadow-green-500/20' : 'bg-[#E9813C] hover:bg-[#d46d2a] shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40'}`}>
+                                                {isSavingProfile ? <Loader2 className="animate-spin m-auto" /> : saveSuccess ? 'Salvo!' : 'Salvar'}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -465,82 +528,85 @@ export default function DashboardPage() {
                             </div>
                         </div>
 
-                        {/* Budgets List (Cleaned) */}
-                        <div className="w-full bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-[2rem] p-6 shadow-sm border border-white/40 dark:border-white/5">
-                            <div className="flex justify-between items-center mb-6">
-                                <h3 className="font-medium text-lg">Seus Orçamentos</h3>
-                                <div className="flex gap-2">
-                                    <button className="p-2 hover:bg-muted rounded-xl transition-colors"><Search size={18} className="text-muted-foreground" /></button>
+                        {/* Middle Row: Charts & Insights */}
+                        <BudgetOverview budgets={budgets} />
+
+                    </div>
+                </div>
+
+                {/* 3. Budgets List (Full Width) */}
+                <div className="w-full bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-xl rounded-[2rem] p-6 shadow-sm border border-white/40 dark:border-white/5">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="font-medium text-lg">Seus Orçamentos</h3>
+                        <div className="flex gap-2">
+                            <button className="p-2 hover:bg-muted rounded-xl transition-colors"><Search size={18} className="text-muted-foreground" /></button>
+                        </div>
+                    </div>
+
+                    <div className="hidden md:grid grid-cols-12 gap-4 px-3 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
+                        <div className="col-span-6 pl-16">Obra / Cliente</div>
+                        <div className="col-span-4 text-right pr-4">Valor Total</div>
+                        <div className="col-span-2 text-center">Ações</div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {budgets.length === 0 ? (
+                            <div className="text-center py-10 text-muted-foreground">
+                                <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
+                                <p>Nenhum orçamento ainda.</p>
+                                <button onClick={handleNewBudget} className="mt-4 text-primary font-bold hover:underline">Criar agora</button>
+                            </div>
+                        ) : budgets.map(budget => (
+                            <div
+                                key={budget.id}
+                                onClick={() => router.push(`/editor/${budget.id}`)}
+                                className="group grid grid-cols-12 gap-2 items-center p-3 hover:bg-muted/30 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-black/5 dark:hover:border-white/5"
+                            >
+                                {/* Name */}
+                                <div className="col-span-5 md:col-span-6 flex items-center gap-2 md:gap-4">
+                                    <div className="w-10 h-10 md:w-12 md:h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors shrink-0">
+                                        {budget.content?.clientName ? <span className="font-bold text-sm md:text-lg uppercase">{budget.content.clientName.charAt(0)}</span> : <Building2 size={20} className="md:w-6 md:h-6" />}
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <h4 className="font-bold text-xs md:text-sm text-foreground truncate">{budget.content?.clientName || budget.title || 'Sem título'}</h4>
+                                        <div className="flex items-center gap-1 md:gap-2 text-[10px] md:text-xs text-muted-foreground">
+                                            <span>{new Date(budget.updated_at).toLocaleDateString()}</span>
+                                            <span className="hidden md:inline">•</span>
+                                            <span className="hidden md:inline">{budget.content?.items?.length || 0} itens</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Value */}
+                                <div className="col-span-3 md:col-span-4 flex justify-end md:justify-end pr-2 md:pr-4 font-bold text-xs md:text-sm truncate">
+                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                        budget.content?.items?.filter((i: any) => i.included).reduce((sum: number, item: any) => sum + ((item.manualPrice ?? item.price) * item.quantity), 0) * (1 + (budget.content?.bdi || 0) / 100) || 0
+                                    )}
+                                </div>
+
+                                {/* Actions */}
+                                <div className="col-span-4 md:col-span-2 flex justify-end gap-1 md:gap-2">
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/report/${budget.id}`);
+                                    }} className="p-2 bg-white dark:bg-white/10 dark:text-gray-200 shadow-sm rounded-xl hover:text-blue-500 dark:hover:text-blue-400 transition-colors border border-black/5 dark:border-white/10 dark:hover:bg-white/20" title="Ver Relatório">
+                                        <FileText size={16} />
+                                    </button>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/editor/${budget.id}`);
+                                    }} className="p-2 bg-white dark:bg-white/10 dark:text-gray-200 shadow-sm rounded-xl hover:text-primary dark:hover:text-orange-400 transition-colors border border-black/5 dark:border-white/10 dark:hover:bg-white/20" title="Editar">
+                                        <Edit3 size={16} />
+                                    </button>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteBudget(budget.id);
+                                    }} className="p-2 bg-white dark:bg-white/10 dark:text-gray-200 shadow-sm rounded-xl hover:text-red-500 dark:hover:text-red-400 transition-colors border border-black/5 dark:border-white/10 dark:hover:bg-white/20" title="Excluir">
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </div>
-
-                            <div className="hidden md:grid grid-cols-12 gap-4 px-3 mb-2 text-[10px] font-medium text-muted-foreground uppercase tracking-wider">
-                                <div className="col-span-6 pl-16">Obra / Cliente</div>
-                                <div className="col-span-4 text-right pr-4">Valor Total</div>
-                                <div className="col-span-2 text-center">Ações</div>
-                            </div>
-
-                            <div className="space-y-4">
-                                {budgets.length === 0 ? (
-                                    <div className="text-center py-10 text-muted-foreground">
-                                        <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                                        <p>Nenhum orçamento ainda.</p>
-                                        <button onClick={handleNewBudget} className="mt-4 text-primary font-bold hover:underline">Criar agora</button>
-                                    </div>
-                                ) : budgets.map(budget => (
-                                    <div
-                                        key={budget.id}
-                                        onClick={() => router.push(`/editor/${budget.id}`)}
-                                        className="group grid grid-cols-12 gap-4 items-center p-3 hover:bg-muted/30 rounded-2xl transition-all cursor-pointer border border-transparent hover:border-black/5 dark:hover:border-white/5"
-                                    >
-                                        {/* Name */}
-                                        <div className="col-span-8 md:col-span-6 flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                                                {budget.content?.clientName ? <span className="font-bold text-lg uppercase">{budget.content.clientName.charAt(0)}</span> : <Building2 size={24} />}
-                                            </div>
-                                            <div className="overflow-hidden">
-                                                <h4 className="font-bold text-sm text-foreground truncate">{budget.content?.clientName || budget.title || 'Sem título'}</h4>
-                                                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                                    <span>{new Date(budget.updated_at).toLocaleDateString()}</span>
-                                                    <span>•</span>
-                                                    <span>{budget.content?.items?.length || 0} itens</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Value */}
-                                        <div className="col-span-4 md:col-span-4 flex justify-end pr-4 font-bold text-sm">
-                                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                                                budget.content?.items?.filter((i: any) => i.included).reduce((sum: number, item: any) => sum + ((item.manualPrice ?? item.price) * item.quantity), 0) * (1 + (budget.content?.bdi || 0) / 100) || 0
-                                            )}
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div className="hidden md:flex col-span-2 justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onClick={(e) => {
-                                                e.stopPropagation();
-                                                router.push(`/report/${budget.id}`);
-                                            }} className="p-2 bg-white shadow-sm rounded-xl hover:text-blue-500 transition-colors" title="Ver Relatório">
-                                                <FileText size={16} />
-                                            </button>
-                                            <button onClick={(e) => {
-                                                e.stopPropagation();
-                                                router.push(`/editor/${budget.id}`);
-                                            }} className="p-2 bg-white shadow-sm rounded-xl hover:text-primary transition-colors" title="Editar">
-                                                <Edit3 size={16} />
-                                            </button>
-                                            <button onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDeleteBudget(budget.id);
-                                            }} className="p-2 bg-white shadow-sm rounded-xl hover:text-red-500 transition-colors" title="Excluir">
-                                                <Trash2 size={16} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
+                        ))}
                     </div>
                 </div>
             </div>

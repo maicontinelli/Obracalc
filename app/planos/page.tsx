@@ -1,14 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, X } from 'lucide-react';
+import { Check, X, User, ArrowRight, Lock } from 'lucide-react';
 import { Button } from '@/components/Button';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
 export default function PlansPage() {
     const [loading, setLoading] = useState<string | null>(null);
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+    const [showAuthModal, setShowAuthModal] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState<string>('');
     const supabase = createClient();
 
     const handleSubscribe = async (planName: string) => {
@@ -17,10 +20,10 @@ export default function PlansPage() {
             const { data: { user } } = await supabase.auth.getUser();
 
             if (!user) {
-                if (typeof window !== 'undefined') {
-                    alert('Para assinar este plano, você precisa criar uma conta ou fazer login primeiro.');
-                    window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
-                }
+                // Show custom modal instead of alert
+                setSelectedPlan(planName);
+                setShowAuthModal(true);
+                setLoading(null);
                 return;
             }
 
@@ -150,8 +153,8 @@ export default function PlansPage() {
 
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center max-w-7xl mx-auto">
-                            <h1 className="text-xl md:text-3xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-24">
-                                A ferramenta definitiva para orçamentos técnicos, <br /> padronizados e prontos para fechar contrato.
+                            <h1 className="text-3xl md:text-5xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-24">
+                                A ferramenta definitiva para <br /> <span className="text-[#74D2E7]">criar orçamentos</span>
                             </h1>
                             <p className="text-sm md:text-base font-manrope font-semibold text-foreground mb-0">
                                 Use no seu ritmo. Evolua quando fizer sentido
@@ -187,13 +190,13 @@ export default function PlansPage() {
                             <div
                                 key={plan.name}
                                 className={`relative flex flex-col p-8 rounded-2xl border bg-card transition-shadow hover:shadow-xl ${plan.popular
-                                    ? 'border-[#FF6600] shadow-lg ring-1 ring-[#FF6600]'
+                                    ? 'border-[#74D2E7] shadow-lg ring-1 ring-[#74D2E7]/50'
                                     : 'border-border dark:border-white/15'
                                     }`}
                             >
                                 {plan.popular && (
                                     <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                                        <div className="relative px-4 py-1 bg-[#FF6600] text-white text-sm font-medium rounded-full">
+                                        <div className="relative px-4 py-1 bg-[#74D2E7] text-[#3D3A36] text-sm font-bold rounded-full shadow-sm">
                                             Mais Popular
                                         </div>
                                     </div>
@@ -259,7 +262,7 @@ export default function PlansPage() {
                                                 className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full ${plan.popular
                                                     ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border-none'
                                                     : plan.name === 'Grátis'
-                                                        ? 'bg-[#74D2E7]/10 dark:bg-[#74D2E7]/20 border-2 border-[#74D2E7] text-foreground hover:bg-[#74D2E7]/20 dark:hover:bg-[#74D2E7]/30'
+                                                        ? 'bg-[#E9813C] hover:bg-[#d67332] text-white border-none shadow-lg shadow-[#E9813C]/20'
                                                         : plan.name === 'Empresarial'
                                                             ? 'bg-[#1e293b] text-white border border-[#1e293b] hover:bg-[#0f172a] hover:border-[#0f172a]'
                                                             : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
@@ -277,7 +280,7 @@ export default function PlansPage() {
                                     <div className="w-full">
                                         <Button
                                             className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full shadow-md hover:shadow-xl hover:-translate-y-0.5 ${plan.popular
-                                                ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border border-transparent shadow-[#FF6600]/20'
+                                                ? 'bg-[#74D2E7] hover:bg-[#5bc0de] text-white border border-transparent shadow-[#74D2E7]/20 text-[#3D3A36]'
                                                 : plan.name === 'Empresarial'
                                                     ? 'bg-[#1e293b] text-white border border-gray-700 hover:bg-[#0f172a] shadow-gray-900/20'
                                                     : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
@@ -302,6 +305,56 @@ export default function PlansPage() {
                         </p>
                     </div>
                 </div>
+
+                {/* Auth Modal */}
+                {showAuthModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                        <SpotlightCard
+                            className="w-full max-w-md bg-background border-neutral-200 dark:border-white/10 p-8 shadow-2xl relative"
+                            spotlightColor="rgba(116, 210, 231, 0.15)"
+                        >
+                            <button
+                                onClick={() => setShowAuthModal(false)}
+                                className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+                                aria-label="Fechar"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div className="flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-[#74D2E7]/10 rounded-full flex items-center justify-center mb-6">
+                                    <Lock className="w-8 h-8 text-[#74D2E7]" />
+                                </div>
+
+                                <h3 className="text-2xl font-heading font-bold text-foreground mb-3">
+                                    Crie sua conta Gratuita
+                                </h3>
+
+                                <p className="text-muted-foreground mb-8 leading-relaxed">
+                                    Para assinar o plano <span className="font-bold text-foreground">{selectedPlan}</span>, você precisa ter um cadastro no ObraPlana primeiro. É rápido e gratuito.
+                                </p>
+
+                                <div className="w-full space-y-3">
+                                    <Link href={`/login?next=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '/planos')}`} className="w-full block">
+                                        <Button className="w-full h-12 bg-[#E9813C] hover:bg-[#d67332] text-white font-bold rounded-xl shadow-lg shadow-orange-500/20 text-base flex items-center justify-center gap-2">
+                                            Criar conta Grátis
+                                            <ArrowRight size={18} />
+                                        </Button>
+                                    </Link>
+
+                                    <Link href="/login" className="w-full block">
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full h-12 text-muted-foreground hover:text-foreground hover:bg-neutral-100 dark:hover:bg-white/5 font-medium rounded-xl"
+                                        >
+                                            Já tenho uma conta
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </SpotlightCard>
+                    </div>
+                )}
             </main>
         </div>
     );

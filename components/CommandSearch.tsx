@@ -32,6 +32,7 @@ type SuggestedItem = {
 type SuggestedBudget = {
     title: string;
     items: SuggestedItem[];
+    projectArea?: number;
 };
 
 type AiResponse = {
@@ -45,7 +46,7 @@ interface CommandSearchProps {
     onSelect: (item: BoqItem) => void;
     onAddCustom: (
         items: Omit<BoqItem, 'id' | 'included' | 'isCustom'>[],
-        aiContext?: { query: string, guidance: string, suggestedTitle?: string }
+        aiContext?: { query: string, guidance: string, suggestedTitle?: string, projectArea?: number }
     ) => void;
 }
 
@@ -189,7 +190,8 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
         onAddCustom(itemsToAdd, {
             query: query,
             guidance: aiResponse.text,
-            suggestedTitle: aiResponse.suggestedBudget.title
+            suggestedTitle: aiResponse.suggestedBudget.title,
+            projectArea: aiResponse.suggestedBudget.projectArea
         });
 
         // Reset state

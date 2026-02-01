@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Camera, Upload, Loader2, ArrowLeft, CheckCircle2, RotateCw, Wrench, Hammer, Sparkles, Trophy, Zap, Droplets, User, UserCheck } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 import { SelectionList } from '@/components/SelectionList';
+import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
 export default function NovoDiagnostico() {
     const router = useRouter();
@@ -132,7 +133,7 @@ export default function NovoDiagnostico() {
                             <ArrowLeft size={16} />
                             Voltar para o Início
                         </button>
-                        <h1 className="text-4xl md:text-5xl font-heading font-bold text-foreground mb-6">
+                        <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
                             Diagnóstico Visual com <span className="text-[#FF6600]">IA</span>
                         </h1>
                         <p className="text-xl font-manrope text-muted-foreground max-w-2xl mx-auto">
@@ -147,7 +148,7 @@ export default function NovoDiagnostico() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Left Column: Image Upload */}
                     <div className="md:col-span-1 space-y-6">
-                        <div className="bg-card rounded-2xl shadow-xl p-6 border border-border sticky top-24">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(255, 102, 0, 0.15)">
                             <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
                                 <Camera size={20} className="text-[#FF6600]" />
                                 Foto do Ambiente
@@ -155,37 +156,41 @@ export default function NovoDiagnostico() {
 
                             {image ? (
                                 <div className="space-y-4">
-                                    <div className="relative rounded-lg overflow-hidden aspect-[3/4] border border-white/10 shadow-inner">
+                                    <div className="relative rounded-lg overflow-hidden aspect-[3/4] border border-white/10 shadow-inner group">
                                         <img src={image} alt="Preview" className="w-full h-full object-cover" />
-                                        <button
-                                            onClick={() => setImage(null)}
-                                            className="absolute top-2 right-2 bg-black/60 hover:bg-red-500 text-white p-2 rounded-full transition-colors backdrop-blur-sm"
-                                            aria-label="Remover imagem"
-                                            title="Remover imagem"
-                                        >
-                                            <Upload size={16} className="rotate-45" />
-                                        </button>
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                            <button
+                                                onClick={() => setImage(null)}
+                                                className="bg-red-500 hover:bg-red-600 text-white p-3 rounded-full transition-colors transform hover:scale-110 shadow-lg"
+                                                aria-label="Remover imagem"
+                                                title="Remover imagem"
+                                            >
+                                                <Upload size={20} className="rotate-45" />
+                                            </button>
+                                        </div>
                                     </div>
-                                    <p className="text-xs text-center text-green-500 font-medium flex items-center justify-center gap-1">
-                                        <CheckCircle2 size={12} />
-                                        Imagem carregada
+                                    <p className="text-xs text-center text-green-500 font-medium flex items-center justify-center gap-1 bg-green-500/10 py-2 rounded-lg">
+                                        <CheckCircle2 size={14} />
+                                        Imagem carregada com sucesso
                                     </p>
                                 </div>
                             ) : (
-                                <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-[#FF6600] dark:hover:border-[#FF6600] rounded-xl p-6 text-center transition-all group">
-                                    <div className="mb-4 p-3 bg-gray-50 dark:bg-white/5 rounded-full w-fit mx-auto group-hover:bg-[#FF6600]/10 transition-colors">
+                                <div className="border-2 border-dashed border-neutral-200 dark:border-white/10 hover:border-[#FF6600] dark:hover:border-[#FF6600] hover:bg-[#FF6600]/5 rounded-xl p-8 text-center transition-all group cursor-pointer" onClick={() => document.getElementById('file-upload')?.click()}>
+                                    <div className="mb-4 p-4 bg-gray-50 dark:bg-white/5 rounded-full w-fit mx-auto group-hover:scale-110 transition-transform duration-300">
                                         <Upload className="h-8 w-8 text-gray-400 group-hover:text-[#FF6600] transition-colors" />
                                     </div>
-                                    <p className="text-sm text-muted-foreground mb-4 font-medium">
-                                        Clique para enviar uma foto do local
+                                    <h4 className="font-bold text-foreground mb-1">Upload da Foto</h4>
+                                    <p className="text-sm text-muted-foreground mb-6">
+                                        Arraste uma foto ou clique para selecionar
                                     </p>
-                                    <label className="block w-full py-2 bg-[#FF6600] hover:bg-[#FF6600]/90 text-white rounded-lg cursor-pointer transition-colors text-sm font-bold shadow-md">
+                                    <label className="inline-block w-full py-3 bg-[#FF6600] hover:bg-[#CC5200] text-white rounded-xl cursor-pointer transition-colors text-sm font-bold shadow-lg shadow-orange-500/20">
                                         {loading ? (
                                             <Loader2 className="animate-spin mx-auto" size={18} />
                                         ) : (
                                             'Selecionar Foto'
                                         )}
                                         <input
+                                            id="file-upload"
                                             type="file"
                                             accept="image/*"
                                             onChange={handleImageUpload}
@@ -195,12 +200,12 @@ export default function NovoDiagnostico() {
                                     </label>
                                 </div>
                             )}
-                        </div>
+                        </SpotlightCard>
                     </div>
 
                     {/* Right Column: Form */}
                     <div className="md:col-span-2">
-                        <div className="bg-card rounded-2xl shadow-xl p-8 border border-border">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-8 border border-neutral-200 dark:border-white/10" spotlightColor="rgba(255, 102, 0, 0.15)">
                             <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
                                 Conte-nos mais sobre o projeto
                             </h3>
@@ -275,7 +280,7 @@ export default function NovoDiagnostico() {
                                         value={formData.area}
                                         onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                                         placeholder="12"
-                                        className="w-full px-4 py-3 text-base rounded-xl border border-input bg-background text-foreground resize-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 placeholder-muted-foreground transition-all outline-none"
+                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#FF6600] focus:border-[#FF6600] placeholder-muted-foreground transition-all outline-none shadow-sm"
                                     />
                                 </div>
 
@@ -283,14 +288,14 @@ export default function NovoDiagnostico() {
                                 <div>
                                     <label className="block text-base font-semibold mb-3 text-foreground">
                                         Observações adicionais
-                                        <span className="text-xs font-normal text-gray-500 ml-2">(opcional)</span>
+                                        <span className="text-xs font-normal text-muted-foreground ml-2">(opcional)</span>
                                     </label>
                                     <textarea
                                         value={formData.observacoes}
                                         onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
                                         placeholder="Ex: Quero trocar essa janela por um blindex e pintar tudo de branco"
                                         rows={3}
-                                        className="w-full px-4 py-3 text-base rounded-xl border border-input bg-background text-foreground resize-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500/50 placeholder-muted-foreground transition-all outline-none"
+                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#FF6600] focus:border-[#FF6600] placeholder-muted-foreground transition-all outline-none shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -298,10 +303,10 @@ export default function NovoDiagnostico() {
                             <button
                                 onClick={handleSubmit}
                                 disabled={loading || !image}
-                                className={`w-full mt-8 px-6 py-4 rounded-lg font-semibold text-base transition-all flex items-center justify-center gap-2 shadow-lg
+                                className={`w-full mt-8 px-6 py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-lg
                                     ${!image
                                         ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed'
-                                        : 'bg-[#FF6600] hover:bg-[#E65C00] text-white hover:shadow-orange-500/20'
+                                        : 'bg-[#FF6600] hover:bg-[#CC5200] text-white hover:shadow-orange-500/20 hover:scale-[1.01] active:scale-[0.99]'
                                     }`}
                             >
                                 {loading ? (
@@ -321,7 +326,7 @@ export default function NovoDiagnostico() {
                                     </>
                                 )}
                             </button>
-                        </div>
+                        </SpotlightCard>
                     </div>
                 </div>
             </div>

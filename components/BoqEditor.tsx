@@ -37,6 +37,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [includeContract, setIncludeContract] = useState(true); // New: Toggle (Default Active)
     const [workCity, setWorkCity] = useState('');
     const [workState, setWorkState] = useState('');
+    const [projectArea, setProjectArea] = useState<number>(0); // New: Area in m2
     const [aiRequests, setAiRequests] = useState<any[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -175,6 +176,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     setIncludeContract(parsed.includeContract !== undefined ? parsed.includeContract : true);
                     setWorkCity(parsed.workCity || '');
                     setWorkState(parsed.workState || '');
+                    setProjectArea(parsed.projectArea || 0);
                     setAiRequests(parsed.aiRequests || []);
                 } catch (e) {
                     console.error("Error parsing estimate:", e);
@@ -273,6 +275,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             workState,
             updatedAt: new Date().toISOString(),
             includeMaterials, // Always save this state
+            projectArea,
             aiRequests
         };
 
@@ -438,6 +441,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             includeContract,
             clientDocument,
             clientAddress,
+            projectArea,
             aiRequests
         };
 
@@ -497,6 +501,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             clientDocument,
             clientAddress,
             updatedAt: new Date().toISOString(),
+            projectArea,
             aiRequests
         };
         localStorage.setItem(`estimate_${estimateId}`, JSON.stringify(dataToSave));
@@ -712,6 +717,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     setItems(prev => [...itemsWithIds, ...prev]);
                                     if (request) {
                                         setAiRequests(prev => [...prev, { ...request, id: requestId, timestamp: new Date().toISOString() }]);
+                                        if (request.projectArea && request.projectArea > 0) {
+                                            setProjectArea(request.projectArea);
+                                        }
                                     }
                                     setExpandedCategories(prev => ({
                                         ...prev,

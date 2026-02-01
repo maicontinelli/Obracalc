@@ -303,7 +303,7 @@ export default function AiAssistant() {
                             border border-[#FF6600]/50
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
                             focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
-                            cursor-text"
+                            cursor-text overflow-hidden"
                         style={{ minHeight: '120px' }}
                         onClick={() => {
                             // Focus the textarea when clicking anywhere on the container
@@ -337,7 +337,7 @@ export default function AiAssistant() {
                             onFocus={() => setShowSuggestions(true)}
                             onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                             placeholder={isClarifying ? "Digite sua resposta..." : (isDeleting ? "" : placeholder)}
-                            className="w-full px-6 pt-6 pb-16 rounded-3xl border-none outline-none bg-transparent text-lg text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-400 dark:placeholder-gray-500 font-medium resize-none overflow-hidden"
+                            className="w-full px-6 pt-6 pb-16 rounded-3xl border-none outline-none bg-transparent text-lg text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium resize-none overflow-hidden"
                             rows={1}
                             style={{ minHeight: '80px' }}
                         />
@@ -401,7 +401,7 @@ export default function AiAssistant() {
                                                     }}
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-green-50 dark:hover:bg-green-900/10 transition-colors group text-left"
                                                 >
-                                                    <div className="p-2 bg-[#22c55e]/10 text-[#22c55e] rounded-lg group-hover:scale-110 transition-transform">
+                                                    <div className="p-2 text-[#22c55e] group-hover:scale-110 transition-transform">
                                                         <Calculator size={18} />
                                                     </div>
                                                     <div>
@@ -418,7 +418,7 @@ export default function AiAssistant() {
                                                     }}
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group text-left"
                                                 >
-                                                    <div className="p-2 bg-[#FF6600]/10 text-[#FF6600] rounded-lg group-hover:scale-110 transition-transform">
+                                                    <div className="p-2 text-[#FF6600] group-hover:scale-110 transition-transform">
                                                         <ScanEye size={18} />
                                                     </div>
                                                     <div>
@@ -435,7 +435,7 @@ export default function AiAssistant() {
                                                     onClick={() => router.push('/relatorio-fotografico')}
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/10 transition-colors group text-left"
                                                 >
-                                                    <div className="p-2 bg-[#6366F1]/10 text-[#6366F1] rounded-lg group-hover:scale-110 transition-transform">
+                                                    <div className="p-2 text-[#6366F1] group-hover:scale-110 transition-transform">
                                                         <Camera size={18} />
                                                     </div>
                                                     <div>
@@ -449,7 +449,7 @@ export default function AiAssistant() {
                                                     onClick={() => router.push('/topografia')}
                                                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/10 transition-colors group text-left"
                                                 >
-                                                    <div className="p-2 bg-[#C2410C]/10 text-[#C2410C] rounded-lg group-hover:scale-110 transition-transform">
+                                                    <div className="p-2 text-[#C2410C] group-hover:scale-110 transition-transform">
                                                         <Map size={18} />
                                                     </div>
                                                     <div>
