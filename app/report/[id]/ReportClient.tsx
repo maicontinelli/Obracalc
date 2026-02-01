@@ -825,7 +825,8 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             <style jsx>{`
                 @media print {
                     .contract-page { 
-                        page-break-before: always; 
+                        page-break-before: always;
+                        break-before: page;
                         margin-top: 0 !important;
                         padding-top: 40px !important;
                     }
@@ -1214,19 +1215,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     </div>
                 </div>
 
-                {/* NEW REPORT VISUALS SECTION */}
-                <div className="space-y-6 mb-8 break-inside-avoid">
-                    <ResumoExecutivo data={data} total={total} bdi={data.bdi || 0} />
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
-                        <div className="flex flex-col gap-6">
-                            <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} />
-                            <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
-                            <ComparativoMercado total={total} />
-                        </div>
-                    </div>
-                </div>
+                {/* REMOVED VISUALS FROM TOP - MOVED TO BOTTOM */}
 
                 {/* Items - Condensed Table Style */}
                 <div className="space-y-6">
@@ -1396,6 +1385,24 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                 </span>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* NEW REPORT VISUALS SECTION (MOVED TO END with Page Break) */}
+            <div className="space-y-6 mb-8 mt-12 page-break-before print:block">
+                <div className="no-print mb-4 border-t border-gray-200 dark:border-gray-700 pt-8"></div>
+
+                <div className="print:mt-0">
+                    <ResumoExecutivo data={data} total={total} bdi={data.bdi || 0} />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                    <div className="flex flex-col gap-6">
+                        <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} />
+                        <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
+                        <ComparativoMercado total={total} />
                     </div>
                 </div>
             </div>
