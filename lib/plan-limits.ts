@@ -20,7 +20,6 @@ export interface UserProfile {
     bank_account?: string;
     // Usage stats (could be counted dynamically or cached)
     saved_estimates_count: number;
-    points?: number;
     avatar_url?: string | null;
     address?: string;
     cep?: string;
@@ -33,7 +32,6 @@ export const PLAN_LIMITS = {
         can_export_pdf: true,
         can_export_html: true,
         can_remove_watermark: false,
-        can_view_leads: false,
         can_edit_saved: true,
         can_delete_saved: true
     },
@@ -43,7 +41,6 @@ export const PLAN_LIMITS = {
         can_export_pdf: true,
         can_export_html: true,
         can_remove_watermark: true,
-        can_view_leads: 'preview', // Can see they exist, but blinded
         can_edit_saved: true,
         can_delete_saved: true
     },
@@ -53,7 +50,6 @@ export const PLAN_LIMITS = {
         can_export_pdf: true,
         can_export_html: true,
         can_remove_watermark: true,
-        can_view_leads: 'full', // Full access
         can_edit_saved: true,
         can_delete_saved: true
     }

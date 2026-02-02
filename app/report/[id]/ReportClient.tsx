@@ -1221,7 +1221,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                         <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{data.clientPhone || '-'}</div>
                                     </div>
                                     <div>
-                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">Prazo</div>
+                                        <div className="text-[10px] font-bold text-gray-400 uppercase mb-1 leading-none">PRAZO DE INÍCIO</div>
                                         <div className="text-gray-800 dark:text-gray-200 font-medium text-base leading-none">{data.deadline || '-'}</div>
                                     </div>
                                 </div>

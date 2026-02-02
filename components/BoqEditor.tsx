@@ -46,7 +46,6 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
     const [isManualCatalogExpanded, setIsManualCatalogExpanded] = useState(false);
     const [includeMaterials, setIncludeMaterials] = useState(true);
-    const [visibility, setVisibility] = useState('private'); // Default private, overridden by load/save logic
 
     const [defaultItems, setDefaultItems] = useState<BoqItem[]>([]);
 
@@ -112,7 +111,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 try {
                     const { data, error } = await supabase
                         .from('budgets')
-                        .select('content, updated_at, visibility')
+                        .select('content, updated_at')
                         .eq('id', estimateId)
                         .maybeSingle();
 
@@ -120,8 +119,6 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                         dataToLoad = data.content;
                         fromCloud = true;
                         setLastSaved(new Date(data.updated_at));
-                        // @ts-ignore
-                        setVisibility(data.visibility || 'private');
                         setIsCloudSynced(true);
                     }
                 } catch (err) {
@@ -445,8 +442,6 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             aiRequests
         };
 
-        const currentVisibility = tier === 'free' ? 'marketplace' : visibility;
-
         // Extract unique categories for summary
         const uniqueCategories = Array.from(new Set(items.map(item => item.category))).filter(Boolean).slice(0, 8);
 
@@ -464,8 +459,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 project_type: projectType,
                 work_city: workCity,
                 work_state: workState,
-                status: 'draft',
-                visibility: currentVisibility
+                status: 'draft'
             });
 
             if (error) {

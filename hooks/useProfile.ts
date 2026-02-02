@@ -48,8 +48,7 @@ export function useProfile() {
                     email: user.email!,
                     tier: user.email === 'maicontinelli@gmail.com' ? 'business' : 'free',
                     subscription_status: null,
-                    saved_estimates_count: 0,
-                    points: 0
+                    saved_estimates_count: 0
                 });
             }
             setIsLoading(false);

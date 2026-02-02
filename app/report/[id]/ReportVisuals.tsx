@@ -64,7 +64,7 @@ export function ResumoExecutivo({ data, total, bdi }: { data: any, total: number
     const items = [
         { icon: "🏗️", label: "Tipo", valor: data.projectType || 'Obra Geral' },
         { icon: "📐", valor: "Área Total", label: area ? `${area} m²` : 'Não informada' },
-        { icon: "📅", label: "Prazo", valor: data.deadline || 'A definir' },
+        { icon: "📅", label: "Prazo de início", valor: data.deadline || 'A definir' },
         { icon: "💰", label: "Valor Total", valor: formatCurrency(total) },
         { icon: "📊", label: "BDI Estimado", valor: `${bdi}%` },
         { icon: "📏", label: "Custo/m²", valor: costPerSqm ? formatCurrency(costPerSqm) : '-' },
