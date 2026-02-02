@@ -226,6 +226,23 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
         }
     }
 
+    // Calculate total weeks
+    const totalWeeks = Math.ceil(months * 4);
+
+    // Generate week markers (show max 12 markers to avoid crowding)
+    const maxMarkers = Math.min(totalWeeks, 12);
+    const weekInterval = Math.ceil(totalWeeks / maxMarkers);
+    const weekMarkers = [];
+    for (let i = 0; i <= maxMarkers; i++) {
+        const weekNum = i * weekInterval;
+        if (weekNum <= totalWeeks) {
+            weekMarkers.push({
+                weekNum: weekNum === 0 ? 1 : weekNum,
+                position: (weekNum / totalWeeks) * 100
+            });
+        }
+    }
+
     // Phases Distribution
     const phases = [
         { name: "Preliminares", startPct: 0, durPct: 10, color: COLORS.textDim },
@@ -239,7 +256,7 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
         <Card>
             <SectionHeader
                 title="Cronograma Estimado Macro"
-                subtitle={`Previsão baseada em prazo de ${Math.ceil(months)} meses`}
+                subtitle={`Previsão baseada em prazo de ${Math.ceil(months)} meses (${totalWeeks} semanas)`}
             />
             <div className="flex mb-1.5 pl-[110px]">
                 <div className="flex-1 flex justify-between text-[10px] text-gray-400 dark:text-gray-500 print:text-gray-500">
@@ -261,6 +278,24 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
                     </div>
                 </div>
             ))}
+
+            {/* Timeline with week markers */}
+            <div className="mt-4 pl-[110px]">
+                <div className="flex-1 relative h-8 border-t border-gray-300 dark:border-gray-600 print:border-gray-400">
+                    {weekMarkers.map((marker, i) => (
+                        <div
+                            key={i}
+                            className="absolute"
+                            style={{ left: `${marker.position}%`, transform: 'translateX(-50%)' }}
+                        >
+                            <div className="w-px h-2 bg-gray-400 dark:bg-gray-500 print:bg-gray-500 mx-auto" />
+                            <div className="text-[9px] text-gray-500 dark:text-gray-400 print:text-gray-600 mt-1 whitespace-nowrap">
+                                {marker.weekNum}ª sem
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </Card>
     );
 }
