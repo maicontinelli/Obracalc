@@ -743,6 +743,48 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             </div>
         </div>
         
+        <!-- VISUAL CHARTS SECTION -->
+        <div style="margin-top: 60px; padding-top: 40px; border-top: 2px solid #e5e7eb;">
+            <h2 style="text-align: center; font-size: 20px; font-weight: bold; color: #111827; margin-bottom: 40px;">Análises e Projeções</h2>
+            
+            <!-- Cronograma Estimado -->
+            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 4px;">Cronograma Estimado Macro</h3>
+                <p style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Previsão baseada em prazo estimado</p>
+                
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="width: 110px; font-size: 11px; color: #374151; font-weight: 500;">Preliminares</div>
+                    <div style="flex: 1; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 0%; width: 10%; height: 100%; background: #9ca3af; border-radius: 4px; opacity: 0.8;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="width: 110px; font-size: 11px; color: #374151; font-weight: 500;">Fundações/Estrutura</div>
+                    <div style="flex: 1; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 5%; width: 35%; height: 100%; background: #f97316; border-radius: 4px; opacity: 0.8;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="width: 110px; font-size: 11px; color: #374151; font-weight: 500;">Instalações</div>
+                    <div style="flex: 1; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 30%; width: 30%; height: 100%; background: #3b82f6; border-radius: 4px; opacity: 0.8;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="width: 110px; font-size: 11px; color: #374151; font-weight: 500;">Acabamentos</div>
+                    <div style="flex: 1; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 50%; width: 40%; height: 100%; background: #a855f7; border-radius: 4px; opacity: 0.8;"></div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; margin-bottom: 12px;">
+                    <div style="width: 110px; font-size: 11px; color: #374151; font-weight: 500;">Limpeza/Entrega</div>
+                    <div style="flex: 1; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                        <div style="position: absolute; left: 90%; width: 10%; height: 100%; background: #22c55e; border-radius: 4px; opacity: 0.8;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         ${contractHTML}
     </div>
     ${(!profile || profile.tier === 'free') ? '<div class="watermark">Gerado gratuitamente por ObraPlana</div>' : ''}
@@ -1007,6 +1049,20 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     }
                     
                     /* FORCE LIGHT THEME FOR ALL EXPORTS */
+                    /* Force light theme at root level */
+                    html, body {
+                        background: white !important;
+                        color: #374151 !important;
+                    }
+                    
+                    /* Remove dark class effects */
+                    html.dark, html.dark *, 
+                    body.dark, body.dark *,
+                    .dark, .dark * {
+                        background-color: white !important;
+                        color: #374151 !important;
+                    }
+                    
                     /* Override all dark mode backgrounds */
                     .dark\\:bg-\\[\\#262423\\],
                     .dark\\:bg-\\[\\#1c1917\\],
