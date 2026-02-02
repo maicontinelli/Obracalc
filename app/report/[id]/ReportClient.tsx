@@ -1170,9 +1170,6 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     <div className="grid grid-cols-1 md:grid-cols-2">
                         {/* Prestador (Left) */}
                         <div className="p-6 border-b md:border-b-0 md:border-r border-gray-100 dark:border-gray-700 bg-white dark:bg-[#262423] print:bg-white">
-                            <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Prestador de Serviços</h3>
-                            </div>
 
                             <div className="space-y-4">
                                 <div>
@@ -1206,9 +1203,6 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
                         {/* Cliente (Right) */}
                         <div className="p-6 bg-white dark:bg-[#262423] print:bg-white">
-                            <div className="mb-4 pb-2 border-b border-gray-100 dark:border-gray-700">
-                                <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest leading-none">Dados do Cliente</h3>
-                            </div>
 
                             <div className="space-y-4">
                                 <div>
