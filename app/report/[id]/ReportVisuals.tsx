@@ -190,10 +190,12 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
 }
 
 // ─── CRONOGRAMA (Heurística) ────────────────
+// ─── CRONOGRAMA (Heurística) ────────────────
 export function CronogramaEstimado({ deadline, projectType }: { deadline: string, projectType: string }) {
     // Try to extract number of months
-    let months = 4; // Default
+    let months = 0;
     const match = deadline?.match(/(\d+)\s*(mês|meses|semana|semanas|dia|dias)/i);
+
     if (match) {
         const val = parseInt(match[1]);
         const unit = match[2].toLowerCase();
@@ -202,8 +204,27 @@ export function CronogramaEstimado({ deadline, projectType }: { deadline: string
         if (unit.includes('dia')) months = val / 30;
     }
 
-    // Cap min valid duration
-    if (months < 1) months = 1;
+    // Heuristic Fallback based on Project Type complexity
+    if (months < 1) {
+        // No valid duration found, guess based on type
+        const typelower = (projectType || '').toLowerCase();
+        if (typelower.includes('casa') || typelower.includes('construção') || typelower.includes('nova')) {
+            months = 6; // Default for new house
+        } else if (typelower.includes('reforma')) {
+            months = 2; // Default for renovation
+        } else {
+            months = 1; // Default for small Service
+        }
+    } else {
+        // Valid duration found, but sanity check
+        const typelower = (projectType || '').toLowerCase();
+        const isComplex = typelower.includes('casa') || typelower.includes('construção') || typelower.includes('nova');
+
+        // If it's a complex work but duration < 2 months, force minimum of 5 months
+        if (isComplex && months < 2) {
+            months = 5;
+        }
+    }
 
     // Phases Distribution
     const phases = [
