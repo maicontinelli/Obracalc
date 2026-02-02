@@ -1006,6 +1006,36 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         width: 100% !important;
                     }
                     
+                    /* FORCE LIGHT THEME FOR ALL EXPORTS */
+                    /* Override all dark mode backgrounds */
+                    .dark\\:bg-\\[\\#262423\\],
+                    .dark\\:bg-\\[\\#1c1917\\],
+                    .dark\\:bg-gray-800,
+                    .dark\\:bg-gray-900,
+                    .dark\\:bg-gray-700,
+                    *[class*="dark:bg-"] {
+                        background: white !important;
+                    }
+                    
+                    /* Override all dark mode text colors */
+                    .dark\\:text-white,
+                    .dark\\:text-gray-100,
+                    .dark\\:text-gray-200,
+                    .dark\\:text-gray-300,
+                    .dark\\:text-gray-400,
+                    *[class*="dark:text-white"],
+                    *[class*="dark:text-gray-"] {
+                        color: #374151 !important;
+                    }
+                    
+                    /* Override all dark mode borders */
+                    .dark\\:border-white\\/10,
+                    .dark\\:border-gray-700,
+                    .dark\\:border-gray-800,
+                    *[class*="dark:border-"] {
+                        border-color: #e5e7eb !important;
+                    }
+                    
                     /* Balanced colors for print */
                     div, span, p, h2, h3, h4, h5, h6 {
                         color: #374151 !important; /* Dark Grey base */
