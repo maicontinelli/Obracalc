@@ -23,7 +23,6 @@ import {
     Mail
 } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
-import Script from 'next/script';
 import { BudgetOverview } from '@/components/dashboard/BudgetOverview';
 
 
@@ -363,6 +362,7 @@ export default function DashboardPage() {
                                             <button
                                                 onClick={() => setIsProfileExpanded(true)}
                                                 className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-full transition-colors border border-white/20"
+                                                aria-label="Editar perfil"
                                             >
                                                 <Edit3 size={16} />
                                             </button>
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                                 <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2">
                                     <div className="flex justify-between items-center mb-2 pb-2 border-b border-border/50">
                                         <h3 className="font-bold text-lg">Editar Perfil</h3>
-                                        <button onClick={() => setIsProfileExpanded(false)} className="text-muted-foreground hover:text-foreground p-1">
+                                        <button onClick={() => setIsProfileExpanded(false)} className="text-muted-foreground hover:text-foreground p-1" aria-label="Fechar edição de perfil">
                                             <ChevronDown className="rotate-180" />
                                         </button>
                                     </div>
@@ -416,7 +416,7 @@ export default function DashboardPage() {
                                         {/* Avatar Upload in Edit Mode */}
                                         <div className="flex items-center gap-4">
                                             <div className="relative w-16 h-16 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0">
-                                                {profileData.avatar_url ? <img src={profileData.avatar_url} className="w-full h-full object-cover" /> : <UserIcon className="w-8 h-8 m-auto text-gray-400" />}
+                                                {profileData.avatar_url ? <img src={profileData.avatar_url} alt="Foto de perfil" className="w-full h-full object-cover" /> : <UserIcon className="w-8 h-8 m-auto text-gray-400" />}
                                                 {isUploadingAvatar && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><Loader2 className="animate-spin text-white w-4 h-4" /></div>}
                                             </div>
                                             <label className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold px-4 py-2 rounded-lg transition-colors">
@@ -502,9 +502,13 @@ export default function DashboardPage() {
                                             </div>
                                             <div className="w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                                 <div
-                                                    className={`h-full rounded-full transition-all duration-1000 ${subscriptionInfo.tier === 'business' ? 'bg-purple-500' : 'bg-blue-500'
-                                                        }`}
+                                                    className={`h-full rounded-full transition-all duration-1000 ${subscriptionInfo.tier === 'business' ? 'bg-purple-500' : 'bg-blue-500'}`}
                                                     style={{ width: `${Math.min(100, ((subscriptionInfo.daysRemaining ?? 365) / 365) * 100)}%` }}
+                                                    role="progressbar"
+                                                    aria-valuenow={subscriptionInfo.daysRemaining ?? 365}
+                                                    aria-valuemin={0}
+                                                    aria-valuemax={365}
+                                                    aria-label="Dias restantes da assinatura"
                                                 />
                                             </div>
                                             <p className="text-[10px] text-muted-foreground">
@@ -539,7 +543,7 @@ export default function DashboardPage() {
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="font-medium text-lg">Seus Orçamentos</h3>
                         <div className="flex gap-2">
-                            <button className="p-2 hover:bg-muted rounded-xl transition-colors"><Search size={18} className="text-muted-foreground" /></button>
+                            <button className="p-2 hover:bg-muted rounded-xl transition-colors" aria-label="Buscar orçamentos"><Search size={18} className="text-muted-foreground" /></button>
                         </div>
                     </div>
 
@@ -610,7 +614,6 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
-            <Script async src="https://js.stripe.com/v3/buy-button.js" strategy="lazyOnload" />
         </div>
     );
 }
