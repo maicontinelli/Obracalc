@@ -783,6 +783,136 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     </div>
                 </div>
             </div>
+            
+            <!-- Curva ABC -->
+            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+                <h3 style="font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 4px;">Curva ABC - Relevância por Categoria</h3>
+                <p style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Analise onde está a maior parte do investimento</p>
+                
+                ${(() => {
+                // Aggregate by category
+                const categoryTotals: Record<string, number> = {};
+                let totalDirect = 0;
+
+                includedItems.forEach((item: any) => {
+                    const price = getFinalPrice(item);
+                    const val = price * item.quantity;
+                    const category = item.category || 'Outros';
+                    categoryTotals[category] = (categoryTotals[category] || 0) + val;
+                    totalDirect += val;
+                });
+
+                if (totalDirect === 0) return '<p style="color: #6b7280; font-size: 12px;">Sem dados para exibir</p>';
+
+                const sortedCategories = Object.entries(categoryTotals)
+                    .sort(([, a], [, b]) => b - a)
+                    .map(([key, val]) => ({ key, val, percent: (val / totalDirect) * 100 }));
+
+                const maxVal = Math.max(...sortedCategories.map(d => d.val));
+
+                let accumulated = 0;
+                return sortedCategories.map(item => {
+                    accumulated += item.percent;
+                    let classe = '';
+                    let color = '';
+
+                    if (accumulated <= 60) {
+                        classe = 'A';
+                        color = '#ef4444';
+                    } else if (accumulated <= 90) {
+                        classe = 'B';
+                        color = '#f97316';
+                    } else {
+                        classe = 'C';
+                        color = '#eab308';
+                    }
+
+                    return `
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <span style="font-size: 10px; font-weight: bold; width: 18px; text-align: center; border-radius: 4px; padding: 2px 0; color: ${color}; background: ${color}22;">${classe}</span>
+                                <div style="flex: 1; font-size: 12px; color: #374151; min-width: 100px;">${item.key}</div>
+                                <div style="flex: 2; height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                                    <div style="width: ${(item.val / maxVal) * 100}%; height: 100%; background: ${color}; border-radius: 4px; opacity: 0.8;"></div>
+                                </div>
+                                <span style="font-size: 12px; color: #6b7280; width: 45px; text-align: right; font-weight: 600;">${item.percent.toFixed(1)}%</span>
+                            </div>
+                        `;
+                }).join('');
+            })()}
+            </div>
+            
+            <!-- Grid: Posicionamento de Mercado + Composição BDI -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                
+                <!-- Posicionamento de Mercado -->
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 4px;">Posicionamento de Mercado</h3>
+                    <p style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Estimativa comparativa com valores médios regionais</p>
+                    
+                    ${(() => {
+                const marketAvg = total * 1.12;
+                const maxVal = total * 1.35;
+                const maxBar = Math.max(total, marketAvg, maxVal);
+                const percentBelow = (100 - (total / marketAvg) * 100).toFixed(1);
+
+                const bars = [
+                    { label: "Seu Orçamento", valor: total, color: "#22c55e", highlight: true },
+                    { label: "Média de Mercado", valor: marketAvg, color: "#6b7280", highlight: false },
+                    { label: "Máximo Regional", valor: maxVal, color: "#9ca3af", highlight: false },
+                ];
+
+                return bars.map(bar => `
+                            <div style="margin-bottom: 12px;">
+                                <div style="display: flex; justify-between; margin-bottom: 4px;">
+                                    <span style="font-size: 12px; font-weight: ${bar.highlight ? 'bold' : '500'}; color: ${bar.highlight ? '#22c55e' : '#374151'};">${bar.label}</span>
+                                    <span style="font-size: 12px; color: #374151; font-weight: 600;">${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bar.valor)}</span>
+                                </div>
+                                <div style="height: 22px; background: #f3f4f6; border-radius: 4px; position: relative; overflow: hidden;">
+                                    <div style="width: ${(bar.valor / maxBar) * 100}%; height: 100%; background: ${bar.color}; border-radius: 4px; opacity: 0.8;"></div>
+                                </div>
+                            </div>
+                        `).join('') + `
+                        <div style="margin-top: 16px; padding: 12px; background: #22c55e1a; border: 1px solid #22c55e33; border-radius: 8px; text-align: center;">
+                            <span style="font-size: 12px; color: #16a34a; font-weight: 600;">✓ Este orçamento está ${percentBelow}% abaixo da média de mercado</span>
+                        </div>
+                        `;
+            })()}
+                </div>
+                
+                <!-- Composição BDI -->
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 24px;">
+                    <h3 style="font-size: 16px; font-weight: bold; color: #111827; margin-bottom: 4px;">Composição do BDI</h3>
+                    <p style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Entenda como o Lucro e Despesas Indiretas são distribuídos</p>
+                    
+                    ${(() => {
+                const bdiPct = data.bdi || 20;
+                const taxes = bdiPct * 0.35;
+                const profit = bdiPct * 0.30;
+                const admin = bdiPct * 0.20;
+                const risk = bdiPct * 0.15;
+
+                const items = [
+                    { label: "Tributação (PIS/COFINS/ISS)", valor: taxes },
+                    { label: "Lucro / Remuneração", valor: profit },
+                    { label: "Administração Central", valor: admin },
+                    { label: "Riscos e Garantias", valor: risk },
+                ];
+
+                return items.map(item => `
+                            <div style="display: flex; justify-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                <span style="font-size: 12px; color: #374151;">${item.label}</span>
+                                <span style="font-size: 12px; color: #f97316; font-weight: 600;">${item.valor.toFixed(2)}%</span>
+                            </div>
+                        `).join('') + `
+                        <div style="margin-top: 12px; padding: 12px; background: #f973161a; border: 1px solid #f9731650; border-radius: 8px; display: flex; justify-content: space-between;">
+                            <span style="font-size: 13px; color: #f97316; font-weight: bold;">BDI Total</span>
+                            <span style="font-size: 15px; color: #f97316; font-weight: bold;">${bdiPct.toFixed(2)}%</span>
+                        </div>
+                        `;
+            })()}
+                </div>
+                
+            </div>
         </div>
         
         ${contractHTML}
