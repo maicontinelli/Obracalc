@@ -431,7 +431,29 @@ export default function DashboardPage() {
                                             <input value={profileData.profession} onChange={e => setProfileData({ ...profileData, profession: e.target.value })} placeholder="Profissão (Ex: Eng. Civil)" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
 
                                             <div className="grid grid-cols-2 gap-2">
-                                                <input value={profileData.document_id} onChange={e => setProfileData({ ...profileData, document_id: e.target.value })} placeholder="CPF/CNPJ" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
+                                                <input
+                                                    value={profileData.document_id}
+                                                    onChange={e => {
+                                                        const numbers = e.target.value.replace(/\D/g, '');
+                                                        let formatted = numbers;
+                                                        if (numbers.length <= 11) {
+                                                            formatted = numbers
+                                                                .replace(/(\d{3})(\d)/, '$1.$2')
+                                                                .replace(/(\d{3})(\d)/, '$1.$2')
+                                                                .replace(/(\d{3})(\d{1,2})/, '$1-$2');
+                                                        } else {
+                                                            formatted = numbers
+                                                                .replace(/(\d{2})(\d)/, '$1.$2')
+                                                                .replace(/(\d{3})(\d)/, '$1.$2')
+                                                                .replace(/(\d{3})(\d)/, '$1/$2')
+                                                                .replace(/(\d{4})(\d{1,2})/, '$1-$2');
+                                                        }
+                                                        setProfileData({ ...profileData, document_id: formatted.slice(0, 18) });
+                                                    }}
+                                                    placeholder="CPF/CNPJ"
+                                                    className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50"
+                                                    maxLength={18}
+                                                />
                                                 <input value={profileData.phone} onChange={e => setProfileData({ ...profileData, phone: e.target.value })} placeholder="Telefone" className="w-full p-2.5 text-sm bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-lg focus:outline-none focus:border-primary/50" />
                                             </div>
 

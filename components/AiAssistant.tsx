@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Sparkles, Send, Bot, Loader2, FilePlus, AlertTriangle, BrainCircuit, Map, Camera, ArrowRight, Plus, ScanEye, Calculator } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { BOQ_TEMPLATES } from '@/lib/constants';
 import imageCompression from 'browser-image-compression';
 
@@ -303,11 +304,9 @@ export default function AiAssistant() {
                             border border-[#FF6600]/50
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
                             focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
-                            focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
                             cursor-text"
                         style={{ minHeight: '120px' }}
                         onClick={() => {
-                            // Focus the textarea when clicking anywhere on the container
                             const textarea = document.getElementById('search-textarea');
                             if (textarea) textarea.focus();
                         }}
@@ -324,7 +323,6 @@ export default function AiAssistant() {
                             </div>
                         )}
 
-                        {/* Input Area - Top Aligned */}
                         <textarea
                             id="search-textarea"
                             value={query}
@@ -377,7 +375,7 @@ export default function AiAssistant() {
 
                         {/* Bottom Action Bar */}
                         <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end" onClick={(e) => e.stopPropagation()}>
-                            {/* Left Tools (Camera/Plus) */}
+                            {/* Left Tools (Plus Button) */}
                             <div className="flex gap-2" ref={toolsRef}>
                                 <div className="relative">
                                     <button
@@ -389,11 +387,97 @@ export default function AiAssistant() {
                                         <Plus size={20} />
                                     </button>
 
-                                    {/* Expanded Tools Menu - Repositioned for bottom left anchor */}
+                                    {showToolsMenu && (
+                                        <div
+                                            className="absolute top-full mt-5 left-0 w-[280px] md:w-[480px] bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] dark:shadow-[0_10px_40px_rgba(255,102,0,0.15)] overflow-hidden z-[200] animate-in fade-in slide-in-from-top-4 duration-300 origin-top-left"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        const newId = crypto.randomUUID();
+                                                        router.push(`/editor/${newId}?type=obra_nova`);
+                                                        setShowToolsMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all group text-left border border-transparent"
+                                                >
+                                                    <div className="p-2.5 bg-green-100 dark:bg-green-900/20 text-[#22c55e] rounded-lg group-hover:scale-110 transition-transform">
+                                                        <Calculator size={20} />
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Novo Orçamento</span>
+                                                        <span className="block text-[11px] text-gray-500 dark:text-gray-400 font-medium">Editor completo de orçamentos</span>
+                                                    </div>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        router.push('/novo-diagnostico');
+                                                        setShowToolsMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all group text-left border border-transparent"
+                                                >
+                                                    <div className="p-2.5 bg-orange-100 dark:bg-orange-900/20 text-[#FF6600] rounded-lg group-hover:scale-110 transition-transform">
+                                                        <ScanEye size={20} />
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">
+                                                            Diagnóstico Visual
+                                                            <span className="ml-2 text-[9px] bg-[#FF6600] text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Beta</span>
+                                                        </span>
+                                                        <span className="block text-[11px] text-gray-500 dark:text-gray-400 font-medium">IA analisando fotos da obra</span>
+                                                    </div>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        router.push('/relatorio-fotografico');
+                                                        setShowToolsMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all group text-left border border-transparent"
+                                                >
+                                                    <div className="p-2.5 bg-indigo-100 dark:bg-indigo-900/20 text-[#6366F1] rounded-lg group-hover:scale-110 transition-transform">
+                                                        <Camera size={20} />
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Relatório Fotográfico</span>
+                                                        <span className="block text-[11px] text-gray-500 dark:text-gray-400 font-medium">Documentação visual</span>
+                                                    </div>
+                                                </button>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        router.push('/topografia');
+                                                        setShowToolsMenu(false);
+                                                    }}
+                                                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-white/5 transition-all group text-left border border-transparent"
+                                                >
+                                                    <div className="p-2.5 bg-red-100 dark:bg-red-900/20 text-[#C2410C] rounded-lg group-hover:scale-110 transition-transform">
+                                                        <Map size={20} />
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Topografia</span>
+                                                        <span className="block text-[11px] text-gray-500 dark:text-gray-400 font-medium">Ferramentas de terreno</span>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
-                            {/* Right Action (Search Button) */}
                             <button
                                 type="submit"
                                 disabled={isLoading || !query.trim()}
@@ -408,79 +492,6 @@ export default function AiAssistant() {
                         </div>
                     </div>
                 </form>
-
-                {/* Expanded Tools Menu - Repositioned to Main Container */}
-                {showToolsMenu && (
-                    <div className="absolute top-full left-0 right-0 w-full mt-2 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.2)] dark:shadow-[0_4px_20px_rgba(255,102,0,0.1)] overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-200 origin-top">
-                        <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-2">
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    const newId = crypto.randomUUID();
-                                    router.push(`/editor/${newId}?type=obra_nova`);
-                                    setShowToolsMenu(false);
-                                }}
-                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
-                            >
-                                <div className="p-2.5 bg-green-100/50 dark:bg-green-900/20 text-[#22c55e] rounded-lg group-hover:scale-110 transition-transform">
-                                    <Calculator size={20} />
-                                </div>
-                                <div>
-                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Novo Orçamento</span>
-                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Editor completo de orçamentos</span>
-                                </div>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    router.push('/novo-diagnostico');
-                                    setShowToolsMenu(false);
-                                }}
-                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
-                            >
-                                <div className="p-2.5 bg-orange-100/50 dark:bg-orange-900/20 text-[#FF6600] rounded-lg group-hover:scale-110 transition-transform">
-                                    <ScanEye size={20} />
-                                </div>
-                                <div>
-                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">
-                                        Diagnóstico Visual
-                                        <span className="ml-2 text-[9px] bg-[#FF6600] text-white px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">Beta</span>
-                                    </span>
-                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">IA analisando fotos da obra</span>
-                                </div>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => router.push('/relatorio-fotografico')}
-                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
-                            >
-                                <div className="p-2.5 bg-indigo-100/50 dark:bg-indigo-900/20 text-[#6366F1] rounded-lg group-hover:scale-110 transition-transform">
-                                    <Camera size={20} />
-                                </div>
-                                <div>
-                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Relatório Fotográfico</span>
-                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Documentação visual</span>
-                                </div>
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={() => router.push('/topografia')}
-                                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-colors group text-left border border-transparent hover:border-gray-100 dark:hover:border-white/5"
-                            >
-                                <div className="p-2.5 bg-red-100/50 dark:bg-red-900/20 text-[#C2410C] rounded-lg group-hover:scale-110 transition-transform">
-                                    <Map size={20} />
-                                </div>
-                                <div>
-                                    <span className="block text-sm font-bold text-gray-800 dark:text-gray-200">Topografia</span>
-                                    <span className="block text-[11px] text-gray-500 dark:text-gray-400">Ferramentas de terreno</span>
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                )}
 
                 {/* Local Suggestions Dropdown */}
                 {showSuggestions && filteredItems.length > 0 && !response && !isLoading && (
@@ -523,76 +534,67 @@ export default function AiAssistant() {
                 )}
             </div>
 
+            {error && (
+                <div className="mt-4 p-3 bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center gap-2 border border-red-100 dark:border-red-800/50">
+                    <AlertTriangle size={16} />
+                    {error.includes("Chave de API") ? (
+                        <span>
+                            Configure sua chave de API do Groq no arquivo <code>.env.local</code> como <code>GROQ_API_KEY=sua_chave</code>.
+                        </span>
+                    ) : (
+                        <span>{error}</span>
+                    )}
+                </div>
+            )}
 
-
-
-
-
-            {
-                error && (
-                    <div className="mt-4 p-3 bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center gap-2 border border-red-100 dark:border-red-800/50">
-                        <AlertTriangle size={16} />
-                        {error.includes("Chave de API") ? (
-                            <span>
-                                Configure sua chave de API do Groq no arquivo <code>.env.local</code> como <code>GROQ_API_KEY=sua_chave</code>.
-                            </span>
-                        ) : (
-                            <span>{error}</span>
-                        )}
-                    </div>
-                )
-            }
-
-            {
-                response && (
-                    <div ref={responseRef} className="mt-6 bg-white/40 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-4 border border-white/20 dark:border-gray-700/30 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
-                        <div className="flex gap-3">
-                            <div className="mt-1 bg-orange-100/80 dark:bg-orange-900/30 p-1.5 rounded-lg h-fit text-orange-600 dark:text-orange-400 shrink-0 backdrop-blur-sm">
-                                <Bot size={16} />
+            {response && (
+                <div ref={responseRef} className="mt-6 bg-white/40 dark:bg-gray-800/40 backdrop-blur-md rounded-xl p-4 border border-white/20 dark:border-gray-700/30 animate-in fade-in slide-in-from-bottom-2 shadow-sm">
+                    <div className="flex gap-3">
+                        <div className="mt-1 bg-orange-100/80 dark:bg-orange-900/30 p-1.5 rounded-lg h-fit text-orange-600 dark:text-orange-400 shrink-0 backdrop-blur-sm">
+                            <Bot size={16} />
+                        </div>
+                        <div className="space-y-4 w-full">
+                            <div className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed font-medium">
+                                {response.text}
                             </div>
-                            <div className="space-y-4 w-full">
-                                <div className="text-sm text-gray-800 dark:text-gray-200 whitespace-pre-line leading-relaxed font-medium">
-                                    {response.text}
-                                </div>
 
-                                {response.suggestedBudget && (
-                                    <div className="bg-orange-50/40 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-100/50 dark:border-orange-800/30 backdrop-blur-sm">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <h4 className="font-semibold text-orange-900 dark:text-orange-300 text-sm">Orçamento Sugerido</h4>
-                                            <span className="text-xs text-orange-600 dark:text-orange-300 bg-orange-100/50 dark:bg-orange-900/50 px-2 py-1 rounded-full">
-                                                {response.suggestedBudget.items.length} itens identificados
-                                            </span>
-                                        </div>
-
-                                        <ul className="space-y-2 mb-4">
-                                            {response.suggestedBudget.items
-                                                .map((item, idx) => (
-                                                    <li key={idx} className="text-xs text-gray-700 dark:text-gray-300 flex justify-between items-center bg-white/50 dark:bg-black/20 px-2 py-1.5 rounded">
-                                                        <div className="flex items-center gap-2 overflow-hidden">
-                                                            <span title={item.type === 'service' ? 'Serviço' : 'Material'} className="text-[10px] shrink-0 opacity-70">
-                                                                {item.type === 'service' ? '🔨' : '🧱'}
-                                                            </span>
-                                                            <span className="truncate">{item.name}</span>
-                                                        </div>
-                                                        <span className="font-medium shrink-0 ml-2">~R$ {item.price}</span>
-                                                    </li>
-                                                ))}
-                                        </ul>
-
-                                        <button
-                                            onClick={handleCreateBudget}
-                                            className="w-full py-2 bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
-                                        >
-                                            <FilePlus size={16} />
-                                            Criar orçamento com estes itens
-                                        </button>
+                            {response.suggestedBudget && (
+                                <div className="bg-orange-50/40 dark:bg-orange-900/20 rounded-lg p-4 border border-orange-100/50 dark:border-orange-800/30 backdrop-blur-sm">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <h4 className="font-semibold text-orange-900 dark:text-orange-300 text-sm">Orçamento Sugerido</h4>
+                                        <span className="text-xs text-orange-600 dark:text-orange-300 bg-orange-100/50 dark:bg-orange-900/50 px-2 py-1 rounded-full">
+                                            {response.suggestedBudget.items.length} itens identificados
+                                        </span>
                                     </div>
-                                )}
-                            </div>
+
+                                    <ul className="space-y-2 mb-4">
+                                        {response.suggestedBudget.items
+                                            .map((item, idx) => (
+                                                <li key={idx} className="text-xs text-gray-700 dark:text-gray-300 flex justify-between items-center bg-white/50 dark:bg-black/20 px-2 py-1.5 rounded">
+                                                    <div className="flex items-center gap-2 overflow-hidden">
+                                                        <span title={item.type === 'service' ? 'Serviço' : 'Material'} className="text-[10px] shrink-0 opacity-70">
+                                                            {item.type === 'service' ? '🔨' : '🧱'}
+                                                        </span>
+                                                        <span className="truncate">{item.name}</span>
+                                                    </div>
+                                                    <span className="font-medium shrink-0 ml-2">~R$ {item.price}</span>
+                                                </li>
+                                            ))}
+                                    </ul>
+
+                                    <button
+                                        onClick={handleCreateBudget}
+                                        className="w-full py-2 bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
+                                    >
+                                        <FilePlus size={16} />
+                                        Criar orçamento com estes itens
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
-                )
-            }
+                </div>
+            )}
         </div>
     );
 }

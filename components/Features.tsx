@@ -125,25 +125,25 @@ export function Features() {
 
                     {/* Feature 5: Call to Action small */}
                     <div className="md:col-span-1">
-                        <Link href="/login" className="h-full block group">
-                            <SpotlightCard className="h-full p-6 flex flex-col justify-between bg-neutral-900 border-neutral-800 hover:border-violet-500/50 transition-colors" spotlightColor="rgba(139, 92, 246, 0.15)">
+                        <Link href="/planos" className="h-full block group">
+                            <SpotlightCard className="h-full p-6 flex flex-col justify-between bg-gray-100 dark:bg-gray-100 border-[#74D2E7] ring-1 ring-[#74D2E7]/30 hover:ring-[#74D2E7]/50 transition-all shadow-md" spotlightColor="rgba(116, 210, 231, 0.15)">
                                 <div>
                                     <div className="flex justify-between items-start mb-4">
-                                        <div className="px-3 py-1 bg-violet-500/10 text-violet-400 text-xs font-bold rounded-full border border-violet-500/20">
+                                        <div className="px-3 py-1 bg-[#74D2E7]/10 text-[#74D2E7] text-xs font-bold rounded-full border border-[#74D2E7]/20">
                                             PRO
                                         </div>
-                                        <div className="text-violet-400">
-                                            <Zap className="w-5 h-5 fill-violet-500/20" />
+                                        <div className="text-[#74D2E7]">
+                                            <Zap className="w-5 h-5 fill-[#74D2E7]/20" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <h3 className="font-bold text-lg text-white">Desbloqueie tudo</h3>
-                                        <p className="text-sm text-neutral-400 leading-snug">
+                                        <h3 className="font-bold text-lg text-gray-900">Desbloqueie tudo</h3>
+                                        <p className="text-sm text-gray-600 leading-snug">
                                             Logo e contatos ilimitados, relatórios sem marca d'água e muito mais.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between text-xs text-neutral-300 font-medium group-hover:text-violet-300 transition-colors">
+                                <div className="mt-4 pt-4 border-t border-black/5 flex items-center justify-between text-xs text-gray-700 font-medium group-hover:text-[#74D2E7] transition-colors">
                                     <span>Ver Planos</span>
                                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                                 </div>

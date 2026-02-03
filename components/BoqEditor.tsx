@@ -38,6 +38,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [workCity, setWorkCity] = useState('');
     const [workState, setWorkState] = useState('');
     const [projectArea, setProjectArea] = useState<number>(0); // New: Area in m2
+    const [projectDuration, setProjectDuration] = useState(1); // New: Duration in months
     const [aiRequests, setAiRequests] = useState<any[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -174,6 +175,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     setWorkCity(parsed.workCity || '');
                     setWorkState(parsed.workState || '');
                     setProjectArea(parsed.projectArea || 0);
+                    setProjectDuration(parsed.projectDuration || 1);
                     setAiRequests(parsed.aiRequests || []);
                 } catch (e) {
                     console.error("Error parsing estimate:", e);
@@ -368,8 +370,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     };
 
     const handleAddCustomItem = (category: string) => {
+        const newId = crypto.randomUUID();
         const newItem: BoqItem = {
-            id: crypto.randomUUID(),
+            id: newId,
             name: '',
             unit: 'un',
             quantity: 0,
@@ -379,6 +382,17 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             isCustom: true
         };
         setItems([...items, newItem]);
+
+        // Focus the new item after a short delay
+        setTimeout(() => {
+            const element = document.getElementById(`item-${newId}`);
+            if (element) {
+                const nameInput = element.querySelector('input[type="text"]') as HTMLInputElement;
+                if (nameInput) {
+                    nameInput.focus();
+                }
+            }
+        }, 100);
     };
 
     const toggleCategoryItems = (category: string, shouldInclude: boolean) => {
@@ -439,6 +453,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             clientDocument,
             clientAddress,
             projectArea,
+            projectDuration,
             aiRequests
         };
 
@@ -496,6 +511,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             clientAddress,
             updatedAt: new Date().toISOString(),
             projectArea,
+            projectDuration,
             aiRequests
         };
         localStorage.setItem(`estimate_${estimateId}`, JSON.stringify(dataToSave));
@@ -589,13 +605,29 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
         }
     }, [clientDddInfo, workState, workCity]);
 
-    const formatPhoneNumber = (value: string) => {
+    const formatDocument = (value: string) => {
         const numbers = value.replace(/\D/g, '');
         if (numbers.length <= 11) {
-            return numbers.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2-$3')
-                .replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2-$3');
+            // CPF: 000.000.000-00
+            return numbers
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d{1,2})/, '$1-$2')
+                .replace(/(-\d{2})\d+?$/, '$1');
+        } else {
+            // CNPJ: 00.000.000/0000-00
+            return numbers
+                .replace(/(\d{2})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1.$2')
+                .replace(/(\d{3})(\d)/, '$1/$2')
+                .replace(/(\d{4})(\d{1,2})/, '$1-$2')
+                .replace(/(-\d{2})\d+?$/, '$1');
         }
-        return value;
+    };
+
+    const handleDocumentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatDocument(e.target.value);
+        setClientDocument(formatted);
     };
 
     const handlePhoneChange = (setter: (val: string) => void) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -808,112 +840,113 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                         <div className="col-span-2 text-right">Total</div>
                                                     </div>
                                                     <div className="space-y-0 text-[11px]">
-                                                        {(() => {
-                                                            const getType = (i: BoqItem) => i.type || 'composition';
-                                                            const sorted = [...categoryItems].sort((a, b) => {
-                                                                const typeA = getType(a);
-                                                                const typeB = getType(b);
-                                                                if (typeA === 'material' && typeB !== 'material') return 1;
-                                                                if (typeA !== 'material' && typeB === 'material') return -1;
-                                                                return 0;
-                                                            });
+                                                        {categoryItems.map((item, index) => {
+                                                            // EXPLICIT DISPLAY CALCULATION (Fix for DB items & Dirty Data)
+                                                            const basePrice = Number(item.price);
+                                                            // Safety: If laborPrice is >= basePrice, it's invalid (dirty data), so force fallback logic
+                                                            const rawLabor = Number(item.laborPrice);
+                                                            const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
 
-                                                            return sorted.map((item, index) => {
-                                                                const currentType = getType(item);
-                                                                const prevType = index > 0 ? getType(sorted[index - 1]) : null;
-                                                                const showDivider = currentType === 'material' && prevType !== 'material' && index > 0;
+                                                            const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
+                                                            const displayValue = hasManual
+                                                                ? Number(item.manualPrice)
+                                                                : (includeMaterials ? basePrice : safeLabor);
 
-                                                                // EXPLICIT DISPLAY CALCULATION (Fix for DB items & Dirty Data)
-                                                                const basePrice = Number(item.price);
-                                                                // Safety: If laborPrice is >= basePrice, it's invalid (dirty data), so force fallback logic
-                                                                const rawLabor = Number(item.laborPrice);
-                                                                const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
-
-                                                                const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
-                                                                const displayValue = hasManual
-                                                                    ? Number(item.manualPrice)
-                                                                    : (includeMaterials ? basePrice : safeLabor);
-
-                                                                return (
-                                                                    <React.Fragment key={item.id}>
-                                                                        {showDivider && (
-                                                                            <div className="px-4 py-1.5 bg-[#E89E37]/10 border-y border-[#E89E37]/20 text-[10px] font-bold text-[#E89E37] uppercase tracking-widest mt-1 mb-1 flex items-center gap-2">
-                                                                                <span className="text-[10px]">🧱</span> Materiais / Insumos
-                                                                            </div>
-                                                                        )}
-                                                                        <div
-                                                                            id={`item-${item.id}`}
-                                                                            onClick={() => toggleInclude(item.id, true)}
-                                                                            className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
-                                                                        >
-                                                                            <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    checked={item.included}
-                                                                                    onChange={() => toggleInclude(item.id)}
-                                                                                    className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-4 pl-0 py-1">
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={item.name}
-                                                                                    onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                                                                    className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
-                                                                                    placeholder="Nome do item"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-1 text-center">
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={item.unit}
-                                                                                    onChange={(e) => handleUnitChange(item.id, e.target.value)}
-                                                                                    className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 px-2">
-                                                                                <input
-                                                                                    type="number"
-                                                                                    value={item.quantity}
-                                                                                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                                                                    data-item-id={item.id}
-                                                                                    className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
-                                                                                    min="0"
-                                                                                    step="1"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 text-right">
-                                                                                <input
-                                                                                    type="number"
-                                                                                    value={displayValue.toFixed(2)}
-                                                                                    onChange={(e) => handlePriceChange(item.id, e.target.value)}
-                                                                                    className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
-                                                                                    min="0"
-                                                                                    step="0.01"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
-                                                                                <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
-                                                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                                                                                        displayValue * item.quantity
-                                                                                    )}
-                                                                                </span>
-                                                                                <button
-                                                                                    onClick={() => handleDelete(item.id)}
-                                                                                    className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
-                                                                                    title="Excluir"
-                                                                                >
-                                                                                    <Trash2 size={14} />
-                                                                                </button>
-                                                                            </div>
+                                                            return (
+                                                                <React.Fragment key={item.id}>
+                                                                    <div
+                                                                        id={`item-${item.id}`}
+                                                                        onClick={() => toggleInclude(item.id, true)}
+                                                                        className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
+                                                                    >
+                                                                        <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={item.included}
+                                                                                onChange={() => toggleInclude(item.id)}
+                                                                                className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                            />
                                                                         </div>
-                                                                    </React.Fragment>
-                                                                );
-                                                            })
-                                                        })()}
+                                                                        <div className="col-span-4 pl-0 py-1">
+                                                                            <input
+                                                                                type="text"
+                                                                                value={item.name}
+                                                                                onChange={(e) => handleNameChange(item.id, e.target.value)}
+                                                                                className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
+                                                                                placeholder="Nome do item"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-1 text-center">
+                                                                            <input
+                                                                                type="text"
+                                                                                value={item.unit}
+                                                                                onChange={(e) => handleUnitChange(item.id, e.target.value)}
+                                                                                className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 px-2">
+                                                                            <input
+                                                                                type="number"
+                                                                                value={item.quantity}
+                                                                                onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                                                                data-item-id={item.id}
+                                                                                className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
+                                                                                min="0"
+                                                                                step="1"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 text-right">
+                                                                            <input
+                                                                                type="number"
+                                                                                value={displayValue.toFixed(2)}
+                                                                                onChange={(e) => handlePriceChange(item.id, e.target.value)}
+                                                                                className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
+                                                                                min="0"
+                                                                                step="0.01"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
+                                                                            <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
+                                                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                                                                    displayValue * item.quantity
+                                                                                )}
+                                                                            </span>
+                                                                            <button
+                                                                                onClick={() => handleDelete(item.id)}
+                                                                                className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
+                                                                                title="Excluir"
+                                                                            >
+                                                                                <Trash2 size={14} />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </React.Fragment>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    {/* Add Custom Item Button */}
+                                                    <div
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAddCustomItem(category);
+                                                        }}
+                                                        className="grid grid-cols-12 gap-4 px-4 py-2.5 items-center hover:bg-blue-500/5 transition-colors group/add cursor-pointer border-t border-white/5 border-dashed mt-1"
+                                                    >
+                                                        <div className="col-span-1 flex justify-center -ml-4">
+                                                            <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/add:bg-blue-500/20 transition-colors">
+                                                                <Plus size={12} className="text-blue-500" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-span-11">
+                                                            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest transition-colors">
+                                                                Adicionar Item Manual em {category}
+                                                            </span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            )}
+                                            )
+                                            }
                                         </div>
                                     );
                                 })}
@@ -1005,108 +1038,108 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                             <div className="col-span-2 text-right">Total</div>
                                                         </div>
                                                         <div className="space-y-0 text-[11px]">
-                                                            {(() => {
-                                                                const getType = (i: BoqItem) => i.type || 'composition';
-                                                                const sorted = [...categoryItems].sort((a, b) => {
-                                                                    const typeA = getType(a);
-                                                                    const typeB = getType(b);
-                                                                    if (typeA === 'material' && typeB !== 'material') return 1;
-                                                                    if (typeA !== 'material' && typeB === 'material') return -1;
-                                                                    return 0;
-                                                                });
+                                                            {categoryItems.map((item, index) => {
+                                                                // EXPLICIT DISPLAY CALCULATION DUPLICATED (Since separate loop)
+                                                                const basePrice = Number(item.price);
+                                                                const rawLabor = Number(item.laborPrice);
+                                                                const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
+                                                                const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
+                                                                const displayValue = hasManual
+                                                                    ? Number(item.manualPrice)
+                                                                    : (includeMaterials ? basePrice : safeLabor);
 
-                                                                return sorted.map((item, index) => {
-                                                                    const currentType = getType(item);
-                                                                    const prevType = index > 0 ? getType(sorted[index - 1]) : null;
-                                                                    const showDivider = currentType === 'material' && prevType !== 'material' && index > 0;
-
-                                                                    // EXPLICIT DISPLAY CALCULATION DUPLICATED (Since separate loop)
-                                                                    const basePrice = Number(item.price);
-                                                                    const rawLabor = Number(item.laborPrice);
-                                                                    const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
-                                                                    const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
-                                                                    const displayValue = hasManual
-                                                                        ? Number(item.manualPrice)
-                                                                        : (includeMaterials ? basePrice : safeLabor);
-
-                                                                    return (
-                                                                        <React.Fragment key={item.id}>
-                                                                            {showDivider && (
-                                                                                <div className="px-4 py-1.5 bg-[#E89E37]/10 border-y border-[#E89E37]/20 text-[10px] font-bold text-[#E89E37] uppercase tracking-widest mt-1 mb-1 flex items-center gap-2">
-                                                                                    <span className="text-[10px]">🧱</span> Materiais / Insumos
-                                                                                </div>
-                                                                            )}
-                                                                            <div
-                                                                                id={`item-${item.id}`}
-                                                                                onClick={() => toggleInclude(item.id, true)}
-                                                                                className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
-                                                                            >
-                                                                                <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        checked={item.included}
-                                                                                        onChange={() => toggleInclude(item.id)}
-                                                                                        className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="col-span-4 flex items-center gap-2">
-
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        value={item.name}
-                                                                                        onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                                                                        className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
-                                                                                        placeholder="Nome do item"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="col-span-1 text-center">
-                                                                                    <input
-                                                                                        type="text"
-                                                                                        value={item.unit}
-                                                                                        onChange={(e) => handleUnitChange(item.id, e.target.value)}
-                                                                                        className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="col-span-2 px-2">
-                                                                                    <input
-                                                                                        type="number"
-                                                                                        value={item.quantity}
-                                                                                        onChange={(e) => handleQuantityChange(item.id, e.target.value)}
-                                                                                        data-item-id={item.id}
-                                                                                        className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
-                                                                                        min="0"
-                                                                                        step="1"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="col-span-2 text-right">
-                                                                                    <input
-                                                                                        type="number"
-                                                                                        value={displayValue.toFixed(2)}
-                                                                                        onChange={(e) => handlePriceChange(item.id, e.target.value)}
-                                                                                        className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
-                                                                                        min="0"
-                                                                                        step="0.01"
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
-                                                                                    <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
-                                                                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                                                                                            displayValue * item.quantity
-                                                                                        )}
-                                                                                    </span>
-                                                                                    <button
-                                                                                        onClick={() => handleDelete(item.id)}
-                                                                                        className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
-                                                                                        title="Excluir"
-                                                                                    >
-                                                                                        <Trash2 size={14} />
-                                                                                    </button>
-                                                                                </div>
+                                                                return (
+                                                                    <React.Fragment key={item.id}>
+                                                                        <div
+                                                                            id={`item-${item.id}`}
+                                                                            onClick={() => toggleInclude(item.id, true)}
+                                                                            className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
+                                                                        >
+                                                                            <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
+                                                                                <input
+                                                                                    type="checkbox"
+                                                                                    checked={item.included}
+                                                                                    onChange={() => toggleInclude(item.id)}
+                                                                                    className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                                />
                                                                             </div>
-                                                                        </React.Fragment>
-                                                                    );
-                                                                })
-                                                            })()}
+                                                                            <div className="col-span-4 flex items-center gap-2">
+
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={item.name}
+                                                                                    onChange={(e) => handleNameChange(item.id, e.target.value)}
+                                                                                    className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
+                                                                                    placeholder="Nome do item"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="col-span-1 text-center">
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={item.unit}
+                                                                                    onChange={(e) => handleUnitChange(item.id, e.target.value)}
+                                                                                    className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="col-span-2 px-2">
+                                                                                <input
+                                                                                    type="number"
+                                                                                    value={item.quantity}
+                                                                                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                                                                    data-item-id={item.id}
+                                                                                    className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
+                                                                                    min="0"
+                                                                                    step="1"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="col-span-2 text-right">
+                                                                                <input
+                                                                                    type="number"
+                                                                                    value={displayValue.toFixed(2)}
+                                                                                    onChange={(e) => handlePriceChange(item.id, e.target.value)}
+                                                                                    className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
+                                                                                    min="0"
+                                                                                    step="0.01"
+                                                                                />
+                                                                            </div>
+                                                                            <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
+                                                                                <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
+                                                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                                                                        displayValue * item.quantity
+                                                                                    )}
+                                                                                </span>
+                                                                                <button
+                                                                                    onClick={() => handleDelete(item.id)}
+                                                                                    className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
+                                                                                    title="Excluir"
+                                                                                >
+                                                                                    <Trash2 size={14} />
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </React.Fragment>
+                                                                );
+                                                            })}
+                                                        </div>
+
+                                                        {/* Add Custom Item Button */}
+                                                        <div
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAddCustomItem(category);
+                                                            }}
+                                                            className="grid grid-cols-12 gap-4 px-4 py-2.5 items-center hover:bg-blue-500/5 transition-colors group/add cursor-pointer border-t border-white/5 border-dashed mt-1"
+                                                        >
+                                                            <div className="col-span-1 flex justify-center -ml-4">
+                                                                <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/add:bg-blue-500/20 transition-colors">
+                                                                    <Plus size={12} className="text-blue-500" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-span-11">
+                                                                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest transition-colors">
+                                                                    Adicionar Item Manual em {category}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 )}
@@ -1259,9 +1292,10 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                 <input
                                                     type="text"
                                                     value={clientDocument}
-                                                    onChange={(e) => setClientDocument(e.target.value)}
+                                                    onChange={handleDocumentChange}
                                                     className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
                                                     placeholder="CPF ou CNPJ do Cliente"
+                                                    maxLength={18}
                                                 />
                                                 <input
                                                     type="text"
@@ -1323,6 +1357,37 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                 ))}
                                             </div>
                                         </div>
+
+                                        {/* Prazo da Obra Slider */}
+                                        <div className="col-span-2 mt-2">
+                                            <div className="flex justify-between items-center mb-3">
+                                                <label className="block text-[9px] text-muted-foreground uppercase">Prazo da Obra</label>
+                                                <span className="text-xs font-bold text-blue-500 bg-blue-500/10 px-2 py-0.5 rounded-full border border-blue-500/20">
+                                                    {projectDuration} {projectDuration === 1 ? 'mês' : 'meses'}
+                                                </span>
+                                            </div>
+                                            <div className="relative h-6 flex items-center group">
+                                                {/* Labels para 1 e 24 */}
+                                                <div className="absolute -bottom-4 left-0 text-[8px] text-muted-foreground/60 transition-colors group-hover:text-muted-foreground">1m</div>
+                                                <div className="absolute -bottom-4 right-0 text-[8px] text-muted-foreground/60 transition-colors group-hover:text-muted-foreground">24m</div>
+
+                                                <input
+                                                    type="range"
+                                                    min="1"
+                                                    max="24"
+                                                    step="1"
+                                                    value={projectDuration}
+                                                    onChange={(e) => setProjectDuration(parseInt(e.target.value))}
+                                                    className="w-full h-1.5 bg-black/10 dark:bg-white/10 rounded-lg appearance-none cursor-pointer accent-blue-600 
+                                                               hover:bg-black/20 dark:hover:bg-white/20 transition-all
+                                                               [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
+                                                               [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:border-2 
+                                                               [&::-webkit-slider-thumb]:border-blue-600 [&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(37,99,235,0.3)]
+                                                               [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95 
+                                                               [&::-webkit-slider-thumb]:transition-all"
+                                                />
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -1359,6 +1424,6 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
