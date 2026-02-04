@@ -376,11 +376,12 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             <style jsx global>{`
                 @media print {
                     @page { 
-                        margin: 15mm 10mm;
+                        margin: 0;
                         size: A4;
                     }
                     body { 
-                        margin: 0; 
+                        margin: 0;
+                        padding: 10mm 10mm !important;
                         background: white !important; 
                         -webkit-print-color-adjust: exact;
                         print-color-adjust: exact;
@@ -502,13 +503,16 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         page-break-after: avoid !important;
                     }
                     
-                    /* Ensure Analysis starts on new page */
+                    /* ensure Analysis starts on new page with visual margin */
                     .analysis-section {
                         page-break-before: always;
                     }
                     
+                    /* Ensure contract starts on new page with visual margin */
                     .contract-page {
                         page-break-before: always;
+                        padding-top: 20mm !important;
+                        margin-top: 0 !important;
                     }
                 }
             `}</style>
@@ -583,7 +587,11 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         @media print {
                             @page {
                                 size: A4;
-                                margin: 12mm;
+                                margin: 0;
+                            }
+                            body {
+                                margin: 0;
+                                padding: 10mm 15mm !important;
                             }
                             body {
                                 -webkit-print-color-adjust: exact;
@@ -788,11 +796,6 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     })}
                 </div>
 
-                {/* Footer Section: Legend & Totals Side-by-Side */}
-                <div className="mt-8 print:mt-4 grid grid-cols-1 print:grid-cols-2 md:grid-cols-2 gap-6 print:gap-4 break-inside-avoid items-stretch">
-                    <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
-                    <ComparativoMercado total={total} area={data.projectArea || 0} id={estimateId} />
-                </div>
             </div>
 
             {/* NEW REPORT VISUALS SECTION */}
@@ -810,13 +813,24 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     {/* Resumo Executivo moved to Header - Removing duplicate */}
                 </div>
 
-                {/* Full Width Sections */}
-                <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} projectDuration={data.projectDuration} total={total} />
-                <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                {/* Full Width Sections with Visual Buffers for Print */}
+                <div className="break-inside-avoid print:pt-8">
+                    <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} projectDuration={data.projectDuration} total={total} />
+                </div>
+
+                <div className="break-inside-avoid print:pt-8">
+                    <CurvaABC items={data.items || []} includeMaterials={data.includeMaterials !== false} />
+                </div>
+
+                {/* Footer Section: Legend & Totals Side-by-Side - Moved here as requested */}
+                <div className="mt-8 print:mt-4 print:pt-[20px] grid grid-cols-1 print:grid-cols-2 md:grid-cols-2 gap-6 print:gap-4 break-inside-avoid items-stretch">
+                    <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
+                    <ComparativoMercado total={total} area={data.projectArea || 0} id={estimateId} />
+                </div>
 
             </div>
 
-            <ContractSection />
+            {includeContract && <ContractSection />}
 
             {showToast && (
                 <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg z-[100] flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">

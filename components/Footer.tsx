@@ -65,7 +65,7 @@ export function Footer() {
 
                 <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-gray-100 dark:border-white/5">
                     <p className="text-xs text-gray-500 dark:text-[#6b6967]">
-                        © 2024 ObraPlana. Todos os direitos reservados.
+                        © 2024 ObraPlana. Todos os direitos reservados. <span className="ml-2 opacity-50">v3.4.0</span>
                     </p>
                     <div className="flex gap-6 text-xs text-gray-500 dark:text-[#6b6967]">
                         {/* Feito com ❤️ para engenheiros - Removed as per request */}
