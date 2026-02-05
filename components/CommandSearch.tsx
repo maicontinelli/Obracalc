@@ -135,6 +135,11 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
         }
     }, [query, items, aiResponse]);
 
+    // Clarification State
+    const [isClarifying, setIsClarifying] = useState(false);
+    const [previousQuery, setPreviousQuery] = useState('');
+    const [clarificationQuestion, setClarificationQuestion] = useState<string | null>(null);
+
     const handleAiSearch = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!query.trim()) return;
@@ -144,11 +149,17 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
         setAiError(null);
         setIsOpen(false); // Close local search dropdown
 
+        // Calculate message to send (Context + Answer if clarifying)
+        let messageToSend = query;
+        if (isClarifying) {
+            messageToSend = `CONTEXTO ANTERIOR: ${previousQuery} | PERGUNTA DA IA: ${clarificationQuestion} | RESPOSTA DO USUÁRIO: ${query}`;
+        }
+
         try {
             const res = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: query }),
+                body: JSON.stringify({ message: messageToSend }),
             });
 
             const data = await res.json();
@@ -157,7 +168,29 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                 throw new Error(data.error || 'Erro ao comunicar com a IA');
             }
 
-            setAiResponse(data);
+            // Check if AI is asking for clarification
+            if (data.clarificationRequest) {
+                setClarificationQuestion(data.clarificationRequest);
+                setIsClarifying(true);
+
+                // Save context if this is the first clarification step
+                if (!isClarifying) {
+                    setPreviousQuery(query);
+                }
+
+                setQuery(''); // Clear input for user to answer
+
+                // Focus input again
+                const input = containerRef.current?.querySelector('input');
+                if (input) input.focus();
+
+            } else {
+                setAiResponse(data);
+                // Reset clarification state on success
+                setIsClarifying(false);
+                setClarificationQuestion(null);
+                setPreviousQuery('');
+            }
         } catch (err: any) {
             console.error(err);
             setAiError(err.message || 'Ocorreu um erro inesperado.');
@@ -201,37 +234,57 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
 
     return (
         <div className="w-full mb-6 relative" ref={containerRef}>
-            <div className="group">
-                <form onSubmit={handleAiSearch} className="relative">
+            <div className="group relative">
+                {/* Clarification Prompt Bubble */}
+                {isClarifying && clarificationQuestion && (
+                    <div className="mb-2 px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex gap-3 items-start p-3 bg-orange-50/95 dark:bg-orange-900/20 rounded-2xl rounded-bl-sm shadow-sm border border-orange-200 dark:border-orange-800/30 backdrop-blur-sm">
+                            <div className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 rounded-full shrink-0">
+                                <Sparkles size={14} />
+                            </div>
+                            <div className="text-xs text-gray-800 dark:text-orange-200 font-medium">
+                                <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Preciso de um detalhe</p>
+                                <div className="whitespace-pre-line leading-relaxed">
+                                    {clarificationQuestion}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <form onSubmit={handleAiSearch} className="relative z-20">
                     {/* Glassmorphism Search Bar - Neon Orange Style */}
-                    <div className="relative flex items-center w-full rounded-full transition-all duration-300
+                    <div className={`relative flex items-center w-full rounded-full transition-all duration-300
                             bg-white dark:bg-[#1A1A1A] 
                             shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border border-orange-500/50
+                            border ${isClarifying ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-orange-500/50'}
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500"
+                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500`}
                     >
                         <div className="pl-6 text-gray-400 dark:text-gray-500">
-                            <Sparkles size={20} className="animate-pulse text-orange-500" />
+                            <Sparkles size={20} className={`text-orange-500 ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
                         </div>
                         <input
                             type="text"
                             value={query}
                             onChange={(e) => {
                                 setQuery(e.target.value);
-                                if (aiResponse) setAiResponse(null);
+                                if (aiResponse && !isClarifying) setAiResponse(null);
                             }}
-                            onFocus={() => query && !aiResponse && setIsOpen(true)}
-                            placeholder={isDeleting ? "" : placeholder}
+                            onFocus={() => query && !aiResponse && !isClarifying && setIsOpen(true)}
+                            placeholder={isClarifying ? "Digite sua resposta..." : (isDeleting ? "" : placeholder)}
                             className="w-full pl-4 pr-32 py-5 rounded-full border-none outline-none bg-transparent text-[13px] text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium"
                         />
 
                         <button
                             type="submit"
                             disabled={isAiLoading || !query.trim()}
-                            className="absolute right-2 top-1/2 -translate-y-1/2 p-2.5 bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-[#333130] rounded-full transition-all duration-300"
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full transition-all duration-300 ${isClarifying && query.trim()
+                                ? 'bg-orange-500 text-white hover:bg-orange-600'
+                                : 'bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-[#333130]'
+                                }`}
                         >
-                            {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : <ArrowRight size={18} />}
+                            {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : (isClarifying ? <Send size={16} /> : <ArrowRight size={18} />)}
                         </button>
                     </div>
                 </form>

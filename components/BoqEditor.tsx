@@ -13,6 +13,60 @@ import { getDddInfo } from '@/lib/ddd-data';
 import { useProfile } from '@/hooks/useProfile';
 import { PLAN_LIMITS } from '@/lib/plan-limits';
 
+const PriceInput = ({ value, onChange, className, ...props }: { value: number, onChange: (val: number) => void, className?: string } & React.InputHTMLAttributes<HTMLInputElement>) => {
+    const [localValue, setLocalValue] = useState<string | null>(null);
+
+    // Sync only when not editing (localValue is null)
+    const displayValue = localValue !== null ? localValue : (value === 0 ? '0' : value.toString());
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const raw = e.target.value;
+        setLocalValue(raw);
+
+        // Normalize decimal separator
+        const normalized = raw.replace(',', '.');
+
+        // Allow empty string to mean 0 temporarily
+        if (normalized === '') {
+            onChange(0);
+            return;
+        }
+
+        // Only emit change if valid number
+        // Check strict format to avoid partial jumps (e.g. "12." shouldn't trigger yet if strict, but parseFloat handles leading)
+        const parsed = parseFloat(normalized);
+        if (!isNaN(parsed)) {
+            // We pass the parsed value but KEEP the localValue string for display
+            onChange(parsed);
+        }
+    };
+
+    const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+        setLocalValue(null); // Revert to parent value on blur (formats it cleanly)
+        props.onBlur?.(e);
+    };
+
+    const handleFocus = (e: React.FocusEvent<HTMLInputElement>) => {
+        setLocalValue(value === 0 ? '' : value.toString().replace('.', ',')); // Show friendly format on focus
+        e.target.select();
+        props.onFocus?.(e);
+    };
+
+    return (
+        <input
+            {...props}
+            type="text"
+            inputMode="decimal"
+            value={displayValue}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            className={className}
+            placeholder={props.placeholder || "0,00"}
+        />
+    );
+};
+
 export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -34,7 +88,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [clientPhone, setClientPhone] = useState('');
     const [clientDocument, setClientDocument] = useState(''); // New: CPF/CNPJ
     const [clientAddress, setClientAddress] = useState('');   // New: Endereço
-    const [includeContract, setIncludeContract] = useState(true); // New: Toggle (Default Active)
+    const [includeContract, setIncludeContract] = useState(false); // New: Toggle (Default Inactive)
     const [workCity, setWorkCity] = useState('');
     const [workState, setWorkState] = useState('');
     const [projectArea, setProjectArea] = useState<number>(0); // New: Area in m2
@@ -171,7 +225,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     setClientPhone(parsed.clientPhone || '');
                     setClientDocument(parsed.clientDocument || '');
                     setClientAddress(parsed.clientAddress || '');
-                    setIncludeContract(parsed.includeContract !== undefined ? parsed.includeContract : true);
+                    setIncludeContract(parsed.includeContract !== undefined ? parsed.includeContract : false);
                     setWorkCity(parsed.workCity || '');
                     setWorkState(parsed.workState || '');
                     setProjectArea(parsed.projectArea || 0);
@@ -541,6 +595,65 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
         router.push(`/report/${estimateId}`);
     };
 
+    const handleLocalSelect = (item: any) => {
+        const normalizeCategory = (cat: string) => cat.toUpperCase().trim().replace(/\s+/g, ' ');
+        // Check if category exists in standards
+        const standardCats = BOQ_TEMPLATES.obra_nova.map(c => normalizeCategory(c.name));
+        const isStandardCategory = standardCats.includes(normalizeCategory(item.category));
+
+        if (isStandardCategory) {
+            setIsManualCatalogExpanded(true);
+        }
+
+        setExpandedCategories(prev => ({
+            ...prev,
+            [item.category]: true
+        }));
+
+        setTimeout(() => {
+            const element = document.getElementById(`item-${item.id}`);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                element.classList.add('bg-blue-50', 'dark:bg-blue-900/20');
+                setTimeout(() => element.classList.remove('bg-blue-50', 'dark:bg-blue-900/20'), 2000);
+
+                // Try to find helper input or quantity input to focus
+                const input = element.querySelector('input');
+                if (input) {
+                    input.focus();
+                    if (input.type === 'text') input.select();
+                }
+            }
+        }, 300);
+    };
+
+    const handleAddAiItems = (newItems: any[], request: any) => {
+        const requestId = crypto.randomUUID();
+        const targetCategory = (request?.suggestedTitle || request?.query || 'ITENS ADICIONAIS').toUpperCase();
+
+        const itemsWithIds = newItems.map((item: any) => ({
+            ...item,
+            id: crypto.randomUUID(),
+            included: true,
+            category: targetCategory,
+            aiRequestId: requestId,
+            isCustom: true
+        }));
+
+        setItems(prev => [...itemsWithIds, ...prev]);
+
+        if (request) {
+            setAiRequests(prev => [...prev, { ...request, id: requestId, timestamp: new Date().toISOString() }]);
+            if (request.projectArea && request.projectArea > 0) {
+                setProjectArea(request.projectArea);
+            }
+        }
+        setExpandedCategories(prev => ({
+            ...prev,
+            [targetCategory]: true
+        }));
+    };
+
     // Recalculate Totals & Groups
     const { subtotal, bdiValue, total, groupedItems, categories } = useMemo(() => {
         let sub = 0;
@@ -645,11 +758,9 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const isFormValid = useMemo(() => {
         return (
             clientName.trim() !== '' &&
-            clientPhone.replace(/\D/g, '').length >= 10 &&
-            projectType !== '' &&
-            deadline !== ''
+            clientPhone.replace(/\D/g, '').length >= 10
         );
-    }, [clientName, clientPhone, projectType, deadline]);
+    }, [clientName, clientPhone]);
 
     return (
         <div className="min-h-screen bg-background font-sans">
@@ -699,59 +810,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                         <div className="mb-2">
                             <CommandSearch
                                 items={items}
-                                onSelect={(item) => {
-                                    const normalizeCategory = (cat: string) => cat.toUpperCase().trim().replace(/\s+/g, ' ');
-                                    const standardCats = BOQ_TEMPLATES.obra_nova.map(c => normalizeCategory(c.name));
-                                    const isStandardCategory = standardCats.includes(normalizeCategory(item.category));
-
-                                    if (isStandardCategory) {
-                                        setIsManualCatalogExpanded(true);
-                                    }
-
-                                    setExpandedCategories(prev => ({
-                                        ...prev,
-                                        [item.category]: true
-                                    }));
-
-                                    setTimeout(() => {
-                                        const element = document.getElementById(`item-${item.id}`);
-                                        if (element) {
-                                            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                            element.classList.add('bg-blue-50');
-                                            setTimeout(() => element.classList.remove('bg-blue-50'), 2000);
-
-                                            const quantityInput = element.querySelector('input[type="number"]') as HTMLInputElement;
-                                            if (quantityInput) {
-                                                quantityInput.focus();
-                                                quantityInput.select();
-                                            }
-                                        }
-                                    }, 300);
-                                }}
-                                onAddCustom={(newItems, request) => {
-                                    const requestId = crypto.randomUUID();
-                                    const targetCategory = (request?.suggestedTitle || request?.query || 'ITENS ADICIONAIS').toUpperCase();
-
-                                    const itemsWithIds = newItems.map(item => ({
-                                        ...item,
-                                        id: crypto.randomUUID(),
-                                        included: true,
-                                        category: targetCategory,
-                                        aiRequestId: requestId,
-                                        isCustom: true
-                                    }));
-                                    setItems(prev => [...itemsWithIds, ...prev]);
-                                    if (request) {
-                                        setAiRequests(prev => [...prev, { ...request, id: requestId, timestamp: new Date().toISOString() }]);
-                                        if (request.projectArea && request.projectArea > 0) {
-                                            setProjectArea(request.projectArea);
-                                        }
-                                    }
-                                    setExpandedCategories(prev => ({
-                                        ...prev,
-                                        [targetCategory]: true
-                                    }));
-                                }}
+                                onSelect={handleLocalSelect}
+                                onAddCustom={handleAddAiItems}
                             />
                         </div>
 
@@ -885,24 +945,18 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                                             />
                                                                         </div>
                                                                         <div className="col-span-2 px-2">
-                                                                            <input
-                                                                                type="number"
+                                                                            <PriceInput
                                                                                 value={item.quantity}
-                                                                                onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                                                                onChange={(val) => handleQuantityChange(item.id, val.toString())}
                                                                                 data-item-id={item.id}
                                                                                 className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
-                                                                                min="0"
-                                                                                step="1"
                                                                             />
                                                                         </div>
                                                                         <div className="col-span-2 text-right">
-                                                                            <input
-                                                                                type="number"
-                                                                                value={displayValue.toFixed(2)}
-                                                                                onChange={(e) => handlePriceChange(item.id, e.target.value)}
+                                                                            <PriceInput
+                                                                                value={displayValue}
+                                                                                onChange={(val) => handlePriceChange(item.id, val.toString())}
                                                                                 className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
-                                                                                min="0"
-                                                                                step="0.01"
                                                                             />
                                                                         </div>
                                                                         <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
@@ -1082,24 +1136,18 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                                                 />
                                                                             </div>
                                                                             <div className="col-span-2 px-2">
-                                                                                <input
-                                                                                    type="number"
+                                                                                <PriceInput
                                                                                     value={item.quantity}
-                                                                                    onChange={(e) => handleQuantityChange(item.id, e.target.value)}
+                                                                                    onChange={(val) => handleQuantityChange(item.id, val.toString())}
                                                                                     data-item-id={item.id}
                                                                                     className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
-                                                                                    min="0"
-                                                                                    step="1"
                                                                                 />
                                                                             </div>
                                                                             <div className="col-span-2 text-right">
-                                                                                <input
-                                                                                    type="number"
-                                                                                    value={displayValue.toFixed(2)}
-                                                                                    onChange={(e) => handlePriceChange(item.id, e.target.value)}
+                                                                                <PriceInput
+                                                                                    value={displayValue}
+                                                                                    onChange={(val) => handlePriceChange(item.id, val.toString())}
                                                                                     className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
-                                                                                    min="0"
-                                                                                    step="0.01"
                                                                                 />
                                                                             </div>
                                                                             <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">

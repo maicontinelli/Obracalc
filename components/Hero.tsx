@@ -19,10 +19,7 @@ export function Hero() {
                     <AiAssistant />
                 </div>
 
-                {/* Footer Features */}
-                <div className="flex flex-wrap items-center justify-center gap-3 md:gap-6 text-xs md:text-sm text-gray-500 dark:text-gray-400 font-medium -mt-4 opacity-100 dark:opacity-60">
-                    <span>Descreva sua obra e a IA monta o orçamento completo em segundos.</span>
-                </div>
+
             </div>
         </section>
     );

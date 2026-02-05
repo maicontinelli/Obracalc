@@ -59,15 +59,15 @@ export default function AiAssistant() {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Local Search Effect
+    // Local Search Effect (Catalog Service Only)
     useEffect(() => {
         if (!query.trim() || response) {
             setFilteredItems([]);
             return;
         }
 
+        // Home Mode: Search in global catalog
         const fetchSuggestions = async () => {
-            // Dynamic import to avoid SSR issues if any, or just standard import usage
             const { getCatalogItems } = await import('@/lib/catalog-service');
             const allItems = await getCatalogItems();
 
@@ -85,6 +85,7 @@ export default function AiAssistant() {
     }, [query, response]);
 
     const handleLocalItemSelect = async (item: any) => {
+        // Home Logic (Create new budget)
         const newId = crypto.randomUUID();
 
         // Fetch full catalog to ensure we have all items available in the editor
@@ -198,6 +199,8 @@ export default function AiAssistant() {
         }
     };
 
+
+
     const handleCreateBudget = () => {
         if (!response?.suggestedBudget) return;
 
@@ -222,7 +225,8 @@ export default function AiAssistant() {
         const targetCategory = (response.suggestedBudget.title || query || 'ORÇAMENTO PERSONALIZADO').toUpperCase();
 
         // Create AI-suggested items
-        const aiItems = response.suggestedBudget.items.map(item => ({
+        const itemsToUse = response.suggestedBudget.items;
+        const aiItems = itemsToUse.map(item => ({
             id: crypto.randomUUID(),
             ...item,
             included: item.included !== undefined ? item.included : true, // Use AI suggestion or default to true
@@ -301,7 +305,7 @@ export default function AiAssistant() {
                         className="relative flex flex-col w-full rounded-3xl transition-all duration-300
                             bg-white dark:bg-[#1A1A1A]/90
                             shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border border-[#FF6600]/50
+                            border ${isClarifying ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-[#FF6600]/50'}
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
                             focus-within:ring-2 focus-within:ring-[#FF6600]/20 focus-within:border-[#FF6600]
                             cursor-text"
@@ -313,12 +317,14 @@ export default function AiAssistant() {
                     >
                         {isClarifying && clarificationQuestion && (
                             <div className="mx-6 mt-6 mb-2 flex gap-3 items-start animate-in fade-in slide-in-from-bottom-2 duration-300">
-                                <div className="p-2 bg-[#FF6600]/10 text-[#FF6600] rounded-full shrink-0">
-                                    <Sparkles size={20} />
+                                <div className="p-2 bg-orange-50/95 dark:bg-orange-900/20 text-orange-600 rounded-full shrink-0 border border-orange-100 dark:border-orange-800/30">
+                                    <Sparkles size={20} className="animate-spin" />
                                 </div>
-                                <div className="p-3 bg-gray-100 dark:bg-gray-800 rounded-2xl rounded-tl-sm text-sm text-gray-800 dark:text-gray-200 shadow-sm border border-gray-200 dark:border-gray-700">
-                                    <p className="font-semibold text-xs text-[#FF6600] mb-1">Preciso de um detalhe:</p>
-                                    {clarificationQuestion}
+                                <div className="p-3 bg-orange-50/80 dark:bg-orange-900/10 rounded-2xl rounded-tl-sm text-sm text-gray-800 dark:text-gray-200 shadow-sm border border-orange-200 dark:border-orange-800/30 backdrop-blur-sm">
+                                    <p className="font-bold text-[10px] text-orange-600 dark:text-orange-400 mb-1 uppercase tracking-wider">Preciso de um detalhe:</p>
+                                    <div className="whitespace-pre-line leading-relaxed">
+                                        {clarificationQuestion}
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -375,7 +381,7 @@ export default function AiAssistant() {
 
                         {/* Bottom Action Bar */}
                         <div className="absolute bottom-3 left-4 right-4 flex justify-between items-end" onClick={(e) => e.stopPropagation()}>
-                            {/* Left Tools (Plus Button) */}
+                            {/* Left Tools (Plus Button) - Only show in HOME mode */}
                             <div className="flex gap-2" ref={toolsRef}>
                                 <div className="relative">
                                     <button
@@ -392,6 +398,7 @@ export default function AiAssistant() {
                                             className="absolute top-full mt-5 left-0 w-[280px] md:w-[480px] bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border border-[#FF6600]/50 rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] dark:shadow-[0_10px_40px_rgba(255,102,0,0.15)] overflow-hidden z-[200] animate-in fade-in slide-in-from-top-4 duration-300 origin-top-left"
                                             onClick={(e) => e.stopPropagation()}
                                         >
+                                            {/* ... MENU ITEMS ... */}
                                             <div className="p-3 grid grid-cols-1 md:grid-cols-2 gap-2">
                                                 <button
                                                     type="button"
@@ -485,6 +492,8 @@ export default function AiAssistant() {
                             >
                                 {isLoading ? (
                                     <Loader2 size={20} className="animate-spin" />
+                                ) : isClarifying ? (
+                                    <Send size={20} />
                                 ) : (
                                     <ArrowRight size={20} className={query.trim() ? "animate-pulse" : ""} />
                                 )}

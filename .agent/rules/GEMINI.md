@@ -103,6 +103,10 @@ When user's prompt is NOT in English:
 2. **Respond in user's language** - match their communication
 3. **Code comments/variables** remain in English
 
+### 🚫 User Constraints (High Priority)
+
+- **No Browser/Chrome**: User explicitly stated they do not have Chrome and do not want to install it. DO NOT attempt to use browser-based tools (like `open_browser_url`) or ask the user to open the browser for verification. Rely on terminal tools (curl, wget) or user confirmation.
+
 ### 🧹 Clean Code (Global Mandatory)
 
 **ALL code MUST follow `@[skills/clean-code]` rules. No exceptions.**
