@@ -13,6 +13,16 @@ import { getDddInfo } from '@/lib/ddd-data';
 import { useProfile } from '@/hooks/useProfile';
 import { PLAN_LIMITS } from '@/lib/plan-limits';
 
+// Categories that have been removed from the catalog and should be filtered out
+const OBSOLETE_CATEGORIES = [
+    '19. PAVIMENTAÇÃO E CALÇAMENTO',
+    '20. DRENAGEM PLUVIAL EXTERNA',
+    '21. CERCAMENTOS E FECHAMENTOS',
+    '23. SINALIZAÇÃO VIÁRIA',
+    '24. PAISAGISMO E URBANISMO'
+].map(cat => cat.toUpperCase().trim().replace(/\s+/g, ' '));
+
+
 const PriceInput = ({ value, onChange, className, ...props }: { value: number, onChange: (val: number) => void, className?: string } & React.InputHTMLAttributes<HTMLInputElement>) => {
     const [localValue, setLocalValue] = useState<string | null>(null);
 
@@ -212,6 +222,12 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                         });
                         loadedItems = mergedItems;
                     }
+
+                    // Filter out obsolete categories
+                    const normalizeCategory = (cat: string) => cat.toUpperCase().trim().replace(/\s+/g, ' ');
+                    loadedItems = loadedItems.filter((item: BoqItem) =>
+                        !OBSOLETE_CATEGORIES.includes(normalizeCategory(item.category))
+                    );
 
                     finalItems = loadedItems;
                     setItems(loadedItems);
@@ -617,11 +633,13 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 element.classList.add('bg-blue-50', 'dark:bg-blue-900/20');
                 setTimeout(() => element.classList.remove('bg-blue-50', 'dark:bg-blue-900/20'), 2000);
 
-                // Try to find helper input or quantity input to focus
-                const input = element.querySelector('input');
-                if (input) {
-                    input.focus();
-                    if (input.type === 'text') input.select();
+                // Focus specifically on the quantity input field
+                const quantityInput = element.querySelector<HTMLInputElement>(`input[data-item-id="${item.id}"]`);
+                if (quantityInput) {
+                    setTimeout(() => {
+                        quantityInput.focus();
+                        quantityInput.select();
+                    }, 300);
                 }
             }
         }, 300);
@@ -829,6 +847,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     if (!categoryItems) return null;
                                     const categoryIncluded = categoryItems.filter(i => i.included).length;
                                     const isExpanded = expandedCategories[category];
+                                    const hasIncluded = categoryItems.some(i => i.included);
+                                    const showContent = isExpanded || hasIncluded;
 
                                     const categoryTotal = categoryItems.reduce((sum, item) => {
                                         if (!item.included) return sum;
@@ -888,7 +908,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                             </div>
 
                                             {/* Items List (Accordion Body) */}
-                                            {isExpanded && (
+                                            {showContent && (
                                                 <div className="pb-4 pt-1 bg-card border-t border-white/5">
                                                     {/* Column Headers */}
                                                     <div className="grid grid-cols-12 gap-4 mb-2 px-4 text-[9px] font-bold text-[#8a8886] uppercase tracking-wider">
@@ -901,6 +921,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                     </div>
                                                     <div className="space-y-0 text-[11px]">
                                                         {categoryItems.map((item, index) => {
+                                                            if (!isExpanded && !item.included) return null;
+
                                                             // EXPLICIT DISPLAY CALCULATION (Fix for DB items & Dirty Data)
                                                             const basePrice = Number(item.price);
                                                             // Safety: If laborPrice is >= basePrice, it's invalid (dirty data), so force fallback logic
@@ -980,197 +1002,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                     </div>
 
                                                     {/* Add Custom Item Button */}
-                                                    <div
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            handleAddCustomItem(category);
-                                                        }}
-                                                        className="grid grid-cols-12 gap-4 px-4 py-2.5 items-center hover:bg-blue-500/5 transition-colors group/add cursor-pointer border-t border-white/5 border-dashed mt-1"
-                                                    >
-                                                        <div className="col-span-1 flex justify-center -ml-4">
-                                                            <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/add:bg-blue-500/20 transition-colors">
-                                                                <Plus size={12} className="text-blue-500" />
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-span-11">
-                                                            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest transition-colors">
-                                                                Adicionar Item Manual em {category}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                            }
-                                        </div>
-                                    );
-                                })}
-                            </div>
-
-                            {/* Separator - MANUAL CATALOG STARTS HERE */}
-                            <div className="flex items-center gap-4 my-8">
-                                <div className="h-px bg-white/10 flex-1"></div>
-                                <button
-                                    onClick={() => setIsManualCatalogExpanded(!isManualCatalogExpanded)}
-                                    className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
-                                >
-                                    {isManualCatalogExpanded ? 'Ocultar Catálogo Manual' : 'Mostrar Catálogo Manual'}
-                                    <ChevronDown className={`w-3 h-3 transition-transform ${isManualCatalogExpanded ? 'rotate-180' : ''}`} />
-                                </button>
-                                <div className="h-px bg-white/10 flex-1"></div>
-                            </div>
-
-                            {/* Standard / Manual Items Loop (Collapsible Section) */}
-                            {isManualCatalogExpanded && (
-                                <div className="space-y-2 opacity-80 hover:opacity-100 transition-opacity">
-                                    {categories.filter(cat => {
-                                        const normalizeCategory = (c: string) => c.toUpperCase().trim().replace(/\s+/g, ' ');
-                                        const standardCats = BOQ_TEMPLATES.obra_nova.map(c => normalizeCategory(c.name));
-                                        return standardCats.includes(normalizeCategory(cat));
-                                    }).map((category) => {
-                                        const categoryItems = groupedItems[category];
-                                        if (!categoryItems) return null;
-                                        const categoryIncluded = categoryItems.filter(i => i.included).length;
-                                        const isExpanded = expandedCategories[category];
-
-                                        const categoryTotal = categoryItems.reduce((sum, item) => {
-                                            if (!item.included) return sum;
-
-                                            // Apply Same Sanitization Logic for Category Total
-                                            const baseP = Number(item.price);
-                                            const rawLabor = Number(item.laborPrice);
-                                            const safeLabor = (rawLabor > 0 && rawLabor < baseP) ? rawLabor : baseP * 0.4;
-
-                                            const price = item.manualPrice ?? (includeMaterials ? baseP : safeLabor);
-
-                                            return sum + (price * item.quantity);
-                                        }, 0);
-
-                                        return (
-                                            <div key={category} className="rounded-lg">
-                                                {/* Group Header */}
-                                                <div className="flex items-center justify-between px-4 py-3 group cursor-pointer hover:bg-white/5 transition-colors" onClick={() => toggleCategoryExpansion(category)}>
-                                                    <div className="flex items-center gap-3">
-                                                        <ChevronDown
-                                                            className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${!isExpanded ? '-rotate-90' : ''}`}
-                                                        />
-                                                        <div className="flex items-baseline gap-2">
-                                                            <h3 className={`text-xs font-bold uppercase tracking-wide transition-colors ${categoryItems.filter(i => (i.quantity || 0) > 0).length > 0 ? 'text-foreground dark:text-[#F5E6D3]' : 'text-muted-foreground/60 dark:text-gray-500 font-medium'}`}>
-                                                                {category}
-                                                            </h3>
-                                                            <span className="text-[10px] text-muted-foreground font-normal">
-                                                                ({categoryItems.filter(i => (i.quantity || 0) > 0).length})
-                                                            </span>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
-                                                        <span className="text-xs font-bold text-foreground tabular-nums">
-                                                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(categoryTotal)}
-                                                        </span>
-                                                        <button
-                                                            onClick={() => toggleCategoryItems(category, categoryIncluded < categoryItems.length)}
-                                                            className={`w-4 h-4 border rounded transition-colors flex items-center justify-center ${categoryIncluded > 0
-                                                                ? 'bg-blue-600 border-blue-600 text-white'
-                                                                : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-[#222120] hover:border-black/20 dark:hover:border-white/20'
-                                                                }`}
-                                                        >
-                                                            {categoryIncluded > 0 && <span className="text-[8px] font-bold">✓</span>}
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                {/* Items List (Accordion Body) */}
-                                                {isExpanded && (
-                                                    <div className="pb-4 pt-1 bg-card border-t border-white/5">
-                                                        {/* Column Headers */}
-                                                        <div className="grid grid-cols-12 gap-4 mb-2 px-4 text-[9px] font-bold text-[#8a8886] uppercase tracking-wider">
-                                                            <div className="col-span-1"></div>
-                                                            <div className="col-span-4">Descrição</div>
-                                                            <div className="col-span-1 text-center">Un.</div>
-                                                            <div className="col-span-2 text-center">Qtd</div>
-                                                            <div className="col-span-2 text-right">Unit</div>
-                                                            <div className="col-span-2 text-right">Total</div>
-                                                        </div>
-                                                        <div className="space-y-0 text-[11px]">
-                                                            {categoryItems.map((item, index) => {
-                                                                // EXPLICIT DISPLAY CALCULATION DUPLICATED (Since separate loop)
-                                                                const basePrice = Number(item.price);
-                                                                const rawLabor = Number(item.laborPrice);
-                                                                const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
-                                                                const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
-                                                                const displayValue = hasManual
-                                                                    ? Number(item.manualPrice)
-                                                                    : (includeMaterials ? basePrice : safeLabor);
-
-                                                                return (
-                                                                    <React.Fragment key={item.id}>
-                                                                        <div
-                                                                            id={`item-${item.id}`}
-                                                                            onClick={() => toggleInclude(item.id, true)}
-                                                                            className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
-                                                                        >
-                                                                            <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
-                                                                                <input
-                                                                                    type="checkbox"
-                                                                                    checked={item.included}
-                                                                                    onChange={() => toggleInclude(item.id)}
-                                                                                    className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-4 flex items-center gap-2">
-
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={item.name}
-                                                                                    onChange={(e) => handleNameChange(item.id, e.target.value)}
-                                                                                    className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
-                                                                                    placeholder="Nome do item"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-1 text-center">
-                                                                                <input
-                                                                                    type="text"
-                                                                                    value={item.unit}
-                                                                                    onChange={(e) => handleUnitChange(item.id, e.target.value)}
-                                                                                    className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 px-2">
-                                                                                <PriceInput
-                                                                                    value={item.quantity}
-                                                                                    onChange={(val) => handleQuantityChange(item.id, val.toString())}
-                                                                                    data-item-id={item.id}
-                                                                                    className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 text-right">
-                                                                                <PriceInput
-                                                                                    value={displayValue}
-                                                                                    onChange={(val) => handlePriceChange(item.id, val.toString())}
-                                                                                    className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
-                                                                                />
-                                                                            </div>
-                                                                            <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
-                                                                                <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
-                                                                                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                                                                                        displayValue * item.quantity
-                                                                                    )}
-                                                                                </span>
-                                                                                <button
-                                                                                    onClick={() => handleDelete(item.id)}
-                                                                                    className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
-                                                                                    title="Excluir"
-                                                                                >
-                                                                                    <Trash2 size={14} />
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </React.Fragment>
-                                                                );
-                                                            })}
-                                                        </div>
-
-                                                        {/* Add Custom Item Button */}
+                                                    {isExpanded && (
                                                         <div
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
@@ -1189,13 +1021,222 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                                 </span>
                                                             </div>
                                                         </div>
+                                                    )}
+                                                </div>
+                                            )
+                                            }
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Separator - MANUAL CATALOG STARTS HERE */}
+                            <div className="flex items-center gap-4 my-8">
+                                <div className="h-px bg-white/10 flex-1"></div>
+                                <button
+                                    onClick={() => {
+                                        const newState = !isManualCatalogExpanded;
+                                        setIsManualCatalogExpanded(newState);
+
+                                        // Always collapse all groups when toggling catalog visibility
+                                        // User will manually expand the groups they want to see
+                                        setExpandedCategories({});
+                                    }}
+                                    className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
+                                >
+                                    {isManualCatalogExpanded ? 'Ocultar Catálogo Manual' : 'Mostrar Catálogo Manual'}
+                                    <ChevronDown className={`w-3 h-3 transition-transform ${isManualCatalogExpanded ? 'rotate-180' : ''}`} />
+                                </button>
+                                <div className="h-px bg-white/10 flex-1"></div>
+                            </div>
+
+                            {/* Standard / Manual Items Loop (Collapsible Section) */}
+                            {/* Standard / Manual Items Loop (Collapsible Section) */}
+                            <div className={`space-y-2 transition-opacity ${isManualCatalogExpanded ? 'opacity-80 hover:opacity-100' : ''}`}>
+                                {categories.filter(cat => {
+                                    const normalizeCategory = (c: string) => c.toUpperCase().trim().replace(/\s+/g, ' ');
+                                    const standardCats = BOQ_TEMPLATES.obra_nova.map(c => normalizeCategory(c.name));
+                                    return standardCats.includes(normalizeCategory(cat));
+                                }).map((category) => {
+                                    const categoryItems = groupedItems[category];
+                                    if (!categoryItems) return null;
+
+                                    const hasIncluded = categoryItems.some(i => i.included);
+
+                                    // If catalog is hidden AND no items are included in this category, hide it
+                                    if (!isManualCatalogExpanded && !hasIncluded) return null;
+
+                                    const categoryIncluded = categoryItems.filter(i => i.included).length;
+                                    const isExpanded = expandedCategories[category];
+                                    const showContent = isExpanded || hasIncluded;
+
+                                    const categoryTotal = categoryItems.reduce((sum, item) => {
+                                        if (!item.included) return sum;
+
+                                        // Apply Same Sanitization Logic for Category Total
+                                        const baseP = Number(item.price);
+                                        const rawLabor = Number(item.laborPrice);
+                                        const safeLabor = (rawLabor > 0 && rawLabor < baseP) ? rawLabor : baseP * 0.4;
+
+                                        const price = item.manualPrice ?? (includeMaterials ? baseP : safeLabor);
+
+                                        return sum + (price * item.quantity);
+                                    }, 0);
+
+                                    return (
+                                        <div key={category} className="rounded-lg">
+                                            {/* Group Header */}
+                                            <div className="flex items-center justify-between px-4 py-3 group cursor-pointer hover:bg-white/5 transition-colors" onClick={() => toggleCategoryExpansion(category)}>
+                                                <div className="flex items-center gap-3">
+                                                    <ChevronDown
+                                                        className={`w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 ${!isExpanded ? '-rotate-90' : ''}`}
+                                                    />
+                                                    <div className="flex items-baseline gap-2">
+                                                        <h3 className={`text-xs font-bold uppercase tracking-wide transition-colors ${categoryItems.filter(i => (i.quantity || 0) > 0).length > 0 ? 'text-foreground dark:text-[#F5E6D3]' : 'text-muted-foreground/60 dark:text-gray-500 font-medium'}`}>
+                                                            {category}
+                                                        </h3>
+                                                        <span className="text-[10px] text-muted-foreground font-normal">
+                                                            ({categoryItems.filter(i => (i.quantity || 0) > 0).length})
+                                                        </span>
                                                     </div>
-                                                )}
+                                                </div>
+
+                                                <div className="flex items-center gap-3" onClick={(e) => e.stopPropagation()}>
+                                                    <span className="text-xs font-bold text-foreground tabular-nums">
+                                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(categoryTotal)}
+                                                    </span>
+                                                    <button
+                                                        onClick={() => toggleCategoryItems(category, categoryIncluded < categoryItems.length)}
+                                                        className={`w-4 h-4 border rounded transition-colors flex items-center justify-center ${categoryIncluded > 0
+                                                            ? 'bg-blue-600 border-blue-600 text-white'
+                                                            : 'border-black/10 dark:border-white/10 bg-black/5 dark:bg-[#222120] hover:border-black/20 dark:hover:border-white/20'
+                                                            }`}
+                                                    >
+                                                        {categoryIncluded > 0 && <span className="text-[8px] font-bold">✓</span>}
+                                                    </button>
+                                                </div>
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
+
+                                            {/* Items List (Accordion Body) */}
+                                            {showContent && (
+                                                <div className="pb-4 pt-1 bg-card border-t border-white/5">
+                                                    {/* Column Headers */}
+                                                    <div className="grid grid-cols-12 gap-4 mb-2 px-4 text-[9px] font-bold text-[#8a8886] uppercase tracking-wider">
+                                                        <div className="col-span-1"></div>
+                                                        <div className="col-span-4">Descrição</div>
+                                                        <div className="col-span-1 text-center">Un.</div>
+                                                        <div className="col-span-2 text-center">Qtd</div>
+                                                        <div className="col-span-2 text-right">Unit</div>
+                                                        <div className="col-span-2 text-right">Total</div>
+                                                    </div>
+                                                    <div className="space-y-0 text-[11px]">
+                                                        {categoryItems.map((item, index) => {
+                                                            if (!isExpanded && !item.included) return null;
+
+                                                            // EXPLICIT DISPLAY CALCULATION DUPLICATED (Since separate loop)
+                                                            const basePrice = Number(item.price);
+                                                            const rawLabor = Number(item.laborPrice);
+                                                            const safeLabor = (rawLabor > 0 && rawLabor < basePrice) ? rawLabor : basePrice * 0.4;
+                                                            const hasManual = item.manualPrice !== undefined && item.manualPrice !== null;
+                                                            const displayValue = hasManual
+                                                                ? Number(item.manualPrice)
+                                                                : (includeMaterials ? basePrice : safeLabor);
+
+                                                            return (
+                                                                <React.Fragment key={item.id}>
+                                                                    <div
+                                                                        id={`item-${item.id}`}
+                                                                        onClick={() => toggleInclude(item.id, true)}
+                                                                        className={`grid grid-cols-12 gap-4 px-4 py-1 items-center hover:bg-white/5 transition-colors group/item cursor-pointer ${!item.included ? 'opacity-50' : ''}`}
+                                                                    >
+                                                                        <div className="col-span-1 flex justify-center -ml-4" onClick={(e) => e.stopPropagation()}>
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                checked={item.included}
+                                                                                onChange={() => toggleInclude(item.id)}
+                                                                                className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-4 flex items-center gap-2">
+
+                                                                            <input
+                                                                                type="text"
+                                                                                value={item.name}
+                                                                                onChange={(e) => handleNameChange(item.id, e.target.value)}
+                                                                                className="w-full bg-transparent border-none p-0 text-[11px] font-medium text-foreground focus:text-foreground focus:ring-0 placeholder-[#B5B5B5] leading-tight"
+                                                                                placeholder="Nome do item"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-1 text-center">
+                                                                            <input
+                                                                                type="text"
+                                                                                value={item.unit}
+                                                                                onChange={(e) => handleUnitChange(item.id, e.target.value)}
+                                                                                className="w-full text-center bg-transparent border-none p-0 text-[10px] text-muted-foreground uppercase focus:ring-0"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 px-2">
+                                                                            <PriceInput
+                                                                                value={item.quantity}
+                                                                                onChange={(val) => handleQuantityChange(item.id, val.toString())}
+                                                                                data-item-id={item.id}
+                                                                                className="w-full text-center bg-black/5 dark:bg-[#222120] border-none rounded py-1 text-[11px] text-foreground focus:text-foreground focus:ring-1 focus:ring-blue-500 hover:bg-black/10 dark:hover:bg-white/10 tabular-nums"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 text-right">
+                                                                            <PriceInput
+                                                                                value={displayValue}
+                                                                                onChange={(val) => handlePriceChange(item.id, val.toString())}
+                                                                                className="w-full text-right bg-transparent border-none p-0 text-[11px] text-muted-foreground focus:text-foreground focus:ring-0 tabular-nums"
+                                                                            />
+                                                                        </div>
+                                                                        <div className="col-span-2 text-right flex items-center justify-end gap-2 group/actions relative">
+                                                                            <span className="text-[11px] font-bold text-muted-foreground tabular-nums">
+                                                                                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                                                                                    displayValue * item.quantity
+                                                                                )}
+                                                                            </span>
+                                                                            <button
+                                                                                onClick={() => handleDelete(item.id)}
+                                                                                className="opacity-0 group-hover/item:opacity-100 text-red-400 hover:text-red-600 p-1 absolute -right-6 md:static transition-all"
+                                                                                title="Excluir"
+                                                                            >
+                                                                                <Trash2 size={14} />
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                </React.Fragment>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    {/* Add Custom Item Button */}
+                                                    {isExpanded && (
+                                                        <div
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleAddCustomItem(category);
+                                                            }}
+                                                            className="grid grid-cols-12 gap-4 px-4 py-2.5 items-center hover:bg-blue-500/5 transition-colors group/add cursor-pointer border-t border-white/5 border-dashed mt-1"
+                                                        >
+                                                            <div className="col-span-1 flex justify-center -ml-4">
+                                                                <div className="w-5 h-5 rounded-full bg-blue-500/10 flex items-center justify-center group-hover/add:bg-blue-500/20 transition-colors">
+                                                                    <Plus size={12} className="text-blue-500" />
+                                                                </div>
+                                                            </div>
+                                                            <div className="col-span-11">
+                                                                <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest transition-colors">
+                                                                    Adicionar Item Manual em {category}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
 
                         </div>
                     </div>
