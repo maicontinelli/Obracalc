@@ -343,30 +343,32 @@ export default function DashboardPage() {
                             {/* Profile Card Content - Toggles between View and Edit to allow full height */}
                             {!isProfileExpanded ? (
                                 <>
-                                    <div className="relative h-56 w-full rounded-[1.5rem] overflow-hidden bg-gray-100 dark:bg-gray-800 isolate">
-                                        {profileData.avatar_url ? (
-                                            <img src={profileData.avatar_url} alt="Profile" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                                        ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 gap-2">
-                                                <UserIcon size={64} strokeWidth={1} />
-                                                <span className="text-xs">Sem foto</span>
-                                            </div>
-                                        )}
-                                        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent z-10" />
+                                    <div className="flex flex-col items-center pt-4 pb-6">
+                                        {/* Circular Profile Photo */}
+                                        <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full overflow-hidden bg-gray-100 dark:bg-gray-800 mb-4 ring-4 ring-white/50 dark:ring-white/10 shadow-lg">
+                                            {profileData.avatar_url ? (
+                                                <img src={profileData.avatar_url} alt="Profile" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                    <UserIcon size={48} strokeWidth={1} />
+                                                </div>
+                                            )}
+                                        </div>
 
-                                        <div className="absolute bottom-4 left-4 right-4 z-20 text-white">
-                                            <h2 className="text-xl font-bold truncate">{profileData.full_name || 'Seu Nome'}</h2>
-                                            <p className="text-xs text-white/80 uppercase tracking-wider">{profileData.profession || 'Profissional'}</p>
+                                        {/* Profile Info */}
+                                        <div className="text-center mb-4">
+                                            <h2 className="text-xl font-bold text-foreground mb-1">{profileData.full_name || 'Seu Nome'}</h2>
+                                            <p className="text-xs text-muted-foreground uppercase tracking-wider">{profileData.profession || 'Profissional'}</p>
                                         </div>
-                                        <div className="absolute top-4 right-4 z-20">
-                                            <button
-                                                onClick={() => setIsProfileExpanded(true)}
-                                                className="bg-white/20 hover:bg-white/30 backdrop-blur-md text-white p-2 rounded-full transition-colors border border-white/20"
-                                                aria-label="Editar perfil"
-                                            >
-                                                <Edit3 size={16} />
-                                            </button>
-                                        </div>
+
+                                        {/* Edit Button */}
+                                        <button
+                                            onClick={() => setIsProfileExpanded(true)}
+                                            className="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full transition-colors text-sm font-medium flex items-center gap-2"
+                                        >
+                                            <Edit3 size={14} />
+                                            Editar Perfil
+                                        </button>
                                     </div>
 
                                     <div className="mt-4 px-2 space-y-3">
@@ -394,14 +396,7 @@ export default function DashboardPage() {
                                         </div>
                                     </div>
 
-                                    <div className="mt-6">
-                                        <button
-                                            onClick={() => setIsProfileExpanded(true)}
-                                            className="w-full py-2.5 rounded-xl bg-muted/50 hover:bg-muted text-xs font-bold uppercase tracking-wide transition-colors text-muted-foreground hover:text-foreground border border-transparent hover:border-black/5"
-                                        >
-                                            Editar Dados
-                                        </button>
-                                    </div>
+
                                 </>
                             ) : (
                                 <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-bottom-2">

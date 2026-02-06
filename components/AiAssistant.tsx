@@ -169,9 +169,74 @@ export default function AiAssistant() {
 
     return (
         <div className="w-full max-w-2xl mx-auto mt-0 mb-8">
-            {/* Chat Messages - appears above the search bar */}
+            {/* Search Bar - now at the top */}
+            <div className="relative z-50">
+                <form onSubmit={handleSearch} className="relative z-10 w-full">
+                    <div
+                        className="relative flex flex-col w-full rounded-3xl transition-all duration-300
+                            bg-white dark:bg-[#1A1A1A]/90
+                            shadow-[0_8px_30px_rgba(0,0,0,0.12)]
+                            border border-orange-500/40 dark:border-orange-500/20
+                            hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)]
+                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500
+                            cursor-text"
+                        style={{ minHeight: '120px' }}
+                        onClick={() => {
+                            const textarea = document.getElementById('search-textarea');
+                            if (textarea) textarea.focus();
+                        }}
+                    >
+                        <textarea
+                            id="search-textarea"
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleSearch(e);
+                                }
+                            }}
+                            placeholder={placeholder}
+                            className="w-full h-full bg-transparent border-none outline-none resize-none
+                                text-gray-800 dark:text-gray-100 text-base
+                                placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                px-6 pt-6 pb-16
+                                focus:ring-0"
+                            rows={3}
+                            disabled={isLoading}
+                        />
+
+                        <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                {isClarifying && (
+                                    <div className="flex items-center gap-2 text-orange-500 animate-pulse">
+                                        <Sparkles size={16} className="animate-spin" />
+                                        <span className="text-xs font-medium">Aguardando resposta...</span>
+                                    </div>
+                                )}
+                            </div>
+                            <button
+                                type="submit"
+                                disabled={!query.trim() || isLoading}
+                                className="p-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 dark:disabled:bg-gray-700
+                                    text-white rounded-xl transition-all duration-200
+                                    disabled:cursor-not-allowed disabled:opacity-50
+                                    shadow-md hover:shadow-lg active:scale-95"
+                            >
+                                {isLoading ? (
+                                    <Loader2 size={20} className="animate-spin" />
+                                ) : (
+                                    <Send size={20} />
+                                )}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            {/* Chat Messages - now appears below the search bar */}
             {messages.length > 0 && (
-                <div className="mb-6 space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
+                <div className="mt-6 space-y-4 max-h-[500px] overflow-y-auto custom-scrollbar">
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                             {msg.role === 'user' ? (
@@ -251,62 +316,6 @@ export default function AiAssistant() {
                     <div ref={responseRef} />
                 </div>
             )}
-
-            {/* Search Bar - always at the bottom */}
-            <div className="relative z-50">
-                <form onSubmit={handleSearch} className="relative z-10 w-full">
-                    <div
-                        className="relative flex flex-col w-full rounded-3xl transition-all duration-300
-                            bg-white dark:bg-[#1A1A1A]/90
-                            shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border border-orange-400/30 dark:border-orange-500/20
-                            hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500
-                            cursor-text"
-                        style={{ minHeight: '120px' }}
-                        onClick={() => {
-                            const textarea = document.getElementById('search-textarea');
-                            if (textarea) textarea.focus();
-                        }}
-                    >
-                        <textarea
-                            id="search-textarea"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSearch(e);
-                                }
-                            }}
-                            placeholder={placeholder}
-                            className="w-full px-6 pt-6 pb-16 rounded-3xl border-none outline-none bg-transparent text-lg text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium resize-none overflow-hidden"
-                            rows={1}
-                            style={{ minHeight: '80px' }}
-                        />
-
-                        <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-3 border-t border-gray-100 dark:border-gray-800/50">
-                            <div className="flex items-center gap-2">
-                                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-                                    {isClarifying ? '💬 Responda a pergunta acima' : '✨ Descreva o que precisa'}
-                                </span>
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={isLoading || !query.trim()}
-                                className={`p-2.5 rounded-xl transition-all duration-300 flex items-center justify-center ${query.trim() ? 'bg-[#FF6600] text-white shadow-md hover:bg-[#e65c00]' : 'bg-gray-100 dark:bg-gray-800 text-gray-400'}`}
-                            >
-                                {isLoading ? (
-                                    <Loader2 size={20} className="animate-spin" />
-                                ) : (
-                                    <Send size={20} />
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </form>
-            </div>
 
             {error && (
                 <div className="mt-4 p-3 bg-red-50/80 dark:bg-red-900/20 backdrop-blur-sm text-red-600 dark:text-red-400 rounded-lg text-sm flex items-center gap-2 border border-red-100 dark:border-red-800/50">

@@ -113,6 +113,36 @@ export default function AdminCatalog() {
         }
     };
 
+    const handleClearObsolete = async () => {
+        if (!confirm('Isso irá remover DEFINITIVAMENTE todos os itens das categorias removidas (19, 20, 21, 23, 24). Tem certeza?')) return;
+
+        setIsSeeding(true);
+        setMessage(null);
+
+        try {
+            const obsoletePrefixes = ['19.', '20.', '21.', '23.', '24.'];
+            let deletedCount = 0;
+
+            for (const prefix of obsoletePrefixes) {
+                const { count, error } = await supabase
+                    .from('services')
+                    .delete({ count: 'exact' })
+                    .ilike('category', `${prefix}%`);
+
+                if (error) throw error;
+                if (count) deletedCount += count;
+            }
+
+            setMessage({ type: 'success', text: `Limpeza concluída! ${deletedCount} itens obsoletos removidos.` });
+            loadData();
+        } catch (error: any) {
+            console.error(error);
+            setMessage({ type: 'error', text: `Erro na limpeza: ${error.message}` });
+        } finally {
+            setIsSeeding(false);
+        }
+    };
+
     const handleUpdatePrice = async (id: string, newPrice: string) => {
         const price = parseFloat(newPrice.replace('R$', '').replace('.', '').replace(',', '.').trim());
         if (isNaN(price)) return;
@@ -154,6 +184,15 @@ export default function AdminCatalog() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleClearObsolete}
+                        disabled={isSeeding}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                        title="Remove categorias 19, 20, 21, 23, 24"
+                    >
+                        {isSeeding ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+                        Limpar Obsoletos
+                    </button>
                     <button
                         onClick={handleSeed}
                         disabled={isSeeding}
