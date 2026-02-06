@@ -75,10 +75,10 @@ export default function PlansPage() {
             priceDisplay: 'R$ 0',
             period: '/sempre',
             subtext: null,
-            description: 'Para conhecer o ObraPlana e gerar orçamentos simples.',
+            description: 'É sério, você pode criar sua conta gratuita agora mesmo!',
             features: [
                 'Criação de orçamentos técnicos com IA',
-                'Até 5 orçamentos ativos',
+                'Até 2 orçamentos completos',
                 'Visualização no dashboard',
                 'Edição básica de itens',
                 'Histórico limitado',
@@ -99,7 +99,7 @@ export default function PlansPage() {
             priceDisplay: billingCycle === 'monthly' ? 'R$ 9,17' : 'R$ 110,00',
             period: billingCycle === 'monthly' ? '/mês' : '/ano',
             subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 110,00)' : 'Equivalente a R$ 9,17/mês',
-            description: 'Para profissionais e pequenas empresas que fazem orçamentos com frequência.',
+            description: 'Mais barato que um cafezinho no aeroporto.',
             features: [
                 'Até 60 orçamentos por ano',
                 'Orçamentos completos e detalhados',
@@ -153,8 +153,8 @@ export default function PlansPage() {
 
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center max-w-7xl mx-auto">
-                            <h1 className="text-3xl md:text-5xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-24">
-                                A ferramenta definitiva para <br /> <span className="text-[#74D2E7]">criar orçamentos</span>
+                            <h1 className="text-3xl md:text-5xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-6">
+                                A ferramenta definitiva para criar <span className="text-[#74D2E7]">orçamentos</span> completos
                             </h1>
                             <p className="text-sm md:text-base font-manrope font-semibold text-foreground mb-0">
                                 Use no seu ritmo. Evolua quando fizer sentido
@@ -163,7 +163,7 @@ export default function PlansPage() {
                     </div>
                 </section>
 
-                <div className="container mx-auto px-4 mb-12">
+                <div className="container mx-auto px-4 mb-8">
                     <div className="flex justify-center items-center gap-4">
                         <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
                             Mensal
@@ -356,6 +356,6 @@ export default function PlansPage() {
                     </div>
                 )}
             </main>
-        </div>
+        </div >
     );
 }

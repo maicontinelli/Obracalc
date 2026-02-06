@@ -287,8 +287,8 @@ export default function DashboardPage() {
 
     const handleNewBudget = () => {
         // Simple limit check - keep logic for now but maybe relax in future
-        if (profile?.tier === 'free' && budgets.length >= 5) {
-            alert('Limite de 5 orçamentos no plano grátis.');
+        if (profile?.tier === 'free' && budgets.length >= 2) {
+            alert('Limite de 2 orçamentos no plano grátis.');
             router.push('/planos');
             return;
         }

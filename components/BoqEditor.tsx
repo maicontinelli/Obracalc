@@ -561,6 +561,39 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     };
 
     const handleGenerateReport = async () => {
+        if (!user) {
+            // Block access for non-logged in users
+            alert("Para gerar o relatório profissional e baixar em PDF, você precisa criar uma conta grátis. É rápido e você não perde este orçamento!");
+
+            // Save locally so they don't lose work
+            const dataToSave = {
+                id: estimateId,
+                items,
+                bdi,
+                providerName,
+                clientName,
+                projectType,
+                deadline,
+                providerPhone,
+                clientPhone,
+                workCity,
+                workState,
+                includeMaterials,
+                includeContract,
+                clientDocument,
+                clientAddress,
+                updatedAt: new Date().toISOString(),
+                projectArea,
+                projectDuration,
+                aiRequests
+            };
+            localStorage.setItem(`estimate_${estimateId}`, JSON.stringify(dataToSave));
+
+            // Redirect to login (signup)
+            window.location.href = '/login';
+            return;
+        }
+
         setIsSaving(true);
         // Force save locally one last time
         const dataToSave = {
@@ -586,25 +619,8 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
         };
         localStorage.setItem(`estimate_${estimateId}`, JSON.stringify(dataToSave));
 
-        // Save to Cloud if logged in
-        if (user) {
-            await handleSaveToCloud();
-        } else {
-            // "Arapuca de Leads": Silent capture for anonymous users
-            supabase.from('anonymous_leads').insert({
-                provider_name: providerName,
-                provider_phone: providerPhone,
-                client_name: clientName,
-                client_phone: clientPhone,
-                project_type: projectType,
-                work_city: workCity,
-                work_state: workState,
-                deadline: deadline,
-                origin: 'editor_guest'
-            }).then(({ error }) => {
-                if (error) console.error('Lead Trap Error:', error);
-            });
-        }
+        // Save to Cloud if logged in (already checked)
+        await handleSaveToCloud();
 
         // Always redirect to report page logic locally
         await new Promise(resolve => setTimeout(resolve, 500));

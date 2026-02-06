@@ -173,63 +173,63 @@ export default function AiAssistant() {
             <div className="relative z-50">
                 <form onSubmit={handleSearch} className="relative z-10 w-full">
                     <div
-                        className="relative flex flex-col w-full rounded-3xl transition-all duration-300
+                        className="relative flex items-center w-full rounded-[24px] transition-all duration-300
                             bg-white dark:bg-[#1A1A1A]/90
                             shadow-[0_8px_30px_rgba(0,0,0,0.12)]
                             border border-orange-500/40 dark:border-orange-500/20
                             hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)]
                             focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500
-                            cursor-text"
-                        style={{ minHeight: '120px' }}
+                            cursor-text pl-6 pr-2 py-2"
+                        style={{ minHeight: '64px' }}
                         onClick={() => {
                             const textarea = document.getElementById('search-textarea');
                             if (textarea) textarea.focus();
                         }}
                     >
-                        <textarea
-                            id="search-textarea"
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleSearch(e);
-                                }
-                            }}
-                            placeholder={placeholder}
-                            className="w-full h-full bg-transparent border-none outline-none resize-none
-                                text-gray-800 dark:text-gray-100 text-base
-                                placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                px-6 pt-6 pb-16
-                                focus:ring-0"
-                            rows={3}
-                            disabled={isLoading}
-                        />
-
-                        <div className="absolute bottom-4 left-6 right-6 flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                                {isClarifying && (
-                                    <div className="flex items-center gap-2 text-orange-500 animate-pulse">
-                                        <Sparkles size={16} className="animate-spin" />
-                                        <span className="text-xs font-medium">Aguardando resposta...</span>
-                                    </div>
-                                )}
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={!query.trim() || isLoading}
-                                className="p-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-300 dark:disabled:bg-gray-700
-                                    text-white rounded-xl transition-all duration-200
-                                    disabled:cursor-not-allowed disabled:opacity-50
-                                    shadow-md hover:shadow-lg active:scale-95"
-                            >
-                                {isLoading ? (
-                                    <Loader2 size={20} className="animate-spin" />
-                                ) : (
-                                    <Send size={20} />
-                                )}
-                            </button>
+                        <div className="flex-1 relative">
+                            {isClarifying && (
+                                <div className="absolute -top-6 left-0 flex items-center gap-2 text-orange-500 animate-pulse bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded-full text-[10px] backdrop-blur-sm pointer-events-none">
+                                    <Sparkles size={12} className="animate-spin" />
+                                    <span className="font-medium">Aguardando resposta...</span>
+                                </div>
+                            )}
+                            <textarea
+                                id="search-textarea"
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleSearch(e);
+                                    }
+                                }}
+                                placeholder={placeholder}
+                                className="w-full bg-transparent border-none outline-none resize-none
+                                    text-gray-800 dark:text-gray-100 text-base
+                                    placeholder:text-gray-400 dark:placeholder:text-gray-500
+                                    py-2 pr-2
+                                    focus:ring-0 max-h-[120px]"
+                                rows={1}
+                                disabled={isLoading}
+                                style={{ minHeight: '24px' }}
+                            />
                         </div>
+
+                        <button
+                            type="submit"
+                            disabled={!query.trim() || isLoading}
+                            className="p-3 bg-orange-500 hover:bg-orange-600 disabled:bg-gray-100 dark:disabled:bg-gray-800
+                                text-white disabled:text-gray-400 dark:disabled:text-gray-500 
+                                rounded-2xl transition-all duration-200
+                                disabled:cursor-not-allowed disabled:shadow-none
+                                shadow-md hover:shadow-lg active:scale-95 shrink-0 ml-2"
+                        >
+                            {isLoading ? (
+                                <Loader2 size={20} className="animate-spin" />
+                            ) : (
+                                <Send size={20} className={query.trim() ? "translate-x-0.5" : ""} />
+                            )}
+                        </button>
                     </div>
                 </form>
             </div>

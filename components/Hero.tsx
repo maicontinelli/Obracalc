@@ -78,6 +78,20 @@ export function Hero() {
                 {/* AI Assistant Container (Search Bar) */}
                 <div className="max-w-3xl mx-auto relative z-20 mb-8 mt-0">
                     <AiAssistant />
+
+                    <div className="flex justify-center mt-8">
+                        <button
+                            onClick={() => {
+                                const id = crypto.randomUUID();
+                                window.location.href = `/editor/${id}`;
+                            }}
+                            className="group flex items-center gap-2 px-6 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-900/50 transition-all shadow-sm hover:shadow-md"
+                        >
+                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
+                            Preferir criar manualmente
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all text-orange-500"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                        </button>
+                    </div>
                 </div>
 
 
