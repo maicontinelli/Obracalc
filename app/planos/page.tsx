@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Check, X, User, ArrowRight, Lock } from 'lucide-react';
 import { Button } from '@/components/Button';
 import Link from 'next/link';
+import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { SpotlightCard } from '@/components/ui/SpotlightCard';
 
@@ -154,11 +155,21 @@ export default function PlansPage() {
                     <div className="container mx-auto px-4 relative z-10">
                         <div className="text-center max-w-7xl mx-auto">
                             <h1 className="text-3xl md:text-5xl font-heading font-bold tracking-tight text-foreground max-w-6xl mx-auto leading-tight mb-6">
-                                A ferramenta definitiva para criar <span className="text-[#74D2E7]">orçamentos</span> completos
+                                A ferramenta definitiva para <br /> criar <span className="text-[#74D2E7]">orçamentos</span> completos
                             </h1>
                             <p className="text-sm md:text-base font-manrope font-semibold text-foreground mb-0">
                                 Use no seu ritmo. Evolua quando fizer sentido
                             </p>
+                            <div className="flex justify-center mt-8">
+                                <Image
+                                    src="/mascot-running.png"
+                                    alt="Mascote ObraPlana correndo com projeto"
+                                    width={126}
+                                    height={126}
+                                    priority
+                                    className="object-contain"
+                                />
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -202,40 +213,19 @@ export default function PlansPage() {
                                     </div>
                                 )}
 
-                                <div className="mb-4">
+                                <div className="mb-2 text-center">
                                     <h3 className="text-2xl font-bold text-foreground mb-2">
                                         {plan.name}
                                     </h3>
-                                    <p className="text-muted-foreground min-h-[48px]">
+                                </div>
+
+                                <div className="mb-6 text-center">
+                                    <p className="text-muted-foreground min-h-[48px] flex items-center justify-center">
                                         {plan.description}
                                     </p>
                                 </div>
 
-                                <div className="flex-grow mb-8 border-t border-border/50 pt-6">
-                                    <ul className="space-y-4">
-                                        {plan.features.map((feature) => (
-                                            <li key={feature} className="flex items-start gap-3">
-                                                <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${feature === 'Acesso exclusivo ao sistema de indicação'
-                                                    ? 'text-[#74D2E7] stroke-[3]'
-                                                    : 'text-blue-500'
-                                                    }`} />
-                                                <span className={`text-foreground text-sm ${(feature === 'Acesso exclusivo ao sistema de indicação' || feature === 'Orçamentos ilimitados') ? 'font-bold' : ''}`}>
-                                                    {feature}
-                                                </span>
-                                            </li>
-                                        ))}
-                                        {plan.limitations.map((limitation) => (
-                                            <li key={limitation} className="flex items-start gap-3">
-                                                <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-                                                <span className="text-muted-foreground text-sm">
-                                                    {limitation}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="mb-6 flex flex-col items-center justify-center min-h-[5rem]">
+                                <div className="mb-4 flex flex-col items-center justify-center min-h-[5rem]">
                                     <div className="flex items-baseline gap-1">
                                         <span className="text-4xl font-bold text-foreground">
                                             {plan.priceDisplay}
@@ -252,7 +242,7 @@ export default function PlansPage() {
                                 </div>
 
                                 {plan.href ? (
-                                    <div className="w-full">
+                                    <div className="w-full mb-4">
                                         <Link
                                             href={plan.href}
                                             className="w-full"
@@ -277,7 +267,7 @@ export default function PlansPage() {
                                         </p>
                                     </div>
                                 ) : (
-                                    <div className="w-full">
+                                    <div className="w-full mb-4">
                                         <Button
                                             className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full shadow-md hover:shadow-xl hover:-translate-y-0.5 ${plan.popular
                                                 ? 'bg-[#74D2E7] hover:bg-[#5bc0de] text-white border border-transparent shadow-[#74D2E7]/20 text-[#3D3A36]'
@@ -296,6 +286,30 @@ export default function PlansPage() {
                                         </p>
                                     </div>
                                 )}
+
+                                <div className="flex-grow border-t border-border/50 pt-6">
+                                    <ul className="space-y-4">
+                                        {plan.features.map((feature) => (
+                                            <li key={feature} className="flex items-start gap-3">
+                                                <Check className={`w-5 h-5 flex-shrink-0 mt-0.5 ${feature === 'Acesso exclusivo ao sistema de indicação'
+                                                    ? 'text-[#74D2E7] stroke-[3]'
+                                                    : 'text-blue-500'
+                                                    }`} />
+                                                <span className={`text-foreground text-sm ${(feature === 'Acesso exclusivo ao sistema de indicação' || feature === 'Orçamentos ilimitados') ? 'font-bold' : ''}`}>
+                                                    {feature}
+                                                </span>
+                                            </li>
+                                        ))}
+                                        {plan.limitations.map((limitation) => (
+                                            <li key={limitation} className="flex items-start gap-3">
+                                                <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                                                <span className="text-muted-foreground text-sm">
+                                                    {limitation}
+                                                </span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </div>
                         ))}
                     </div>

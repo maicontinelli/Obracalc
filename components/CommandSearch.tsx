@@ -235,23 +235,6 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
     return (
         <div className="w-full mb-6 relative" ref={containerRef}>
             <div className="group relative">
-                {/* Clarification Prompt Bubble */}
-                {isClarifying && clarificationQuestion && (
-                    <div className="mb-2 px-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-                        <div className="flex gap-3 items-start p-3 bg-orange-50/95 dark:bg-orange-900/20 rounded-2xl rounded-bl-sm shadow-sm border border-orange-200 dark:border-orange-800/30 backdrop-blur-sm">
-                            <div className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 rounded-full shrink-0">
-                                <Sparkles size={14} />
-                            </div>
-                            <div className="text-xs text-gray-800 dark:text-orange-200 font-medium">
-                                <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Preciso de um detalhe</p>
-                                <div className="whitespace-pre-line leading-relaxed">
-                                    {clarificationQuestion}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 <form onSubmit={handleAiSearch} className="relative z-20">
                     {/* Glassmorphism Search Bar - Neon Orange Style */}
                     <div className={`relative flex items-center w-full rounded-full transition-all duration-300
@@ -288,6 +271,23 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                         </button>
                     </div>
                 </form>
+
+                {/* Clarification Prompt Bubble */}
+                {isClarifying && clarificationQuestion && (
+                    <div className="mt-2 px-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                        <div className="flex gap-3 items-start p-3 bg-orange-50/95 dark:bg-orange-900/20 rounded-2xl rounded-tl-sm shadow-sm border border-orange-200 dark:border-orange-800/30 backdrop-blur-sm">
+                            <div className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 rounded-full shrink-0">
+                                <Sparkles size={14} />
+                            </div>
+                            <div className="text-xs text-gray-800 dark:text-orange-200 font-medium">
+                                <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Obra Plana</p>
+                                <div className="whitespace-pre-line leading-relaxed">
+                                    {clarificationQuestion}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Local Search Results Dropdown - Linear Style */}

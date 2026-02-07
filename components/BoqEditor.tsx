@@ -109,7 +109,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [budgetCount, setBudgetCount] = useState(0); // Track budget count for limits
 
     const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-    const [isManualCatalogExpanded, setIsManualCatalogExpanded] = useState(false);
+    const [isManualCatalogExpanded, setIsManualCatalogExpanded] = useState(true);
     const [includeMaterials, setIncludeMaterials] = useState(true);
 
     const [defaultItems, setDefaultItems] = useState<BoqItem[]>([]);

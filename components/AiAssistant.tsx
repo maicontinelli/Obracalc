@@ -83,10 +83,19 @@ export default function AiAssistant() {
         setQuery('');
 
         try {
+            // Prepare history for API
+            const history = messages.map(msg => ({
+                role: msg.role,
+                content: msg.text
+            }));
+
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: currentQuery }),
+                body: JSON.stringify({
+                    message: currentQuery,
+                    history: history
+                }),
             });
 
             const data = await response.json();
@@ -99,7 +108,7 @@ export default function AiAssistant() {
             const aiMsg: Message = {
                 id: crypto.randomUUID(),
                 role: 'assistant',
-                text: data.text || '',
+                text: data.clarificationRequest || data.text || '',
                 suggestedBudget: data.suggestedBudget,
                 isClarification: !!data.clarificationRequest,
                 timestamp: Date.now()
@@ -173,26 +182,23 @@ export default function AiAssistant() {
             <div className="relative z-50">
                 <form onSubmit={handleSearch} className="relative z-10 w-full">
                     <div
-                        className="relative flex items-center w-full rounded-[24px] transition-all duration-300
+                        className={`relative flex items-center w-full rounded-[24px] transition-all duration-300
                             bg-white dark:bg-[#1A1A1A]/90
                             shadow-[0_8px_30px_rgba(0,0,0,0.12)]
-                            border border-orange-500/40 dark:border-orange-500/20
                             hover:shadow-[0_12px_40px_rgba(0,0,0,0.15)]
                             focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500
-                            cursor-text pl-6 pr-2 py-2"
+                            cursor-text py-2
+                            ${isClarifying ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border border-orange-500/40 dark:border-orange-500/20'}`}
                         style={{ minHeight: '64px' }}
                         onClick={() => {
                             const textarea = document.getElementById('search-textarea');
                             if (textarea) textarea.focus();
                         }}
                     >
+                        <div className="pl-4 pr-2 text-gray-400 dark:text-gray-500 shrink-0">
+                            <Sparkles size={20} className={`text-orange-500 ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
+                        </div>
                         <div className="flex-1 relative">
-                            {isClarifying && (
-                                <div className="absolute -top-6 left-0 flex items-center gap-2 text-orange-500 animate-pulse bg-white/50 dark:bg-black/50 px-2 py-0.5 rounded-full text-[10px] backdrop-blur-sm pointer-events-none">
-                                    <Sparkles size={12} className="animate-spin" />
-                                    <span className="font-medium">Aguardando resposta...</span>
-                                </div>
-                            )}
                             <textarea
                                 id="search-textarea"
                                 value={query}
@@ -203,11 +209,11 @@ export default function AiAssistant() {
                                         handleSearch(e);
                                     }
                                 }}
-                                placeholder={placeholder}
+                                placeholder={isClarifying ? "Digite sua resposta..." : placeholder}
                                 className="w-full bg-transparent border-none outline-none resize-none
                                     text-gray-800 dark:text-gray-100 text-base
                                     placeholder:text-gray-400 dark:placeholder:text-gray-500
-                                    py-2 pr-2
+                                    py-2 px-2
                                     focus:ring-0 max-h-[120px]"
                                 rows={1}
                                 disabled={isLoading}
@@ -222,7 +228,7 @@ export default function AiAssistant() {
                                 text-white disabled:text-gray-400 dark:disabled:text-gray-500 
                                 rounded-2xl transition-all duration-200
                                 disabled:cursor-not-allowed disabled:shadow-none
-                                shadow-md hover:shadow-lg active:scale-95 shrink-0 ml-2"
+                                shadow-md hover:shadow-lg active:scale-95 shrink-0 mx-2"
                         >
                             {isLoading ? (
                                 <Loader2 size={20} className="animate-spin" />
@@ -250,7 +256,7 @@ export default function AiAssistant() {
                                             <Sparkles size={14} />
                                         </div>
                                         <div className="text-xs text-gray-800 dark:text-orange-200 font-medium">
-                                            <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Preciso de um detalhe</p>
+                                            <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Obra Plana</p>
                                             <div className="whitespace-pre-line leading-relaxed">{msg.text}</div>
                                         </div>
                                     </div>
