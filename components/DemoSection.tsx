@@ -7,10 +7,10 @@ export function DemoSection() {
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
                         <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                            Você pede e o ObraPlana organiza o resto.
+                            Você pede e o ObraPlana <span className="text-green-500">organiza</span> o resto.
                         </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                            Comece com uma descrição simples. Deixe nossa IA fazer o trabalho pesado, estruturando os serviços, sugerindo itens essenciais, calculando mão de obra/material, definindo BDI e gerando relatório final.
+                            Comece com uma descrição simples. Deixe nossa IA fazer o trabalho pesado.
                         </p>
                         <ul className="space-y-4 mb-8">
                             {[
