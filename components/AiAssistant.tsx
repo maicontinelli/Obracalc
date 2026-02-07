@@ -141,6 +141,8 @@ export default function AiAssistant() {
                 category: item.category,
                 type: item.type,
                 included: true,
+                isCustom: true,
+                aiRequestId: 'home-search',
             })),
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
