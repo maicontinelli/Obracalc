@@ -21,7 +21,7 @@ const WELCOME_MESSAGES = [
 
 export function Hero() {
     const [user, setUser] = useState<User | null>(null);
-    const [greeting, setGreeting] = useState<string>("Você pede e o ObraPlana organiza o resto");
+    const [greeting, setGreeting] = useState<string>("Planejar muda tudo");
 
     useEffect(() => {
         const supabase = createClient();
@@ -29,7 +29,26 @@ export function Hero() {
         // Get current user
         supabase.auth.getUser().then(({ data: { user } }) => {
             if (user) {
-                // ... (rest of user logic remains same)
+                setUser(user);
+
+                // Get user's profile to fetch the name
+                supabase
+                    .from('profiles')
+                    .select('full_name')
+                    .eq('id', user.id)
+                    .single()
+                    .then(({ data }) => {
+                        if (data?.full_name) {
+                            // Extract first name
+                            const firstName = data.full_name.split(' ')[0];
+
+                            // Select a random greeting message
+                            const randomIndex = Math.floor(Math.random() * WELCOME_MESSAGES.length);
+                            const message = WELCOME_MESSAGES[randomIndex].replace('{name}', firstName);
+
+                            setGreeting(message);
+                        }
+                    });
             }
         });
 
@@ -38,7 +57,7 @@ export function Hero() {
             setUser(session?.user ?? null);
 
             if (!session?.user) {
-                setGreeting("Você pede e o ObraPlana organiza o resto");
+                setGreeting("Planejar muda tudo");
             }
         });
 

@@ -27,7 +27,7 @@ export function TargetAudience() {
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-12">
                     <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
-                        Um orçamento confiável para <span className="text-[#6366F1]">decisões reais</span> de obra
+                        Você pede e o ObraPlana <span className="text-[#6366F1]">organiza o resto.</span>
                     </h2>
                 </div>
 
