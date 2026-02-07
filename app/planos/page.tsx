@@ -123,7 +123,7 @@ export default function PlansPage() {
             priceDisplay: billingCycle === 'monthly' ? 'R$ 70,00' : 'R$ 840,00',
             period: billingCycle === 'monthly' ? '/mês' : '/ano',
             subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 840,00)' : 'Equivalente a R$ 70,00/mês',
-            description: 'Para empresas que tratam orçamento como parte crítica do negócio.',
+            description: 'Para empresas que desejam fechar mais obras.',
             features: [
                 'Orçamentos ilimitados',
                 'Exportações ilimitadas',
