@@ -40,7 +40,7 @@ export function Features() {
                                         <Calculator className="w-7 h-7 text-green-600 dark:text-green-400" />
                                     </div>
                                     <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-                                        Orçamentos SINAPI
+                                        Orçamento Inteligente
                                     </h3>
                                     <p className="text-muted-foreground text-lg leading-relaxed max-w-md">
                                         Gere orçamentos com preços oficiais da Caixa Econômica. Precisão automática para todas as etapas da obra.
