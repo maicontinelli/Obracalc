@@ -182,7 +182,7 @@ export function Features() {
                             >
                                 <div className="flex-1 space-y-6">
                                     <h3 className="text-2xl md:text-4xl font-bold text-foreground font-heading leading-tight max-w-3xl">
-                                        Veja porque usuários do <span className="text-[#74D2E7]">plano PRÓ</span> estão cobrando até +20% em seus orçamentos!
+                                        Veja porque usuários do plano <span className="text-[#74D2E7]">Profissional</span> estão ganhando até +20% em seus orçamentos.
                                     </h3>
 
                                     <ul className="space-y-3 text-muted-foreground text-sm md:text-base text-left list-none pl-0">
