@@ -280,3 +280,11 @@ AbacatePay Response: {
  GET / 200 in 112ms (compile: 103ms, render: 9ms)
  GET /dashboard 200 in 64ms (compile: 31ms, render: 33ms)
  GET / 200 in 49ms (compile: 16ms, render: 33ms)
+ ✓ Compiled in 207ms
+ ✓ Compiled in 147ms
+ GET /planos 200 in 81ms (compile: 28ms, render: 53ms)
+ GET / 200 in 132ms (compile: 118ms, render: 14ms)
+ ✓ Compiled in 135ms
+ ✓ Compiled in 366ms
+ GET / 200 in 565ms (compile: 123ms, render: 443ms)
+ ✓ Compiled in 246ms
