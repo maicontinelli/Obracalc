@@ -208,11 +208,10 @@ export function Features() {
                                     </div>
                                 </div>
 
-                                <div className="hidden md:flex ml-12 flex-shrink-0 relative group-hover:scale-105 transition-transform duration-500">
-                                    <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-[#74D2E7] to-[#4ab8d1] flex items-center justify-center shadow-2xl shadow-[#74D2E7]/20 ring-8 ring-white/5">
-                                        <Gem className="w-20 h-20 text-[#3D3A36] fill-[#3D3A36] animate-pulse" />
-                                    </div>
-                                    <div className="absolute inset-0 bg-[#74D2E7] blur-[60px] opacity-20 -z-10 group-hover:opacity-40 transition-opacity" />
+                                <div className="hidden md:flex ml-12 flex-shrink-0 relative transition-all duration-700 group-hover:scale-110">
+                                    <Gem
+                                        className="w-24 h-24 text-[#3D3A36] dark:text-[#E8E6E3] fill-transparent transition-all duration-500 group-hover:text-[#74D2E7] group-hover:drop-shadow-[0_0_15px_rgba(116,210,231,0.6)]"
+                                    />
                                 </div>
                             </SpotlightCard>
                         </Link>
