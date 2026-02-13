@@ -35,14 +35,16 @@ export function Features() {
                     {/* Feature 1: Cronograma (Full Width - Text Left, Image Right) */}
                     <div className="md:col-span-12 group">
                         <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row items-stretch">
-                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
-                                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
-                                    <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                            <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center group-hover:rotate-12 transition-transform shrink-0">
+                                        <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                                    </div>
+                                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                                        Projeção Financeira
+                                    </h3>
                                 </div>
-                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
-                                    Projeção Financeira
-                                </h3>
-                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-4">
                                     Acompanhe a evolução da sua obra mês a mês com projeções precisas de desembolso. Saiba exatamente quanto será gasto em cada etapa e evite surpresas no fluxo de caixa.
                                 </p>
                                 <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm uppercase tracking-wider">
@@ -80,14 +82,16 @@ export function Features() {
                     {/* Feature 2: Curva ABC (Full Width - Image Left, Text Right) */}
                     <div className="md:col-span-12 group">
                         <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row-reverse items-stretch">
-                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
-                                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                    <PieChart className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                            <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                                        <PieChart className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                                    </div>
+                                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                                        Análise de custo
+                                    </h3>
                                 </div>
-                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
-                                    Análise de custo
-                                </h3>
-                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-4">
                                     Identifique instantaneamente onde está 80% do seu custo. Tome decisões estratégicas baseadas no que realmente importa no seu orçamento, priorizando os insumos de maior impacto financeiro.
                                 </p>
                                 <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-wider">
@@ -125,14 +129,16 @@ export function Features() {
                     {/* Feature 3: Contratos (Full Width - Text Left, Image Right) */}
                     <div className="md:col-span-12 group">
                         <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row items-stretch">
-                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
-                                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                    <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                            <div className="p-6 md:p-8 flex-1 flex flex-col justify-center">
+                                <div className="flex items-center gap-4 mb-4">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                                        <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                    </div>
+                                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                                        Contratos Automáticos
+                                    </h3>
                                 </div>
-                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
-                                    Contratos Automáticos
-                                </h3>
-                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-4">
                                     Gere contratos de prestação de serviço personalizados com os dados do orçamento. Segurança jurídica garantida em apenas um clique, com preenchimento automático de dados do cliente e do prestador.
                                 </p>
                                 <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm uppercase tracking-wider">
