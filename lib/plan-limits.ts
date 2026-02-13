@@ -21,6 +21,7 @@ export interface UserProfile {
     // Usage stats (could be counted dynamically or cached)
     saved_estimates_count: number;
     avatar_url?: string | null;
+    logo_url?: string | null;
     address?: string;
     cep?: string;
 }

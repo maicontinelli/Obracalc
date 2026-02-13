@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import AiAssistant from './AiAssistant';
 import MathParticles from './MathParticles';
+import Link from 'next/link';
 import Image from 'next/image';
 import { createClient } from '@/lib/supabase/client';
 import { User } from '@supabase/supabase-js';
@@ -65,14 +66,17 @@ export function Hero() {
     }, []);
 
     return (
-        <section className="relative pt-28 pb-96 bg-transparent">
+        <section className="relative pt-8 pb-56 bg-transparent">
             {/* Background elements removed */}
 
             <div className="container mx-auto px-4 relative z-30 max-w-5xl">
-                <div className="flex flex-col items-center justify-center mb-[38px] text-center">
-                    <h1 className="max-w-lg mx-auto text-[33px] md:text-[33px] font-heading font-medium tracking-tight leading-tight text-[#3D3A36] dark:text-[#E8E6E3]">
+                <div className="flex flex-col items-center justify-center mb-16 text-center">
+                    <h1 className="max-w-4xl mx-auto text-3xl md:text-5xl font-heading font-bold tracking-tight leading-tight text-[#3D3A36] dark:text-[#E8E6E3] mb-4">
                         {greeting}
                     </h1>
+                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                        Orçamentos inteligentes de obra para construtores, arquitetos e engenheiros.
+                    </p>
                 </div>
 
                 {/* AI Assistant Container (Search Bar) */}
@@ -85,16 +89,28 @@ export function Hero() {
                                 const id = crypto.randomUUID();
                                 window.location.href = `/editor/${id}`;
                             }}
-                            className="group flex items-center gap-2 px-6 py-3 bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 rounded-full text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 hover:border-orange-200 dark:hover:border-orange-900/50 transition-all shadow-sm hover:shadow-md"
+                            className="group flex items-center gap-2 px-6 py-3 bg-[#F6A34A] hover:bg-[#E5933C] rounded-full text-sm font-medium text-white transition-all shadow-lg shadow-[#F6A34A]/20 hover:scale-105"
                         >
-                            <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-                            Criar orçamento manualmente
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all text-orange-500"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+                            <span className="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+                            Criar novo orçamento
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all text-white"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                         </button>
                     </div>
                 </div>
 
-
+                {/* Hero Preview Image */}
+                <div className="mt-16 flex justify-center">
+                    <div className="w-[80%]">
+                        <Image
+                            src="/hero-preview.webp"
+                            alt="ObraPlana Preview"
+                            width={1200}
+                            height={675}
+                            className="w-full h-auto"
+                            priority
+                        />
+                    </div>
+                </div>
             </div>
         </section>
     );

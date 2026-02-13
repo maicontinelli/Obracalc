@@ -240,12 +240,12 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                     <div className={`relative flex items-center w-full rounded-full transition-all duration-300
                             bg-white dark:bg-[#1A1A1A] 
                             shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border ${isClarifying ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-orange-500/50'}
+                            border ${isClarifying ? 'border-[#F6A34A] ring-2 ring-[#F6A34A]/20' : 'border-[#F6A34A]/50'}
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-                            focus-within:ring-4 focus-within:ring-orange-500/10 focus-within:border-orange-500`}
+                            focus-within:ring-4 focus-within:ring-[#F6A34A]/10 focus-within:border-[#F6A34A]`}
                     >
                         <div className="pl-6 text-gray-400 dark:text-gray-500">
-                            <Sparkles size={20} className={`text-orange-500 ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
+                            <Sparkles size={20} className={`text-[#F6A34A] ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
                         </div>
                         <input
                             type="text"
@@ -256,15 +256,15 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                             }}
                             onFocus={() => query && !aiResponse && !isClarifying && setIsOpen(true)}
                             placeholder={isClarifying ? "Digite sua resposta..." : (isDeleting ? "" : placeholder)}
-                            className="w-full pl-4 pr-32 py-5 rounded-full border-none outline-none bg-transparent text-[13px] text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium"
+                            className="w-full pl-4 pr-14 py-5 rounded-full border-none outline-none bg-transparent text-[13px] text-gray-800 dark:text-gray-100 placeholder:text-sm placeholder-gray-500 dark:placeholder-gray-400 font-medium"
                         />
 
                         <button
                             type="submit"
                             disabled={isAiLoading || !query.trim()}
                             className={`absolute right-2 top-1/2 -translate-y-1/2 p-2.5 rounded-full transition-all duration-300 ${isClarifying && query.trim()
-                                ? 'bg-orange-500 text-white hover:bg-orange-600'
-                                : 'bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-orange-500 dark:hover:text-orange-400 hover:bg-gray-100 dark:hover:bg-[#333130]'
+                                ? 'bg-[#F6A34A] text-white hover:bg-[#E5933C]'
+                                : 'bg-gray-100/50 dark:bg-[#333130]/50 text-gray-400 dark:text-muted-foreground hover:text-[#F6A34A] dark:hover:text-[#F6A34A] hover:bg-gray-100 dark:hover:bg-[#333130]'
                                 }`}
                         >
                             {isAiLoading ? <Loader2 size={18} className="animate-spin" /> : (isClarifying ? <Send size={16} /> : <ArrowRight size={18} />)}
@@ -273,134 +273,142 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                 </form>
 
                 {/* Clarification Prompt Bubble */}
-                {isClarifying && clarificationQuestion && (
-                    <div className="mt-2 px-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <div className="flex gap-3 items-start p-3 bg-orange-50/95 dark:bg-orange-900/20 rounded-2xl rounded-tl-sm shadow-sm border border-orange-200 dark:border-orange-800/30 backdrop-blur-sm">
-                            <div className="p-1.5 bg-orange-100 dark:bg-orange-900/50 text-orange-600 rounded-full shrink-0">
-                                <Sparkles size={14} />
-                            </div>
-                            <div className="text-xs text-gray-800 dark:text-orange-200 font-medium">
-                                <p className="font-bold text-[9px] text-orange-600 dark:text-orange-400 mb-0.5 uppercase tracking-wider">Obra Plana</p>
-                                <div className="whitespace-pre-line leading-relaxed">
-                                    {clarificationQuestion}
+                {
+                    isClarifying && clarificationQuestion && (
+                        <div className="mt-2 px-4 animate-in fade-in slide-in-from-top-2 duration-300">
+                            <div className="flex gap-3 items-start p-3 bg-[#F6A34A]/5 dark:bg-[#F6A34A]/10 rounded-2xl rounded-tl-sm shadow-sm border border-[#F6A34A]/20 dark:border-[#F6A34A]/30 backdrop-blur-sm">
+                                <div className="p-1.5 bg-[#F6A34A]/10 dark:bg-[#F6A34A]/20 text-[#F6A34A] rounded-full shrink-0">
+                                    <Sparkles size={14} />
+                                </div>
+                                <div className="text-xs text-gray-800 dark:text-[#F6A34A] font-medium">
+                                    <p className="font-bold text-[9px] text-[#F6A34A] dark:text-[#F6A34A] mb-0.5 uppercase tracking-wider">Obra Plana</p>
+                                    <div className="whitespace-pre-line leading-relaxed">
+                                        {clarificationQuestion}
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                )}
-            </div>
+                    )
+                }
+            </div >
 
             {/* Local Search Results Dropdown - Linear Style */}
-            {isOpen && filteredItems.length > 0 && !aiResponse && (
-                <div className="absolute z-50 mt-1 w-full bg-white dark:bg-card rounded border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden animate-in fade-in duration-100">
-                    <ul className="max-h-[60vh] overflow-auto py-1">
-                        <li className="px-3 py-1 text-[9px] font-semibold text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
-                            Encontrados
-                        </li>
-                        {filteredItems.map((item) => (
-                            <li
-                                key={item.id}
-                                className="group flex items-center justify-between px-3 py-1.5 hover:bg-gray-50/50 dark:hover:bg-[#333130]/50 cursor-pointer transition-colors border-b border-gray-50 dark:border-white/5 last:border-0"
-                                onClick={() => {
-                                    onSelect(item);
-                                    setQuery('');
-                                    setIsOpen(false);
-                                    setAiResponse(null);
-                                }}
-                            >
-                                <div className="flex items-center gap-2 min-w-0 flex-1">
-                                    <div className={`p-1 rounded ${item.included ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
-                                        {item.included ? <Check size={10} /> : <Plus size={10} />}
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                        <p className="font-medium text-gray-700 dark:text-foreground text-[11px] truncate">{item.name}</p>
-                                        <p className="text-[9px] text-gray-500 dark:text-muted-foreground truncate">{item.category}</p>
-                                    </div>
-                                </div>
-                                <div className="text-right flex-shrink-0 ml-2">
-                                    <p className="text-[11px] font-semibold text-gray-700 dark:text-foreground tabular-nums">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.manualPrice ?? item.price)}
-                                    </p>
-                                    <p className="text-[9px] text-gray-500 dark:text-muted-foreground uppercase font-mono">{item.unit}</p>
-                                </div>
+            {
+                isOpen && filteredItems.length > 0 && !aiResponse && (
+                    <div className="absolute z-50 mt-1 w-full bg-white dark:bg-card rounded border border-gray-200 dark:border-white/10 shadow-lg overflow-hidden animate-in fade-in duration-100">
+                        <ul className="max-h-[60vh] overflow-auto py-1">
+                            <li className="px-3 py-1 text-[9px] font-semibold text-gray-500 dark:text-muted-foreground uppercase tracking-wider">
+                                Encontrados
                             </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+                            {filteredItems.map((item) => (
+                                <li
+                                    key={item.id}
+                                    className="group flex items-center justify-between px-3 py-1.5 hover:bg-gray-50/50 dark:hover:bg-[#333130]/50 cursor-pointer transition-colors border-b border-gray-50 dark:border-white/5 last:border-0"
+                                    onClick={() => {
+                                        onSelect(item);
+                                        setQuery('');
+                                        setIsOpen(false);
+                                        setAiResponse(null);
+                                    }}
+                                >
+                                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                                        <div className={`p-1 rounded ${item.included ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
+                                            {item.included ? <Check size={10} /> : <Plus size={10} />}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="font-medium text-gray-700 dark:text-foreground text-[11px] truncate">{item.name}</p>
+                                            <p className="text-[9px] text-gray-500 dark:text-muted-foreground truncate">{item.category}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right flex-shrink-0 ml-2">
+                                        <p className="text-[11px] font-semibold text-gray-700 dark:text-foreground tabular-nums">
+                                            {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(item.manualPrice ?? item.price)}
+                                        </p>
+                                        <p className="text-[9px] text-gray-500 dark:text-muted-foreground uppercase font-mono">{item.unit}</p>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )
+            }
 
             {/* AI Error Message - Linear Style */}
-            {aiError && (
-                <div className="mt-2 p-2 bg-red-50/50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded border border-red-200 dark:border-red-800/30 text-[11px] flex items-center gap-1.5 animate-in fade-in duration-100">
-                    <AlertTriangle size={12} />
-                    {aiError.includes("Chave de API") ? (
-                        <span>
-                            Configure sua chave de API do Groq no arquivo <code className="text-[10px] bg-red-100 dark:bg-red-900/30 px-1 rounded">.env.local</code>.
-                        </span>
-                    ) : (
-                        <span>{aiError}</span>
-                    )}
-                </div>
-            )}
+            {
+                aiError && (
+                    <div className="mt-2 p-2 bg-red-50/50 dark:bg-red-900/10 text-red-600 dark:text-red-400 rounded border border-red-200 dark:border-red-800/30 text-[11px] flex items-center gap-1.5 animate-in fade-in duration-100">
+                        <AlertTriangle size={12} />
+                        {aiError.includes("Chave de API") ? (
+                            <span>
+                                Configure sua chave de API do Groq no arquivo <code className="text-[10px] bg-red-100 dark:bg-red-900/30 px-1 rounded">.env.local</code>.
+                            </span>
+                        ) : (
+                            <span>{aiError}</span>
+                        )}
+                    </div>
+                )
+            }
 
             {/* AI Response Preview - Linear Style */}
-            {aiResponse && (
-                <div className="mt-2 bg-white dark:bg-card rounded border border-gray-200 dark:border-white/10 p-3 shadow-md animate-in fade-in duration-100 relative z-40">
-                    <div className="flex gap-2">
-                        <div className="mt-0.5 bg-blue-100 dark:bg-blue-900/30 p-1 rounded h-fit text-blue-600 dark:text-blue-400 shrink-0">
-                            <Bot size={12} />
-                        </div>
-                        <div className="space-y-3 w-full">
-                            <div className="text-[11px] text-gray-700 dark:text-foreground whitespace-pre-line leading-relaxed">
-                                {aiResponse.text}
+            {
+                aiResponse && (
+                    <div className="mt-2 bg-white dark:bg-card rounded border border-gray-200 dark:border-white/10 p-3 shadow-md animate-in fade-in duration-100 relative z-40">
+                        <div className="flex gap-2">
+                            <div className="mt-0.5 bg-blue-100 dark:bg-blue-900/30 p-1 rounded h-fit text-blue-600 dark:text-blue-400 shrink-0">
+                                <Bot size={12} />
                             </div>
-
-                            {aiResponse.suggestedBudget && (
-                                <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded border border-blue-200 dark:border-blue-800/30 p-3">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <h4 className="font-semibold text-blue-900 dark:text-blue-300 text-[11px]">Sugestão de Itens</h4>
-                                        <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded-full font-medium">
-                                            {aiResponse.suggestedBudget.items.length} itens
-                                        </span>
-                                    </div>
-
-                                    <ul className="space-y-1 mb-3 max-h-60 overflow-y-auto">
-                                        {aiResponse.suggestedBudget.items
-                                            .sort((a, b) => (a.type === 'service' ? -1 : 1))
-                                            .map((item, idx) => (
-                                                <li key={idx} className={`text-[11px] flex justify-between items-center border-b border-blue-100 dark:border-white/5 last:border-0 pb-1 last:pb-0 ${item.included === false ? 'opacity-60 grayscale' : 'text-gray-700 dark:text-foreground'}`}>
-                                                    <div className="flex items-center gap-2 flex-1 min-w-0">
-                                                        {/* Show visual indicator if item is optional/unchecked */}
-                                                        <div className={`w-1.5 h-1.5 shrink-0 rounded-full ${item.included === false ? 'bg-gray-300 dark:bg-gray-600' : 'bg-green-500'}`}></div>
-
-
-
-                                                        <div className="min-w-0">
-                                                            <span className="font-medium">{item.name}</span>
-                                                            <div className="text-[9px] text-gray-500 dark:text-gray-500">{item.category}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="text-right ml-2 flex-shrink-0">
-                                                        <div className="font-semibold tabular-nums">~R$ {item.price}</div>
-                                                        <div className="text-[9px] text-gray-500 dark:text-gray-500 font-mono uppercase">{item.quantity} {item.unit}</div>
-                                                    </div>
-                                                </li>
-                                            ))}
-                                    </ul>
-
-                                    <button
-                                        onClick={handleAddSuggestedItems}
-                                        className="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-[11px] font-medium transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-blue-500/20"
-                                    >
-                                        <FilePlus size={12} />
-                                        Adicionar Itens ao Orçamento
-                                    </button>
+                            <div className="space-y-3 w-full">
+                                <div className="text-[11px] text-gray-700 dark:text-foreground whitespace-pre-line leading-relaxed">
+                                    {aiResponse.text}
                                 </div>
-                            )}
+
+                                {aiResponse.suggestedBudget && (
+                                    <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded border border-blue-200 dark:border-blue-800/30 p-3">
+                                        <div className="flex items-center justify-between mb-2">
+                                            <h4 className="font-semibold text-blue-900 dark:text-blue-300 text-[11px]">Sugestão de Itens</h4>
+                                            <span className="text-[9px] text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded-full font-medium">
+                                                {aiResponse.suggestedBudget.items.length} itens
+                                            </span>
+                                        </div>
+
+                                        <ul className="space-y-1 mb-3 max-h-60 overflow-y-auto">
+                                            {aiResponse.suggestedBudget.items
+                                                .sort((a, b) => (a.type === 'service' ? -1 : 1))
+                                                .map((item, idx) => (
+                                                    <li key={idx} className={`text-[11px] flex justify-between items-center border-b border-blue-100 dark:border-white/5 last:border-0 pb-1 last:pb-0 ${item.included === false ? 'opacity-60 grayscale' : 'text-gray-700 dark:text-foreground'}`}>
+                                                        <div className="flex items-center gap-2 flex-1 min-w-0">
+                                                            {/* Show visual indicator if item is optional/unchecked */}
+                                                            <div className={`w-1.5 h-1.5 shrink-0 rounded-full ${item.included === false ? 'bg-gray-300 dark:bg-gray-600' : 'bg-green-500'}`}></div>
+
+
+
+                                                            <div className="min-w-0">
+                                                                <span className="font-medium">{item.name}</span>
+                                                                <div className="text-[9px] text-gray-500 dark:text-gray-500">{item.category}</div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="text-right ml-2 flex-shrink-0">
+                                                            <div className="font-semibold tabular-nums">~R$ {item.price}</div>
+                                                            <div className="text-[9px] text-gray-500 dark:text-gray-500 font-mono uppercase">{item.quantity} {item.unit}</div>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                        </ul>
+
+                                        <button
+                                            onClick={handleAddSuggestedItems}
+                                            className="w-full py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded text-[11px] font-medium transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-blue-500/20"
+                                        >
+                                            <FilePlus size={12} />
+                                            Adicionar Itens ao Orçamento
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }

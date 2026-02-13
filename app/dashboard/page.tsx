@@ -14,6 +14,8 @@ import {
     Plus,
     Camera,
     MapPin,
+    Map,
+    Sparkles,
     Phone,
     Briefcase,
     ChevronDown,
@@ -43,6 +45,7 @@ export default function DashboardPage() {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
     const [budgets, setBudgets] = useState<Budget[]>([]);
+    const [showToast, setShowToast] = useState(false);
 
     // Simple Stats
     const [stats, setStats] = useState({
@@ -68,6 +71,7 @@ export default function DashboardPage() {
         registration_number: '',
         team_size: '',
         avatar_url: '',
+        logo_url: '',
         document_id: '',
         pix_key: '',
         bank_name: '',
@@ -147,6 +151,7 @@ export default function DashboardPage() {
                         registration_number: dbProfile.registration_number || '',
                         team_size: dbProfile.team_size || '',
                         avatar_url: dbProfile.avatar_url || '',
+                        logo_url: dbProfile.logo_url || '',
                         document_id: dbProfile.document_id || '',
                         pix_key: dbProfile.pix_key || '',
                         bank_name: dbProfile.bank_name || '',
@@ -175,6 +180,7 @@ export default function DashboardPage() {
                         registration_number: '',
                         team_size: '',
                         avatar_url: user.user_metadata.avatar_url || '',
+                        logo_url: '',
                         document_id: '',
                         pix_key: '',
                         bank_name: '',
@@ -244,6 +250,37 @@ export default function DashboardPage() {
         }
     };
 
+    const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+
+    const handleLogoUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0 || !user) return;
+            setIsUploadingLogo(true);
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const filePath = `${user.id}/logo_${Date.now()}.${fileExt}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            setProfileData(prev => ({ ...prev, logo_url: publicUrl }));
+            await supabase.from('profiles').update({ logo_url: publicUrl }).eq('id', user.id);
+
+        } catch (error: any) {
+            console.error('Error uploading logo:', error);
+            alert('Erro ao fazer upload da logo.');
+        } finally {
+            setIsUploadingLogo(false);
+        }
+    };
+
     // Handle Profile Save
     // Handle Profile Save
     const handleSaveProfile = async () => {
@@ -296,6 +333,15 @@ export default function DashboardPage() {
         router.push(`/editor/${id}`);
     };
 
+    const handleFeatureAction = (href: string) => {
+        if (!profile || profile.tier === 'free') {
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+            return;
+        }
+        router.push(href);
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-background">
@@ -323,14 +369,37 @@ export default function DashboardPage() {
                         </h1>
                         <p className="text-muted-foreground text-sm font-light">Seus orçamentos em um lugar.</p>
                     </div>
-                    {/* Action Button */}
-                    <button
-                        onClick={handleNewBudget}
-                        className="bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/25 px-6 py-3 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-sm"
-                    >
-                        <Plus size={20} />
-                        <span>Novo Orçamento</span>
-                    </button>
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap items-center gap-3">
+                        <button
+                            onClick={() => handleFeatureAction('/relatorio-fotografico')}
+                            className="bg-white dark:bg-[#1A1A1A] hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border px-5 py-2.5 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-xs shadow-sm"
+                        >
+                            <Camera size={16} className="text-[#6366F1]" />
+                            <span>Relatório de Obra</span>
+                        </button>
+                        <button
+                            onClick={() => handleFeatureAction('/topografia')}
+                            className="bg-white dark:bg-[#1A1A1A] hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border px-5 py-2.5 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-xs shadow-sm"
+                        >
+                            <Map size={16} className="text-[#C2410C]" />
+                            <span>Topografia</span>
+                        </button>
+                        <button
+                            onClick={() => handleFeatureAction('/novo-diagnostico')}
+                            className="bg-white dark:bg-[#1A1A1A] hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border px-5 py-2.5 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-xs shadow-sm"
+                        >
+                            <Sparkles size={16} className="text-[#FF6600]" />
+                            <span>Orçamento por Imagem</span>
+                        </button>
+                        <button
+                            onClick={handleNewBudget}
+                            className="bg-white dark:bg-[#1A1A1A] hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border px-5 py-2.5 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-xs shadow-sm"
+                        >
+                            <Plus size={16} className="text-primary" />
+                            <span>Novo Orçamento</span>
+                        </button>
+                    </div>
                 </div>
 
                 {/* 2. Main Grid */}
@@ -419,6 +488,31 @@ export default function DashboardPage() {
                                                 <input type="file" className="hidden" onChange={handleAvatarUpload} accept="image/*" disabled={isUploadingAvatar} />
                                             </label>
                                         </div>
+
+                                        {/* Logo Upload (Paid Users Only) */}
+                                        {profile?.tier !== 'free' && (
+                                            <div className="flex items-center gap-4 pt-4 border-t border-border/50">
+                                                <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 shrink-0 border border-border/50">
+                                                    {profileData.logo_url ? (
+                                                        <img src={profileData.logo_url} alt="Logo empresa" className="w-full h-full object-contain p-1" />
+                                                    ) : (
+                                                        <Building2 className="w-6 h-6 m-auto text-gray-400" />
+                                                    )}
+                                                    {isUploadingLogo && (
+                                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                                            <Loader2 className="animate-spin text-white w-4 h-4" />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                <div className="flex flex-col gap-1">
+                                                    <label className="cursor-pointer bg-primary/10 hover:bg-primary/20 text-primary text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors inline-block w-fit">
+                                                        Sua Logo Própria
+                                                        <input type="file" className="hidden" onChange={handleLogoUpload} accept="image/*" disabled={isUploadingLogo} />
+                                                    </label>
+                                                    <p className="text-[9px] text-muted-foreground italic leading-tight">Para o cabeçalho do relatório</p>
+                                                </div>
+                                            </div>
+                                        )}
 
                                         <div className="space-y-3">
                                             <h4 className="text-[10px] font-bold uppercase text-muted-foreground flex items-center gap-1"><UserIcon size={10} /> Dados Pessoais</h4>
@@ -631,6 +725,19 @@ export default function DashboardPage() {
                     </div>
                 </div>
             </div>
+
+            {showToast && (
+                <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg z-[100] flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <Sparkles className="text-amber-400" size={18} />
+                    <span className="text-sm font-medium">Funcionalidade exclusiva dos planos pagos</span>
+                    <button
+                        onClick={() => router.push('/planos')}
+                        className="ml-2 text-xs bg-white text-gray-900 px-2 py-1 rounded-full font-bold hover:bg-gray-100 transition-colors"
+                    >
+                        Ver Planos
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

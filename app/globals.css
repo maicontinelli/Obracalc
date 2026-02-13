@@ -38,8 +38,8 @@
   }
 
   .dark {
-    --background: 20 5% 15%;
-    /* #262423 in HSL approx 20 5% 15% */
+    --background: 20 5% 19%;
+    /* Lighter warm gray */
     --foreground: 60 5% 90%;
     /* #E8E8E6 */
 
@@ -72,6 +72,7 @@
 
 body {
   @apply bg-background text-foreground transition-colors;
+  zoom: 0.80;
 }
 
 

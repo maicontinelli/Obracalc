@@ -73,7 +73,7 @@ def start_server(port=3000):
     
     with open(LOG_FILE, "w") as log:
         process = subprocess.Popen(
-            cmd,
+            " ".join(cmd),
             cwd=str(root),
             stdout=log,
             stderr=log,

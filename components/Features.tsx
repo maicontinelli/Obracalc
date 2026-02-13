@@ -1,13 +1,16 @@
 'use client';
 
-import { Calculator, FileText, Camera, Map, ScanEye, ArrowRight, Zap } from "lucide-react";
+import { Calculator, FileText, Camera, Map, ScanEye, ArrowRight, Zap, X, Maximize2, Gem, TrendingUp, PieChart } from "lucide-react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import NextImage from "next/image";
 import { cn } from "@/lib/utils";
 
 export function Features() {
     const router = useRouter();
+    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
     const handleStartStart = () => {
         const newId = crypto.randomUUID();
@@ -15,137 +18,195 @@ export function Features() {
     };
 
     return (
-        <section className="py-24 bg-gray-50 dark:bg-[#0A0A0A] relative overflow-hidden">
-            {/* Background Gradient Blob */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] pointer-events-none" />
+        <section className="py-24 bg-transparent relative overflow-hidden">
 
             <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center max-w-2xl mx-auto mb-16">
+                <div className="text-center max-w-4xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
-                        Fluxo completo <span className="text-[#22c55e]">inteligente</span>
+                        Muito mais que um <span className="text-[#6366F1]">simples orçamento</span>
                     </h2>
                     <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
-                        Do orçamento preciso ao contrato de prestação de serviço. Tudo conectado em uma única plataforma.
+                        Entregue análises completas e detalhadas, tudo pronto para impressionar o cliente.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[minmax(180px,auto)] max-w-6xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-12 max-w-6xl mx-auto">
 
-                    {/* Feature 1: Orçamento Inteligente (Main - Large) */}
-                    <div className="md:col-span-2 md:row-span-2">
-                        <div onClick={handleStartStart} className="h-full cursor-pointer group">
-                            <SpotlightCard className="h-full flex flex-col justify-between p-8 md:p-10 border-neutral-200 dark:border-white/10 hover:border-primary/50 transition-colors duration-500">
-                                <div className="space-y-4">
-                                    <div className="w-14 h-14 rounded-2xl bg-green-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-500">
-                                        <Calculator className="w-7 h-7 text-green-600 dark:text-green-400" />
-                                    </div>
-                                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
-                                        Orçamento Inteligente
-                                    </h3>
-                                    <p className="text-muted-foreground text-lg leading-relaxed max-w-md">
-                                        Gere orçamentos com preços oficiais da Caixa Econômica. Precisão automática para todas as etapas da obra.
-                                    </p>
+                    {/* Feature 1: Cronograma (Full Width - Text Left, Image Right) */}
+                    <div className="md:col-span-12 group">
+                        <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row items-stretch">
+                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
+                                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-6 group-hover:rotate-12 transition-transform">
+                                    <TrendingUp className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                                 </div>
-
-                                <div className="mt-8 flex items-center gap-2 text-green-600 dark:text-green-400 font-semibold group-hover:gap-4 transition-all">
-                                    <span>Criar orçamento agora</span>
-                                    <ArrowRight className="w-5 h-5" />
-                                </div>
-
-                                {/* Decorative UI Element mockup */}
-                                <div className="absolute right-0 bottom-0 w-1/2 h-1/2 bg-gradient-to-tl from-green-500/10 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                            </SpotlightCard>
-                        </div>
-                    </div>
-
-                    {/* Feature 2: Diagnóstico Visual (Tall) */}
-                    <div className="md:col-span-1 md:row-span-2">
-                        <Link href="/novo-diagnostico" className="h-full block group">
-                            <SpotlightCard className="h-full flex flex-col p-8 border-neutral-200 dark:border-white/10 hover:border-orange-500/50 transition-colors duration-500" spotlightColor="rgba(255, 102, 0, 0.2)">
-                                <div className="flex justify-between items-start mb-6">
-                                    <div className="w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center group-hover:rotate-12 transition-transform duration-500">
-                                        <ScanEye className="w-6 h-6 text-[#FF6600]" />
-                                    </div>
-                                    <span className="px-3 py-1 bg-orange-500/10 text-[#FF6600] text-xs font-bold rounded-full uppercase tracking-wider">Beta</span>
-                                </div>
-
-                                <h3 className="text-xl font-bold text-foreground mb-3">
-                                    Diagnóstico com IA
+                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                                    Projeção Financeira
                                 </h3>
-                                <p className="text-muted-foreground text-sm leading-relaxed mb-8">
-                                    Tire uma foto e deixe nossa IA identificar patologias e sugerir correções técnicas instantaneamente.
+                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                    Acompanhe a evolução da sua obra mês a mês com projeções precisas de desembolso. Saiba exatamente quanto será gasto em cada etapa e evite surpresas no fluxo de caixa.
                                 </p>
-
-                                <div className="mt-auto relative w-full h-32 bg-neutral-100 dark:bg-neutral-800 rounded-xl overflow-hidden border border-neutral-200 dark:border-white/5 group-hover:shadow-lg transition-all">
-                                    {/* Abstract Phone/Camera UI Mockup */}
-                                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full border-2 border-[#FF6600]/50 flex items-center justify-center">
-                                        <div className="w-1.5 h-1.5 bg-[#FF6600] rounded-full animate-pulse" />
-                                    </div>
-                                    <div className="absolute bottom-2 left-2 right-2 h-1 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                        <div className="w-2/3 h-full bg-[#FF6600] rounded-full" />
-                                    </div>
+                                <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm uppercase tracking-wider">
+                                    <span>Gestão de Fluxo de Caixa</span>
                                 </div>
-                            </SpotlightCard>
-                        </Link>
-                    </div>
-
-                    {/* Feature 3: Relatório Fotográfico */}
-                    <div className="md:col-span-1">
-                        <Link href="/relatorio-fotografico" className="h-full block group">
-                            <SpotlightCard className="h-full p-6 border-neutral-200 dark:border-white/10 hover:border-indigo-500/50 transition-colors duration-500" spotlightColor="rgba(99, 102, 241, 0.2)">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Camera className="w-5 h-5 text-indigo-500" />
+                            </div>
+                            <div className="flex-[1.4] relative min-h-[300px] md:min-h-[450px] bg-neutral-50/50 dark:bg-white/5 flex items-center justify-center p-6 md:p-12">
+                                {/* Dashboard Mockup Window */}
+                                <div
+                                    className="relative w-full aspect-video md:h-full shadow-2xl rounded-xl overflow-hidden border border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900 transition-transform duration-700 group-hover:scale-[1.03] cursor-zoom-in group/mockup"
+                                    onClick={() => setPreviewImage("/cronograma.webp")}
+                                >
+                                    <div className="absolute top-0 left-0 right-0 h-6 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-white/5 flex items-center px-3 gap-1.5 z-10">
+                                        <div className="w-2 h-2 rounded-full bg-red-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
                                     </div>
-                                    <h3 className="text-lg font-bold text-foreground">Relatório de Obra</h3>
-                                </div>
-                                <p className="text-muted-foreground text-sm">
-                                    Documentação fotográfica profissional organizada em segundos.
-                                </p>
-                            </SpotlightCard>
-                        </Link>
-                    </div>
-
-                    {/* Feature 4: Topografia */}
-                    <div className="md:col-span-1">
-                        <Link href="/topografia" className="h-full block group">
-                            <SpotlightCard className="h-full p-6 border-neutral-200 dark:border-white/10 hover:border-red-500/50 transition-colors duration-500" spotlightColor="rgba(239, 68, 68, 0.2)">
-                                <div className="flex items-center gap-4 mb-4">
-                                    <div className="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center group-hover:scale-110 transition-transform">
-                                        <Map className="w-5 h-5 text-red-500" />
-                                    </div>
-                                    <h3 className="text-lg font-bold text-foreground">Topografia</h3>
-                                </div>
-                                <p className="text-muted-foreground text-sm">
-                                    Memoriais descritivos e planilhas técnicas automáticas.
-                                </p>
-                            </SpotlightCard>
-                        </Link>
-                    </div>
-
-                    {/* Feature 5: Call to Action small */}
-                    <div className="md:col-span-1">
-                        <Link href="/planos" className="h-full block group">
-                            <SpotlightCard className="h-full p-6 flex flex-col justify-between bg-gray-100 dark:bg-gray-100 border-[#74D2E7] ring-1 ring-[#74D2E7]/30 hover:ring-[#74D2E7]/50 transition-all shadow-md" spotlightColor="rgba(116, 210, 231, 0.15)">
-                                <div>
-                                    <div className="flex justify-between items-start mb-4">
-                                        <div className="px-3 py-1 bg-[#74D2E7]/10 text-[#74D2E7] text-xs font-bold rounded-full border border-[#74D2E7]/20">
-                                            PRO
-                                        </div>
-                                        <div className="text-[#74D2E7]">
-                                            <Zap className="w-5 h-5 fill-[#74D2E7]/20" />
+                                    <div className="relative mt-6 h-[calc(100%-24px)] w-full">
+                                        <NextImage
+                                            src="/cronograma.webp"
+                                            alt="Cronograma Preview"
+                                            fill
+                                            className="object-contain p-4"
+                                            priority
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover/mockup:bg-black/5 transition-colors flex items-center justify-center">
+                                            <Maximize2 className="w-8 h-8 text-black/0 group-hover/mockup:text-black/20 transition-all" />
                                         </div>
                                     </div>
-                                    <div className="space-y-2">
-                                        <h3 className="font-bold text-lg text-gray-900">Desbloqueie tudo</h3>
-                                        <p className="text-sm text-gray-600 leading-snug">
-                                            Logo e contatos ilimitados, relatórios sem marca d'água e muito mais.
-                                        </p>
+                                </div>
+                            </div>
+                        </SpotlightCard>
+                    </div>
+
+                    {/* Feature 2: Curva ABC (Full Width - Image Left, Text Right) */}
+                    <div className="md:col-span-12 group">
+                        <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row-reverse items-stretch">
+                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
+                                <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <PieChart className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+                                </div>
+                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                                    Análise de custo
+                                </h3>
+                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                    Identifique instantaneamente onde está 80% do seu custo. Tome decisões estratégicas baseadas no que realmente importa no seu orçamento, priorizando os insumos de maior impacto financeiro.
+                                </p>
+                                <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 font-bold text-sm uppercase tracking-wider">
+                                    <span>Análise de Pareto Automática</span>
+                                </div>
+                            </div>
+                            <div className="flex-[1.4] relative min-h-[300px] md:min-h-[450px] bg-neutral-50/50 dark:bg-white/5 flex items-center justify-center p-6 md:p-12">
+                                {/* Dashboard Mockup Window */}
+                                <div
+                                    className="relative w-full aspect-video md:h-full shadow-2xl rounded-xl overflow-hidden border border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900 transition-transform duration-700 group-hover:scale-[1.03] cursor-zoom-in group/mockup"
+                                    onClick={() => setPreviewImage("/curva-abc.webp")}
+                                >
+                                    <div className="absolute top-0 left-0 right-0 h-6 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-white/5 flex items-center px-3 gap-1.5 z-10">
+                                        <div className="w-2 h-2 rounded-full bg-red-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
+                                    </div>
+                                    <div className="relative mt-6 h-[calc(100%-24px)] w-full">
+                                        <NextImage
+                                            src="/curva-abc.webp"
+                                            alt="Curva ABC Preview"
+                                            fill
+                                            className="object-contain p-4"
+                                            priority
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover/mockup:bg-black/5 transition-colors flex items-center justify-center">
+                                            <Maximize2 className="w-8 h-8 text-black/0 group-hover/mockup:text-black/20 transition-all" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div className="mt-4 pt-4 border-t border-black/5 flex items-center justify-between text-xs text-gray-700 font-medium group-hover:text-[#74D2E7] transition-colors">
-                                    <span>Ver Planos</span>
-                                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </div>
+                        </SpotlightCard>
+                    </div>
+
+                    {/* Feature 3: Contratos (Full Width - Text Left, Image Right) */}
+                    <div className="md:col-span-12 group">
+                        <SpotlightCard className="h-full overflow-hidden p-0 border-neutral-200 dark:border-white/10 flex flex-col md:flex-row items-stretch">
+                            <div className="p-8 md:p-12 flex-1 flex flex-col justify-center">
+                                <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                                    <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                                </div>
+                                <h3 className="text-2xl md:text-4xl font-bold text-foreground mb-4">
+                                    Contratos Automáticos
+                                </h3>
+                                <p className="text-muted-foreground text-lg leading-relaxed mb-6">
+                                    Gere contratos de prestação de serviço personalizados com os dados do orçamento. Segurança jurídica garantida em apenas um clique, com preenchimento automático de dados do cliente e do prestador.
+                                </p>
+                                <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm uppercase tracking-wider">
+                                    <span>Segurança Jurídica Instantânea</span>
+                                </div>
+                            </div>
+                            <div className="flex-[1.4] relative min-h-[300px] md:min-h-[450px] bg-neutral-50/50 dark:bg-white/5 flex items-center justify-center p-6 md:p-12">
+                                {/* Dashboard Mockup Window (Mac Style) */}
+                                <div
+                                    className="relative w-full aspect-[4/3] md:h-full shadow-2xl rounded-xl overflow-hidden border border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900 transition-transform duration-700 group-hover:scale-[1.03] cursor-zoom-in group/mockup"
+                                    onClick={() => setPreviewImage("/contrato-preview.webp")}
+                                >
+                                    <div className="absolute top-0 left-0 right-0 h-6 bg-neutral-100 dark:bg-neutral-800 border-b border-neutral-200 dark:border-white/5 flex items-center px-3 gap-1.5 z-10">
+                                        <div className="w-2 h-2 rounded-full bg-red-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-amber-400/50" />
+                                        <div className="w-2 h-2 rounded-full bg-emerald-400/50" />
+                                    </div>
+                                    <div className="relative mt-6 h-[calc(100%-24px)] w-full">
+                                        <NextImage
+                                            src="/contrato-preview.webp"
+                                            alt="Contrato Preview"
+                                            fill
+                                            className="object-contain p-4"
+                                            priority
+                                        />
+                                        <div className="absolute inset-0 bg-black/0 group-hover/mockup:bg-black/5 transition-colors flex items-center justify-center">
+                                            <Maximize2 className="w-8 h-8 text-black/0 group-hover/mockup:text-black/20 transition-all" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </SpotlightCard>
+                    </div>
+
+                    {/* Feature 4: Call to Action (Full Width - Bottom Banner) */}
+                    <div className="md:col-span-12">
+                        <Link href="/planos#profissional" className="block h-full group">
+                            <SpotlightCard
+                                className="h-full p-8 md:p-16 flex flex-col md:flex-row items-center justify-between bg-gradient-to-br from-[#74D2E7]/10 to-transparent border-[#74D2E7]/30 ring-1 ring-[#74D2E7]/20 hover:ring-[#74D2E7]/40 transition-all shadow-xl text-center md:text-left rounded-3xl overflow-hidden"
+                                spotlightColor="rgba(116, 210, 231, 0.1)"
+                            >
+                                <div className="flex-1 space-y-6">
+                                    <h3 className="text-2xl md:text-4xl font-bold text-foreground font-heading leading-tight max-w-3xl">
+                                        Veja porque usuários do <span className="text-[#74D2E7]">plano PRÓ</span> estão cobrando até +20% em seus orçamentos!
+                                    </h3>
+
+                                    <ul className="space-y-3 text-muted-foreground text-sm md:text-base text-left list-none pl-0">
+                                        {[
+                                            "IA que avalia e otimiza seus preços automaticamente",
+                                            "Relatórios com curva ABC e cronograma físico-financeiro",
+                                            "Contrato de prestação de serviço pronto",
+                                            "Personalização de sua logomarca",
+                                            "E diversos recursos exclusivos que o ajudam ganhar tempo e valorizar sua proposta"
+                                        ].map((bullet, i) => (
+                                            <li key={i} className="flex items-start gap-2">
+                                                <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#74D2E7] shrink-0" />
+                                                <span>{bullet}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    <div className="flex items-center justify-center md:justify-start gap-4 pt-4">
+                                        <div className="flex items-center gap-3 font-bold text-[#74D2E7] group-hover:gap-6 transition-all uppercase tracking-[0.2em] text-sm md:text-base border-b-2 border-transparent group-hover:border-[#74D2E7] pb-1">
+                                            <span>Conhecer todos os recursos agora</span>
+                                            <ArrowRight className="w-5 h-5" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="hidden md:flex ml-12 flex-shrink-0 relative group-hover:scale-105 transition-transform duration-500">
+                                    <div className="w-48 h-48 rounded-full bg-gradient-to-tr from-[#74D2E7] to-[#4ab8d1] flex items-center justify-center shadow-2xl shadow-[#74D2E7]/20 ring-8 ring-white/5">
+                                        <Gem className="w-20 h-20 text-[#3D3A36] fill-[#3D3A36] animate-pulse" />
+                                    </div>
+                                    <div className="absolute inset-0 bg-[#74D2E7] blur-[60px] opacity-20 -z-10 group-hover:opacity-40 transition-opacity" />
                                 </div>
                             </SpotlightCard>
                         </Link>
@@ -153,6 +214,33 @@ export function Features() {
 
                 </div>
             </div>
+
+            {/* Lightbox / Preview Overlay */}
+            {previewImage && (
+                <div
+                    className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300"
+                    onClick={() => setPreviewImage(null)}
+                >
+                    <button
+                        className="absolute top-8 right-8 text-white/50 hover:text-white transition-colors"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setPreviewImage(null);
+                        }}
+                        aria-label="Fechar preview"
+                    >
+                        <X className="w-10 h-10" />
+                    </button>
+                    <div className="relative w-full max-w-5xl aspect-[3/4] md:aspect-auto md:h-[90vh] animate-in zoom-in-95 duration-300">
+                        <NextImage
+                            src={previewImage}
+                            alt="Preview ampliado"
+                            fill
+                            className="object-contain"
+                        />
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

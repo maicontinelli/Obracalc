@@ -103,12 +103,12 @@ function LoginForm() {
     };
 
     return (
-        <div className="flex min-h-[calc(100vh-64px)] w-full bg-background relative overflow-hidden">
+        <div className="flex min-h-screen w-full bg-background relative overflow-y-auto">
 
-            {/* FULL PAGE BACKGROUND IMAGE */}
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0">
+            {/* FULL PAGE BACKGROUND IMAGE - FIXED */}
+            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
                 <Image
-                    src="/login-bg-v6.webp"
+                    src="/login-bg-new.webp"
                     alt="Background"
                     fill
                     className="object-contain object-left opacity-50 dark:opacity-30 blur-[1px]"
@@ -118,7 +118,7 @@ function LoginForm() {
 
 
             {/* LEFT SIDE - Content Only */}
-            <div className="hidden lg:flex w-1/2 flex-col justify-start items-start p-12 z-10 h-full pt-0 pb-4">
+            <div className="hidden lg:flex w-1/2 flex-col justify-start items-start p-12 z-10 min-h-screen pt-0 pb-4">
 
                 {/* Top: Title */}
                 <div className="max-w-lg text-[#1a1a1a] dark:text-white mt-10">
@@ -147,42 +147,12 @@ function LoginForm() {
             </div>
 
             {/* RIGHT SIDE - Form Island */}
-            <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:p-12 relative z-10">
+            <div className="w-full lg:w-1/2 flex items-start justify-center p-4 lg:p-12 relative z-10 min-h-screen lg:pt-10">
 
-                <div className="w-full max-w-[420px] bg-white dark:bg-[#333130] p-8 lg:p-10 relative z-10 rounded-2xl shadow-sm border border-border">
+                <div className="w-full max-w-[420px] bg-white/25 dark:bg-[#333130]/25 backdrop-blur-xl p-5 lg:p-6 my-8 lg:my-0 relative z-10 rounded-2xl shadow-lg border border-white/30 dark:border-white/10">
 
-                    {/* Google Button - Top Placement */}
-                    <button
-                        onClick={handleGoogleLogin}
-                        disabled={loading}
-                        className="w-full flex items-center justify-center gap-3 bg-white dark:bg-[#333130] text-[#5f6368] dark:text-[#D3D4D6] border border-[#B6B8BC] dark:border-[#444] hover:bg-[#F8F9FA] dark:hover:bg-[#403e3d] p-3 rounded-xl transition-all duration-200 font-medium text-sm h-12 mb-6 group"
-                    >
-                        {loading ? (
-                            <Loader2 className="animate-spin w-5 h-5" />
-                        ) : (
-                            <>
-                                <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-                                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                                </svg>
-                                <span>Continuar com Google</span>
-                            </>
-                        )}
-                    </button>
-
-                    <div className="relative mb-6">
-                        <div className="absolute inset-0 flex items-center">
-                            <span className="w-full border-t border-[#D3D4D6] dark:border-[#444]" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase tracking-widest">
-                            <span className="bg-white dark:bg-[#333130] px-4 text-[#919599] font-medium">ou {loginMethod === 'magic' ? 'link' : 'email'}</span>
-                        </div>
-                    </div>
-
-                    {/* Tab Switcher - Moved Here */}
-                    <div className="grid grid-cols-3 gap-1 mb-8 bg-gray-100 dark:bg-black/20 p-1 rounded-xl">
+                    {/* Tab Switcher - At Top */}
+                    <div className="grid grid-cols-3 gap-1 mb-6 bg-gray-100/50 dark:bg-black/30 p-1 rounded-xl backdrop-blur-sm">
                         {/* 1. Criar */}
                         <button
                             type="button"
@@ -231,13 +201,13 @@ function LoginForm() {
 
                     {/* Main Form or Recovery Form */}
                     {isRecovery ? (
-                        <form onSubmit={handleRecovery} className="space-y-5 animate-in slide-in-from-right-4 fade-in">
-                            <div className="text-center mb-6">
+                        <form onSubmit={handleRecovery} className="space-y-4 animate-in slide-in-from-right-4 fade-in">
+                            <div className="text-center mb-4">
                                 <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recuperar Senha</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Informe seu email para receber o link de acesso.</p>
                             </div>
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#919599] uppercase ml-1">Email Cadastrado</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B6B8BC]" />
@@ -247,7 +217,7 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-[#D3D4D6] dark:border-[#444] bg-[#F8F9FA] dark:bg-[#1a1a1a] text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
@@ -255,7 +225,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2"
+                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : 'Enviar Instruções'}
                             </button>
@@ -269,27 +239,28 @@ function LoginForm() {
                             </button>
                         </form>
                     ) : (
-                        <form onSubmit={handleEmailAuth} className="space-y-5">
+                        <form onSubmit={handleEmailAuth} className="space-y-4">
 
                             {/* Auth Mode Tabs included in form flow logic somewhat, but functionally separated above */}
                             {authMode === 'signup' && (
-                                <div className="space-y-1.5 animate-in slide-in-from-top-2 fade-in">
+                                <div className="space-y-1 animate-in slide-in-from-top-2 fade-in">
                                     <label className="text-xs font-bold text-[#919599] uppercase ml-1">Nome Completo</label>
                                     <div className="relative">
                                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B6B8BC]" />
                                         <input
                                             type="text"
                                             required
+                                            autoFocus={true}
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
                                             placeholder="Ex: Ana Silva"
-                                            className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-[#D3D4D6] dark:border-[#444] bg-[#F8F9FA] dark:bg-[#1a1a1a] text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
                             )}
 
-                            <div className="space-y-1.5">
+                            <div className="space-y-1">
                                 <label className="text-xs font-bold text-[#919599] uppercase ml-1">Email Profissional</label>
                                 <div className="relative">
                                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B6B8BC]" />
@@ -299,14 +270,14 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-[#D3D4D6] dark:border-[#444] bg-[#F8F9FA] dark:bg-[#1a1a1a] text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
 
                             {/* Password or Magic Info */}
                             {loginMethod === 'password' ? (
-                                <div className="space-y-1.5 animate-in slide-in-from-top-1 fade-in">
+                                <div className="space-y-1 animate-in slide-in-from-top-1 fade-in">
                                     <label className="text-xs font-bold text-[#919599] uppercase ml-1 flex justify-between">
                                         Senha
                                         {authMode === 'login' && (
@@ -328,12 +299,12 @@ function LoginForm() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder="******"
-                                            className="w-full pl-11 pr-4 py-3.5 rounded-xl border border-[#D3D4D6] dark:border-[#444] bg-[#F8F9FA] dark:bg-[#1a1a1a] text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
                             ) : (
-                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800/30 text-xs text-blue-600 dark:text-blue-300 flex items-start gap-2 animate-in fade-in">
+                                <div className="p-2.5 bg-blue-50/50 dark:bg-blue-900/20 backdrop-blur-sm rounded-xl border border-blue-100/50 dark:border-blue-800/30 text-xs text-blue-600 dark:text-blue-300 flex items-start gap-2 animate-in fade-in">
                                     <Sparkles className="w-4 h-4 shrink-0 mt-0.5" />
                                     <p>Enviaremos um link seguro para o seu email. Você poderá entrar sem precisar de senha.</p>
                                 </div>
@@ -343,7 +314,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-3.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-12 flex items-center justify-center gap-2 mt-2"
+                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2 mt-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : (
                                     <>
@@ -352,11 +323,43 @@ function LoginForm() {
                                     </>
                                 )}
                             </button>
+
+                            {/* Divider */}
+                            <div className="relative my-4">
+                                <div className="absolute inset-0 flex items-center">
+                                    <span className="w-full border-t border-white/20 dark:border-white/10" />
+                                </div>
+                                <div className="relative flex justify-center text-xs uppercase tracking-widest">
+                                    <span className="bg-white/25 dark:bg-[#333130]/25 backdrop-blur-sm px-4 text-[#919599] font-medium">ou</span>
+                                </div>
+                            </div>
+
+                            {/* Google Button - Below Main CTA */}
+                            <button
+                                type="button"
+                                onClick={handleGoogleLogin}
+                                disabled={loading}
+                                className="w-full flex items-center justify-center gap-3 bg-white/40 dark:bg-[#333130]/40 backdrop-blur-sm text-[#5f6368] dark:text-[#D3D4D6] border border-white/30 dark:border-white/10 hover:bg-white/60 dark:hover:bg-[#403e3d]/60 p-2.5 rounded-xl transition-all duration-200 font-medium text-sm h-11 group"
+                            >
+                                {loading ? (
+                                    <Loader2 className="animate-spin w-5 h-5" />
+                                ) : (
+                                    <>
+                                        <svg className="w-5 h-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                                        </svg>
+                                        <span>Continuar com Google</span>
+                                    </>
+                                )}
+                            </button>
                         </form>
                     )}
 
                     {/* Footer Links (Termos, etc if needed, but removing old toggles) */}
-                    <div className="mt-8 text-center">
+                    <div className="mt-5 text-center">
                         <p className="text-xs text-gray-400">
                             Ao continuar, você concorda com nossos <br /> <a href="#" className="underline hover:text-gray-500">Termos</a> e <a href="#" className="underline hover:text-gray-500">Privacidade</a>.
                         </p>

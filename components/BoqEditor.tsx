@@ -561,39 +561,6 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     };
 
     const handleGenerateReport = async () => {
-        if (!user) {
-            // Block access for non-logged in users
-            alert("Para gerar o relatório profissional e baixar em PDF, você precisa criar uma conta grátis. É rápido e você não perde este orçamento!");
-
-            // Save locally so they don't lose work
-            const dataToSave = {
-                id: estimateId,
-                items,
-                bdi,
-                providerName,
-                clientName,
-                projectType,
-                deadline,
-                providerPhone,
-                clientPhone,
-                workCity,
-                workState,
-                includeMaterials,
-                includeContract,
-                clientDocument,
-                clientAddress,
-                updatedAt: new Date().toISOString(),
-                projectArea,
-                projectDuration,
-                aiRequests
-            };
-            localStorage.setItem(`estimate_${estimateId}`, JSON.stringify(dataToSave));
-
-            // Redirect to login (signup)
-            window.location.href = '/login';
-            return;
-        }
-
         setIsSaving(true);
         // Force save locally one last time
         const dataToSave = {

@@ -67,7 +67,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
 
     // Merge Profile Data for Provider Info (Single Source of Truth)
-    const displayProviderName = (profile?.company_name || profile?.full_name) || data?.providerName || '-';
+    const displayProviderName = (profile?.full_name || profile?.company_name) || data?.providerName || '-';
     const displayProviderPhone = profile?.phone || data?.providerPhone || '-';
     const displayProviderAddress = profile?.address || data?.providerAddress || '-';
     const displayClientAddress = data?.clientAddress || '-';
@@ -535,7 +535,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                             {!user && (
                                 <>
                                     <button
-                                        onClick={() => router.push('/login')}
+                                        onClick={() => window.open('/login', '_blank')}
                                         className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
                                         title="Crie uma conta para salvar"
                                     >
@@ -544,12 +544,6 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                 </>
                             )}
 
-                            <button
-                                onClick={handleExportExcel}
-                                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
-                            >
-                                <FileSpreadsheet size={14} /> Excel
-                            </button>
 
                             <div className="flex items-center gap-3 px-3 py-1.5 bg-white dark:bg-[#1c1917]/50 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm transition-all hover:border-gray-400">
                                 <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tight">Contrato</span>
@@ -564,6 +558,13 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                                     />
                                 </button>
                             </div>
+
+                            <button
+                                onClick={handleExportExcel}
+                                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
+                            >
+                                <FileSpreadsheet size={14} /> Excel
+                            </button>
 
 
 
@@ -606,13 +607,15 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     <div className="bg-[#374151] text-white px-6 py-4 flex justify-between items-center print:bg-[#374151] print:text-white print:px-5 print:py-3">
                         <div className="flex items-center gap-3">
                             <img
-                                src="/logo-test.webp"
-                                alt="Logo ObraPlana"
-                                className="h-8 w-auto"
+                                src={profile?.logo_url || "/logo-test.webp"}
+                                alt={profile?.company_name || "Logo ObraPlana"}
+                                className="h-8 w-auto object-contain"
                             />
                             <div>
-                                <div className="text-xl font-semibold tracking-tight leading-none text-white">ObraPlana</div>
-                                <div className="text-[10px] text-gray-300 font-medium tracking-wide mt-0.5 leading-none">Tecnologia especialista em construção civil</div>
+                                <div className="text-xl font-semibold tracking-tight leading-none text-white">{profile?.company_name || "ObraPlana"}</div>
+                                {!profile?.company_name && (
+                                    <div className="text-[10px] text-gray-300 font-medium tracking-wide mt-0.5 leading-none">Tecnologia especialista em construção civil</div>
+                                )}
                             </div>
                         </div>
                         <div className="text-right">

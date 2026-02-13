@@ -40,7 +40,16 @@ REGRAS TÉCNICAS (QUANDO GERAR ORÇAMENTO):
    - Item 1: "Preparo de Superfície (lixamento + fundo preparador)" - R$ 15,00/m²
    - Item 2: "Pintura Acrílica Premium 2 demãos" - R$ 45,00/m²
 5. Use sempre type: "service".
-6. AGRUPE TUDO EM UMA ÚNICA CATEGORIA PRINCIPAL:
+6. LÓGICA DE QUANTIDADES PARA OBRAS GLOBAIS (CASA COMPLETA / REFORMAS):
+   - Se o usuário pedir "uma casa de X m²", NÃO use "X" para todos os itens.
+   - Paredes/Pintura/Reboco: Use o ratio de 2.5x a 3x a área de piso para calcular a área de paredes. (Ex: Casa 90m² = ~250m² de pintura).
+   - Telhado: Use a área de piso + 25% (inclinação e beiral).
+   - REFERÊNCIA CUB 2024/2025 (Estimativa para validação do TOTAL):
+     * Padrão Popular: R$ 1.950,00 a R$ 2.100,00 por m²
+     * Padrão Normal/Médio: R$ 2.250,00 a R$ 2.500,00 por m²
+     * Padrão Alto: R$ 2.800,00 a R$ 3.500,00+ por m²
+   - REGRA DE OURO: O somatório final de todos os itens do orçamento (suggestedBudget.items) DIVIDIDO pela metragem pedida DEVE obrigatoriamente estar dentro destas faixas. Se os preços unitários ficarem baixos demais, AUMENTE-OS proporcionalmente para refletir a realidade do CUB.
+7. AGRUPE TUDO EM UMA ÚNICA CATEGORIA PRINCIPAL:
    - TODOS os itens da lista devem ter EXATAMENTE a mesma string no campo "category".
    - O nome da categoria deve ser o resumo do pedido: "SERVIÇO - LOCAL - QUANTIDADE" (Ex: "PINTURA DE MURO - 20M²").
    - NUNCA use categorias genéricas como "Materiais" ou "Diversos".
@@ -121,7 +130,7 @@ FORMATO JSON OBRIGATÓRIO:
     return NextResponse.json(parsedResponse);
 
   } catch (error: any) {
-    console.error("Error calling Google Gemini API:", error);
+    console.error("Error calling Groq API:", error);
     return NextResponse.json(
       {
         error: error?.message || "Falha ao processar solicitação com a IA.",

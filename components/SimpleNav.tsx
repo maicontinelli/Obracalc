@@ -129,7 +129,7 @@ export default function SimpleNav() {
                         ) : (
                             <Link
                                 href="/login"
-                                className="flex items-center gap-2 bg-[#E9813C] hover:bg-[#d67332] text-white px-4 py-2 rounded-full font-medium text-sm transition-all shadow-lg shadow-[#E9813C]/20"
+                                className="flex items-center gap-2 bg-[#F1F1F1] dark:bg-[#2A2827] hover:bg-[#E5E5E5] dark:hover:bg-[#353332] text-gray-700 dark:text-gray-300 px-4 py-2 rounded-full font-medium text-sm transition-all shadow-md border dark:border-white/5"
                             >
                                 <LogIn size={16} />
                                 <span>Entrar</span>

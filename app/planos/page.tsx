@@ -87,10 +87,8 @@ export default function PlansPage() {
             limitations: [
                 'Exportação limitada (PDF / Word / Excel)',
                 'Marca d’água ObraPlana',
-                'Limite de itens por orçamento',
             ],
             cta: 'Começar agora',
-            ctaCaption: 'Para conhecer a ferramenta',
             href: '/login',
             priceId: null,
             popular: false,
@@ -109,11 +107,9 @@ export default function PlansPage() {
                 'Edição e reaproveitamento de orçamentos',
                 'Relatórios sem marca d’água',
                 'Suporte padrão',
-                'Flexibilidade inteligente para orçamentos extras e picos de demanda',
             ],
             limitations: [],
             cta: 'Evoluir para Profissional',
-            ctaCaption: 'E ganhar tempo orçando',
             href: null,
             priceId: 'price_1Sl8fkGZfnvqYwvYTdmFAUM4',
             popular: true,
@@ -131,12 +127,10 @@ export default function PlansPage() {
                 'Padronização de linguagem e estrutura',
                 'Documentos complementares',
                 'Relatórios profissionais prontos para envio',
-                'Suporte prioritário',
-                'Multiuso interno (até 3 usuários)',
+                'Acesso a leads de obras reais',
             ],
             limitations: [],
             cta: 'Participar como empresa',
-            ctaCaption: 'Para fechar negócios',
             href: null,
             priceId: 'price_1Sl8gZGZfnvqYwvYSqt716Vm',
             popular: false,
@@ -174,7 +168,7 @@ export default function PlansPage() {
                     </div>
                 </section>
 
-                <div className="container mx-auto px-4 mb-8">
+                <div className="container mx-auto px-4 mb-12">
                     <div className="flex justify-center items-center gap-4">
                         <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-foreground font-bold' : 'text-muted-foreground'}`}>
                             Mensal
@@ -200,7 +194,8 @@ export default function PlansPage() {
                         {plans.map((plan) => (
                             <div
                                 key={plan.name}
-                                className={`relative flex flex-col p-8 rounded-2xl border bg-card transition-shadow hover:shadow-xl ${plan.popular
+                                id={plan.name === 'Profissional' ? 'profissional' : undefined}
+                                className={`relative flex flex-col p-8 rounded-2xl border bg-card transition-shadow hover:shadow-xl scroll-mt-24 ${plan.popular
                                     ? 'border-[#74D2E7] shadow-lg ring-1 ring-[#74D2E7]/50'
                                     : 'border-border dark:border-white/15'
                                     }`}
@@ -262,9 +257,6 @@ export default function PlansPage() {
                                                 {plan.cta}
                                             </Button>
                                         </Link>
-                                        <p className="mt-2 text-xs text-center text-muted-foreground font-medium">
-                                            {plan.ctaCaption}
-                                        </p>
                                     </div>
                                 ) : (
                                     <div className="w-full mb-4">
@@ -281,9 +273,6 @@ export default function PlansPage() {
                                         >
                                             {loading === plan.name ? 'Processando...' : plan.cta}
                                         </Button>
-                                        <p className="mt-2 text-xs text-center text-muted-foreground font-medium">
-                                            {plan.ctaCaption}
-                                        </p>
                                     </div>
                                 )}
 

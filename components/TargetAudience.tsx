@@ -23,11 +23,11 @@ export function TargetAudience() {
     ];
 
     return (
-        <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-y border-border/40">
+        <section className="py-20 bg-transparent border-y border-border/40">
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-12">
                     <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
-                        Um orçamento confiável para <span className="text-[#6366F1]">decisões reais</span> de obra
+                        Um orçamento confiável para <br /> <span className="text-[#6366F1]">decisões reais</span> de obra
                     </h2>
                 </div>
 

@@ -2,15 +2,15 @@ import Image from "next/image";
 
 export function DemoSection() {
     return (
-        <section className="py-24 bg-gray-50 dark:bg-gray-900/30 overflow-hidden">
+        <section className="py-24 bg-transparent overflow-hidden">
             <div className="container mx-auto px-4">
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-                            Você pede e o ObraPlana <span className="text-green-500">organiza</span> tudo.
+                        <h2 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
+                            Você pede e o ObraPlana <span className="text-[#E9813C]">organiza</span> tudo.
                         </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
-                            Comece com uma descrição simples. Deixe nossa IA fazer o trabalho pesado.
+                            Comece com uma descrição simples e deixe nossa IA fazer o trabalho pesado.
                         </p>
                         <ul className="space-y-4 mb-8">
                             {[
