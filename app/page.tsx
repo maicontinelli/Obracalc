@@ -38,11 +38,11 @@ export default function Home() {
         <Features />
 
         {/* CTA Section */}
-        <section className="py-24 bg-transparent border-t border-border text-foreground text-center relative overflow-hidden">
+        <section className="py-24 bg-transparent text-foreground text-center relative overflow-hidden">
 
           <div className="container mx-auto px-4 relative z-10">
             <h2 className="text-3xl md:text-5xl font-heading font-bold mb-6 tracking-tight text-foreground">
-              Pronto para <span className="text-[#FF6600]">otimizar</span> seus orçamentos?
+              Pronto para otimizar seus orçamentos?
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10">
               Junte-se a mais de 5.000 engenheiros e arquitetos que economizam 80% do tempo com ObraPlana.
@@ -50,7 +50,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-[#FF6600] text-white hover:bg-[#E55C00] h-14 px-8 text-lg font-semibold shadow-lg shadow-[#FF6600]/20 transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px] rounded-full"
+                className="bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 h-14 px-8 text-lg font-semibold shadow-xl transition-transform hover:scale-105 w-full sm:w-auto min-w-[200px] rounded-full"
                 data-testid="button-cta"
                 onClick={() => handleStart('obra_nova')}
               >

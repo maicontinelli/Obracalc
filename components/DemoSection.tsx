@@ -7,7 +7,7 @@ export function DemoSection() {
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
                         <h2 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-                            Você pede e o ObraPlana <span className="text-[#E9813C]">organiza</span> tudo.
+                            Você pede e o ObraPlana <span className="text-[#FF6600]">organiza</span> tudo
                         </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
                             Comece com uma descrição simples e deixe nossa IA fazer o trabalho pesado.
@@ -29,7 +29,7 @@ export function DemoSection() {
                                 </li>
                             ))}
                             {/* Novo item seguindo o padrão, mas com ícone Pin */}
-                            <li className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mt-6 pt-4 border-t border-gray-100 dark:border-white/5">
+                            <li className="flex items-center gap-3 text-gray-500 dark:text-gray-400 mt-6 pt-4">
                                 <div className="w-5 h-5 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-500 dark:text-gray-400 shrink-0">
                                     <span className="text-[10px]">📌</span>
                                 </div>

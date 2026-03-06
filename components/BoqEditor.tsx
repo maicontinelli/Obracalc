@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Plus, Trash2, FileText, Settings, ChevronDown, Sparkles, Loader2, Cloud, CloudOff, Check } from 'lucide-react';
+import { Plus, Trash2, FileText, Settings, ChevronDown, Sparkles, Loader2, Cloud, CloudOff, Check, AlertTriangle } from 'lucide-react';
 import CommandSearch, { BoqItem } from './CommandSearch';
 import { BOQ_TEMPLATES } from '@/lib/constants';
 import { createClient } from '@/lib/supabase/client';
@@ -103,6 +103,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const [workState, setWorkState] = useState('');
     const [projectArea, setProjectArea] = useState<number>(0); // New: Area in m2
     const [projectDuration, setProjectDuration] = useState(1); // New: Duration in months
+    const [status, setStatus] = useState<'parado' | 'andamento' | 'concluido' | 'draft'>('andamento');
     const [aiRequests, setAiRequests] = useState<any[]>([]);
     const [isSaving, setIsSaving] = useState(false);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -246,6 +247,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     setWorkState(parsed.workState || '');
                     setProjectArea(parsed.projectArea || 0);
                     setProjectDuration(parsed.projectDuration || 1);
+                    setStatus(parsed.status !== undefined ? parsed.status : (fromCloud ? 'andamento' : 'andamento'));
                     setAiRequests(parsed.aiRequests || []);
                 } catch (e) {
                     console.error("Error parsing estimate:", e);
@@ -386,7 +388,13 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
         // Count currently included items
         const currentCount = items.filter(i => i.included).length;
 
-        // Check Plan Limits
+        // Check Plan Limits & Payment Status
+        if (profile?.subscription_status === 'past_due') {
+            alert('Acesso suspenso por falta de pagamento. Regularize sua assinatura no dashboard para adicionar mais itens.');
+            window.open('/dashboard', '_blank');
+            return;
+        }
+
         const tier = profile?.tier || 'free';
         const limit = PLAN_LIMITS[tier].max_items_per_estimate;
 
@@ -493,6 +501,12 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     const handleSaveToCloud = async () => {
         if (!user) return;
 
+        if (profile?.subscription_status === 'past_due') {
+            alert('Acesso suspenso por falta de pagamento. Regularize sua assinatura no dashboard para salvar orçamentos na nuvem.');
+            window.open('/dashboard', '_blank');
+            return;
+        }
+
         const tier = profile?.tier || 'free';
         const limit = PLAN_LIMITS[tier].max_estimates;
 
@@ -524,6 +538,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
             clientAddress,
             projectArea,
             projectDuration,
+            status,
             aiRequests
         };
 
@@ -544,7 +559,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                 project_type: projectType,
                 work_city: workCity,
                 work_state: workState,
-                status: 'draft'
+                status: status
             });
 
             if (error) {
@@ -629,6 +644,11 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
     };
 
     const handleAddAiItems = (newItems: any[], request: any) => {
+        if (profile?.subscription_status === 'past_due') {
+            alert('Acesso suspenso por falta de pagamento. Regularize sua assinatura no dashboard para usar a IA.');
+            window.open('/dashboard', '_blank');
+            return;
+        }
         const requestId = crypto.randomUUID();
         const targetCategory = (request?.suggestedTitle || request?.query || 'ITENS ADICIONAIS').toUpperCase();
 
@@ -771,6 +791,25 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                     {/* LEFT COLUMN: Main Content (2/3) */}
                     <div className="lg:col-span-2 space-y-6">
+
+                        {/* Past-due hard block banner */}
+                        {profile?.subscription_status === 'past_due' && (
+                            <div className="flex items-center justify-between gap-4 bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-xl p-3 text-xs mb-2">
+                                <div className="flex items-center gap-3">
+                                    <AlertTriangle className="text-red-500 shrink-0" size={16} />
+                                    <div>
+                                        <p className="font-bold text-red-700 dark:text-red-400">Acesso suspenso por falta de pagamento.</p>
+                                        <p className="text-red-600 dark:text-red-500 mt-0.5">Regularize sua assinatura para continuar editando e exportando orçamentos.</p>
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={() => window.open('/dashboard', '_blank')}
+                                    className="shrink-0 bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded-lg transition-colors"
+                                >
+                                    Regularizar
+                                </button>
+                            </div>
+                        )}
 
 
 
@@ -1268,6 +1307,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                             value={bdi}
                                             onChange={(e) => setBdi(Number(e.target.value))}
                                             className="w-10 bg-transparent text-right text-xs font-bold text-foreground border-none p-0 focus:ring-0"
+                                            title="Porcentagem de BDI"
                                         />
                                         <span className="text-xs text-muted-foreground">%</span>
                                     </div>
@@ -1281,6 +1321,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     <button
                                         onClick={() => setIncludeMaterials(!includeMaterials)}
                                         className={`w-10 h-5 rounded-full transition-colors relative ${includeMaterials ? 'bg-orange-500' : 'bg-[#4A4A4A]'}`}
+                                        title="Alternar Inclusão de Materiais"
                                     >
                                         <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeMaterials ? 'left-6' : 'left-1'}`} />
                                     </button>
@@ -1294,6 +1335,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     <button
                                         onClick={() => setIncludeContract(!includeContract)}
                                         className={`w-10 h-5 rounded-full transition-colors relative ${includeContract ? 'bg-blue-600' : 'bg-[#4A4A4A]'}`}
+                                        title="Alternar Geração de Contrato"
                                     >
                                         <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeContract ? 'left-6' : 'left-1'}`} />
                                     </button>
@@ -1350,6 +1392,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                             onChange={(e) => setClientName(e.target.value)}
                                             className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
                                             placeholder="Nome do Cliente"
+                                            title="Nome do Cliente"
                                         />
                                         <input
                                             type="tel"
@@ -1357,6 +1400,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                             onChange={handlePhoneChange(setClientPhone)}
                                             className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20 tabular-nums"
                                             placeholder="(00) 00000 - 0000"
+                                            title="Telefone do Cliente"
                                             maxLength={15}
                                         />
                                         {includeContract && (
@@ -1367,6 +1411,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                     onChange={handleDocumentChange}
                                                     className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
                                                     placeholder="CPF ou CNPJ do Cliente"
+                                                    title="CPF ou CNPJ do Cliente"
                                                     maxLength={18}
                                                 />
                                                 <input
@@ -1375,6 +1420,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                     onChange={(e) => setClientAddress(e.target.value)}
                                                     className="w-full bg-black/5 dark:bg-[#222120] border border-black/10 dark:border-white/10 rounded px-3 py-2 text-xs text-foreground focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all placeholder-black/30 dark:placeholder-white/20"
                                                     placeholder="Endereço Completo do Cliente"
+                                                    title="Endereço Completo do Cliente"
                                                 />
                                             </>
                                         )}
@@ -1458,6 +1504,30 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                                [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:active:scale-95 
                                                                [&::-webkit-slider-thumb]:transition-all"
                                                 />
+                                            </div>
+                                        </div>
+
+                                        {/* Status do Orçamento */}
+                                        <div className="col-span-2 mt-6 pt-4 border-t border-white/5">
+                                            <label className="block text-[9px] text-muted-foreground uppercase mb-3">Status do Orçamento</label>
+                                            <div className="grid grid-cols-3 gap-2">
+                                                {[
+                                                    { id: 'parado', label: 'Parado', icon: '🔴' },
+                                                    { id: 'andamento', label: 'Andamento', icon: '🟡' },
+                                                    { id: 'concluido', label: 'Concluído', icon: '🟢' }
+                                                ].map((s) => (
+                                                    <button
+                                                        key={s.id}
+                                                        onClick={() => setStatus(s.id as any)}
+                                                        className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${status === s.id
+                                                            ? 'bg-white dark:bg-white/10 border-blue-500/50 shadow-sm'
+                                                            : 'bg-transparent border-transparent opacity-40 hover:opacity-100'
+                                                            }`}
+                                                    >
+                                                        <span className="text-base leading-none">{s.icon}</span>
+                                                        <span className="text-[9px] font-bold uppercase tracking-wider">{s.label}</span>
+                                                    </button>
+                                                ))}
                                             </div>
                                         </div>
                                     </div>

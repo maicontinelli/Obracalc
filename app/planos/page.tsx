@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Check, X, User, ArrowRight, Lock } from 'lucide-react';
 import { Button } from '@/components/Button';
 import Link from 'next/link';
@@ -13,20 +13,34 @@ export default function PlansPage() {
     const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
     const [showAuthModal, setShowAuthModal] = useState(false);
     const [selectedPlan, setSelectedPlan] = useState<string>('');
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [showTermsError, setShowTermsError] = useState(false);
+    const checkboxRef = useRef<HTMLInputElement>(null);
     const supabase = createClient();
 
     const handleSubscribe = async (planName: string) => {
+        if (!termsAccepted) {
+            setShowTermsError(true);
+            checkboxRef.current?.focus();
+            return;
+        }
+        setShowTermsError(false);
         setLoading(planName);
         try {
             const { data: { user } } = await supabase.auth.getUser();
 
             if (!user) {
-                // Show custom modal instead of alert
                 setSelectedPlan(planName);
                 setShowAuthModal(true);
                 setLoading(null);
                 return;
             }
+
+            // Save terms acceptance before checkout
+            await supabase
+                .from('profiles')
+                .update({ terms_accepted_at: new Date().toISOString() })
+                .eq('id', user.id);
 
             // Check if user has document_id (CPF/CNPJ)
             const { data: profile } = await supabase
@@ -45,13 +59,8 @@ export default function PlansPage() {
 
             const response = await fetch('/api/abacatepay/checkout', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    plan: planName,
-                    userId: user.id
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ plan: planName, userId: user.id }),
             });
 
             const data = await response.json();
@@ -72,11 +81,11 @@ export default function PlansPage() {
 
     const plans = [
         {
-            name: 'Grátis',
-            priceDisplay: 'R$ 0',
-            period: '/sempre',
-            subtext: null,
-            description: 'É sério, você pode criar sua conta gratuita agora mesmo!',
+            name: 'Básico',
+            priceDisplay: 'R$ 25,00',
+            period: '/único',
+            subtext: 'Pagamento fixo e permanente',
+            description: 'Acesso vitalício aos recursos essenciais.',
             features: [
                 'Criação de orçamentos técnicos com IA',
                 'Até 2 orçamentos completos',
@@ -88,16 +97,16 @@ export default function PlansPage() {
                 'Exportação limitada (PDF / Word / Excel)',
                 'Marca d’água ObraPlana',
             ],
-            cta: 'Começar agora',
-            href: '/login',
-            priceId: null,
+            cta: 'Adquirir Plano Básico',
+            href: null, // Enabling checkout flow
+            priceId: 'basic_one_time',
             popular: false,
         },
         {
             name: 'Profissional',
-            priceDisplay: billingCycle === 'monthly' ? 'R$ 9,17' : 'R$ 110,00',
+            priceDisplay: billingCycle === 'monthly' ? 'R$ 39,00' : 'R$ 468,00',
             period: billingCycle === 'monthly' ? '/mês' : '/ano',
-            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 110,00)' : 'Equivalente a R$ 9,17/mês',
+            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 468,00)' : 'Equivalente a R$ 39,00/mês',
             description: 'Mais barato que um cafezinho no aeroporto.',
             features: [
                 'Até 60 orçamentos por ano',
@@ -116,9 +125,9 @@ export default function PlansPage() {
         },
         {
             name: 'Empresarial',
-            priceDisplay: billingCycle === 'monthly' ? 'R$ 70,00' : 'R$ 840,00',
+            priceDisplay: billingCycle === 'monthly' ? 'R$ 79,00' : 'R$ 948,00',
             period: billingCycle === 'monthly' ? '/mês' : '/ano',
-            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 840,00)' : 'Equivalente a R$ 70,00/mês',
+            subtext: billingCycle === 'monthly' ? 'Cobrado anualmente (R$ 948,00)' : 'Equivalente a R$ 79,00/mês',
             description: 'Para empresas que desejam fechar mais obras.',
             features: [
                 'Orçamentos ilimitados',
@@ -236,46 +245,29 @@ export default function PlansPage() {
                                     )}
                                 </div>
 
-                                {plan.href ? (
-                                    <div className="w-full mb-4">
-                                        <Link
-                                            href={plan.href}
-                                            className="w-full"
-                                            target={plan.href.startsWith('http') ? '_blank' : '_self'}
-                                        >
-                                            <Button
-                                                className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full ${plan.popular
-                                                    ? 'bg-[#FF6600] hover:bg-[#FF6600]/90 text-white border-none'
-                                                    : plan.name === 'Grátis'
-                                                        ? 'bg-[#E9813C] hover:bg-[#d67332] text-white border-none shadow-lg shadow-[#E9813C]/20'
-                                                        : plan.name === 'Empresarial'
-                                                            ? 'bg-[#1e293b] text-white border border-[#1e293b] hover:bg-[#0f172a] hover:border-[#0f172a]'
-                                                            : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-                                                    }`}
-                                                variant={plan.popular || plan.name === 'Empresarial' ? 'default' : (plan.name === 'Grátis' ? 'ghost' : 'outline')}
-                                            >
-                                                {plan.cta}
-                                            </Button>
-                                        </Link>
-                                    </div>
-                                ) : (
-                                    <div className="w-full mb-4">
-                                        <Button
-                                            className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full shadow-md hover:shadow-xl hover:-translate-y-0.5 ${plan.popular
-                                                ? 'bg-[#74D2E7] hover:bg-[#5bc0de] text-white border border-transparent shadow-[#74D2E7]/20 text-[#3D3A36]'
+                                <div className="w-full mb-4">
+                                    <Button
+                                        onClick={() => handleSubscribe(plan.name)}
+                                        disabled={loading === plan.name}
+                                        className={`w-full h-12 text-base font-bold transition-all duration-300 rounded-full ${plan.popular
+                                            ? 'bg-[#74D2E7] hover:bg-[#5bc0de] text-[#3D3A36] border-none shadow-lg shadow-[#74D2E7]/20'
+                                            : plan.name === 'Básico'
+                                                ? 'bg-white dark:bg-white/5 hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border dark:border-white/15 shadow-sm'
                                                 : plan.name === 'Empresarial'
-                                                    ? 'bg-[#1e293b] text-white border border-gray-700 hover:bg-[#0f172a] shadow-gray-900/20'
+                                                    ? 'bg-[#1e293b] text-white border border-[#1e293b] hover:bg-[#0f172a] hover:border-[#0f172a]'
                                                     : 'bg-transparent border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:border-gray-900 dark:hover:border-white hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-white/5'
-                                                }`}
-                                            variant={plan.popular || plan.name === 'Empresarial' ? 'default' : 'outline'}
-                                            onClick={() => handleSubscribe(plan.name)}
-                                            disabled={loading === plan.name}
-                                        >
-                                            {loading === plan.name ? 'Processando...' : plan.cta}
-                                        </Button>
-                                    </div>
-                                )}
-
+                                            }`}
+                                    >
+                                        {loading === plan.name ? (
+                                            <span className="flex items-center gap-2">
+                                                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                                Processando...
+                                            </span>
+                                        ) : (
+                                            plan.cta
+                                        )}
+                                    </Button>
+                                </div>
                                 <div className="flex-grow border-t border-border/50 pt-6">
                                     <ul className="space-y-4">
                                         {plan.features.map((feature) => (
@@ -302,7 +294,51 @@ export default function PlansPage() {
                             </div>
                         ))}
                     </div>
-                    <div className="mt-12 text-center">
+                    {/* Terms acceptance checkbox — shared across all plans */}
+                    <div className="mt-10 max-w-2xl mx-auto">
+                        <label
+                            htmlFor="terms-checkbox"
+                            className={`flex items-start gap-3 cursor-pointer p-4 rounded-2xl border transition-colors ${showTermsError
+                                    ? 'border-red-400 bg-red-50 dark:bg-red-900/10'
+                                    : termsAccepted
+                                        ? 'border-[#74D2E7]/60 bg-[#74D2E7]/5'
+                                        : 'border-border bg-card'
+                                }`}
+                        >
+                            <input
+                                ref={checkboxRef}
+                                id="terms-checkbox"
+                                type="checkbox"
+                                checked={termsAccepted}
+                                onChange={e => {
+                                    setTermsAccepted(e.target.checked);
+                                    if (e.target.checked) setShowTermsError(false);
+                                }}
+                                className="mt-0.5 w-4 h-4 accent-[#74D2E7] shrink-0"
+                            />
+                            <span className="text-sm text-foreground leading-relaxed">
+                                Li e concordo com os{' '}
+                                <a
+                                    href="/termos"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#74D2E7] hover:underline font-semibold"
+                                    onClick={e => e.stopPropagation()}
+                                >
+                                    Termos de Uso e Política de Cancelamento
+                                </a>
+                                , incluindo a{' '}
+                                <span className="font-semibold">Garantia Incondicional de 14 dias</span>.
+                            </span>
+                        </label>
+                        {showTermsError && (
+                            <p className="text-xs text-red-500 mt-2 ml-1">
+                                ⚠️ Você precisa aceitar os Termos de Uso para continuar.
+                            </p>
+                        )}
+                    </div>
+
+                    <div className="mt-6 text-center">
                         <p className="text-sm font-manrope text-muted-foreground">
                             Cancele quando quiser. Sem contratos ou fidelidade.
                         </p>

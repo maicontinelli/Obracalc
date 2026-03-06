@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { FileText, Printer, ArrowLeft, User as UserIcon, Phone, Building2, Calendar, Sparkles, Cloud, FileSpreadsheet } from 'lucide-react';
 import { getDddInfo } from '@/lib/ddd-data';
@@ -90,7 +91,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     };
 
     const checkPlan = () => {
-        if (!profile || profile.tier === 'free') {
+        if (!profile || profile.tier === 'free' || profile.subscription_status === 'past_due') {
             setShowToast(true);
             setTimeout(() => setShowToast(false), 3000); // Auto hide after 3s
             return false;
@@ -158,6 +159,29 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
         // Write File
         XLSX.writeFile(wb, `Orcamento_${data.clientName || 'Cliente'}.xlsx`);
     };
+
+    // Listen for actions from SimpleNav (integrated menu)
+    useEffect(() => {
+        const handleAction = (e: any) => {
+            const action = e.detail;
+            if (action === 'print') {
+                handlePrint();
+            } else if (action === 'excel') {
+                handleExportExcel();
+            } else if (typeof action === 'object' && action.type === 'toggle-contract') {
+                setIncludeContract(action.value);
+            }
+        };
+
+        window.addEventListener('report-action', handleAction);
+
+        // Sync initial state with nav
+        if (!loading && data) {
+            window.dispatchEvent(new CustomEvent('report-sync-state', { detail: { includeContract } }));
+        }
+
+        return () => window.removeEventListener('report-action', handleAction);
+    }, [loading, data, includeContract]);
 
     if (loading) {
         return (
@@ -517,67 +541,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 }
             `}</style>
 
-            {/* Toolbar */}
-            <div className="no-print bg-white dark:bg-[#262423] border-b border-gray-200 dark:border-gray-700 shadow-sm sticky top-0 z-50">
-                <div className="max-w-[1600px] mx-auto px-6 py-4 flex justify-between items-center gap-4">
-                    <button
-                        onClick={() => router.push(`/editor/${estimateId}`)}
-                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
-                    >
-                        <ArrowLeft size={14} /> Editor
-                    </button>
 
-                    <div className="flex items-center gap-4">
-
-
-                        <div className="flex gap-3">
-                            {/* Guest Actions (Discreet) */}
-                            {!user && (
-                                <>
-                                    <button
-                                        onClick={() => window.open('/login', '_blank')}
-                                        className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
-                                        title="Crie uma conta para salvar"
-                                    >
-                                        <Cloud size={14} /> <span className="hidden sm:inline">Salvar</span>
-                                    </button>
-                                </>
-                            )}
-
-
-                            <div className="flex items-center gap-3 px-3 py-1.5 bg-white dark:bg-[#1c1917]/50 border border-gray-300 dark:border-gray-700 rounded-lg shadow-sm transition-all hover:border-gray-400">
-                                <span className="text-[11px] font-bold text-gray-600 dark:text-gray-400 uppercase tracking-tight">Contrato</span>
-                                <button
-                                    onClick={() => setIncludeContract(!includeContract)}
-                                    className={`relative inline-flex h-5 w-10 items-center rounded-full transition-all duration-200 focus:outline-none ${includeContract ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                                        }`}
-                                >
-                                    <span
-                                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-all duration-200 ${includeContract ? 'translate-x-5.5' : 'translate-x-1'
-                                            }`}
-                                    />
-                                </button>
-                            </div>
-
-                            <button
-                                onClick={handleExportExcel}
-                                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors shadow-sm"
-                            >
-                                <FileSpreadsheet size={14} /> Excel
-                            </button>
-
-
-
-                            <button
-                                onClick={handlePrint}
-                                className="flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors shadow-sm"
-                            >
-                                <Printer size={14} /> Pdf
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             {/* Report Content */}
             <div id="report-content" className="max-w-none mx-auto p-4 lg:p-8 print-content print:p-0 print:max-w-full">

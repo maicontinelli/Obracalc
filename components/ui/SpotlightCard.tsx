@@ -18,7 +18,7 @@ export function SpotlightCard({
     return (
         <div
             className={cn(
-                "relative rounded-3xl border border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900 overflow-hidden",
+                "relative rounded-3xl bg-white/60 dark:bg-background overflow-hidden shadow-sm backdrop-blur-sm",
                 className
             )}
             {...props}

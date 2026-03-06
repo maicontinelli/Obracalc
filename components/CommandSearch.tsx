@@ -280,8 +280,9 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                                 <div className="p-1.5 bg-[#F6A34A]/10 dark:bg-[#F6A34A]/20 text-[#F6A34A] rounded-full shrink-0">
                                     <Sparkles size={14} />
                                 </div>
-                                <div className="text-xs text-gray-800 dark:text-[#F6A34A] font-medium">
-                                    <p className="font-bold text-[9px] text-[#F6A34A] dark:text-[#F6A34A] mb-0.5 uppercase tracking-wider">Obra Plana</p>
+                                <div className="text-xs text-gray-800 dark:text-gray-200 font-medium">
+                                    <p className="font-bold text-[9px] text-[#F6A34A] dark:text-[#F6A34A] mb-1 uppercase tracking-wider">Obra Plana</p>
+                                    <p className="text-[10px] mb-2 text-gray-600 dark:text-gray-400">Para eu criar um orçamento mais específico, preciso que responda as perguntas abaixo:</p>
                                     <div className="whitespace-pre-line leading-relaxed">
                                         {clarificationQuestion}
                                     </div>

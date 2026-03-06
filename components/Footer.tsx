@@ -57,7 +57,7 @@ export function Footer() {
                         <h4 className="font-bold mb-4 text-gray-900 dark:text-white">Legal</h4>
                         <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 font-medium">
                             <li><Link href="#" className="hover:text-primary transition-colors">Privacidade</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Termos</Link></li>
+                            <li><Link href="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
                             <li><Link href="#" className="hover:text-primary transition-colors">Segurança</Link></li>
                         </ul>
                     </div>
@@ -65,7 +65,7 @@ export function Footer() {
 
                 <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-gray-200 dark:border-white/10">
                     <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                        © 2026 ObraPlana. Todos os direitos reservados. <span className="ml-2 opacity-100 font-bold text-gray-800 dark:text-gray-200">v3.6</span>
+                        © 2026 ObraPlana. Todos os direitos reservados. <span className="ml-2 opacity-100 font-bold text-gray-800 dark:text-gray-200">v3.8</span>
                     </p>
                     <div className="flex gap-6 text-xs text-gray-600 dark:text-gray-400">
                         {/* Feito com ❤️ para engenheiros - Removed as per request */}

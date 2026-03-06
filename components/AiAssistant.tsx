@@ -187,9 +187,9 @@ export default function AiAssistant() {
                         className={`relative flex items-center w-full rounded-full transition-all duration-300
                             bg-white dark:bg-[#1A1A1A] 
                             shadow-[0_4px_20px_rgba(0,0,0,0.08)]
-                            border ${isClarifying ? 'border-[#F6A34A] ring-2 ring-[#F6A34A]/20' : 'border-[#F6A34A]/50'}
+                            border ${isClarifying ? 'border-[#FF6600] ring-2 ring-[#FF6600]/20' : 'border-[#FF6600]/50'}
                             hover:shadow-[0_6px_24px_rgba(0,0,0,0.12)]
-                            focus-within:ring-4 focus-within:ring-[#F6A34A]/10 focus-within:border-[#F6A34A]
+                            focus-within:ring-4 focus-within:ring-[#FF6600]/10 focus-within:border-[#FF6600]
                             cursor-text py-2`}
                         style={{ minHeight: '64px' }}
                         onClick={() => {
@@ -198,7 +198,7 @@ export default function AiAssistant() {
                         }}
                     >
                         <div className="pl-4 pr-2 text-gray-400 dark:text-gray-500 shrink-0">
-                            <Sparkles size={20} className={`text-[#F6A34A] ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
+                            <Sparkles size={20} className={`text-[#FF6600] ${isClarifying ? 'animate-spin' : 'animate-pulse'}`} />
                         </div>
                         <div className="flex-1 relative">
                             <textarea
@@ -226,7 +226,7 @@ export default function AiAssistant() {
                         <button
                             type="submit"
                             disabled={!query.trim() || isLoading}
-                            className="p-3 bg-[#BC6C25] hover:bg-[#9B581E] disabled:bg-gray-100 dark:disabled:bg-gray-800
+                            className="p-3 bg-[#FF6600] hover:bg-[#E55C00] disabled:bg-gray-100 dark:disabled:bg-gray-800
                                 text-white disabled:text-gray-400 dark:disabled:text-gray-500 
                                 rounded-2xl transition-all duration-200
                                 disabled:cursor-not-allowed disabled:shadow-none
@@ -240,6 +240,8 @@ export default function AiAssistant() {
                         </button>
                     </div>
                 </form>
+
+
             </div>
 
             {/* Chat Messages - now appears below the search bar */}
@@ -248,17 +250,18 @@ export default function AiAssistant() {
                     {messages.map((msg) => (
                         <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} animate-in fade-in slide-in-from-bottom-2 duration-300`}>
                             {msg.role === 'user' ? (
-                                <div className="max-w-[85%] bg-[#F6A34A] text-white rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-md">
+                                <div className="max-w-[85%] bg-indigo-600 text-white rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-md">
                                     <div className="text-sm whitespace-pre-line">{msg.text}</div>
                                 </div>
                             ) : msg.isClarification ? (
                                 <div className="max-w-[85%]">
-                                    <div className="flex gap-3 items-start p-3 bg-[#F6A34A]/5 dark:bg-[#F6A34A]/10 rounded-2xl rounded-bl-sm shadow-sm border border-[#F6A34A]/20 dark:border-[#F6A34A]/30 backdrop-blur-sm">
-                                        <div className="p-1.5 bg-[#F6A34A]/10 dark:bg-[#F6A34A]/20 text-[#F6A34A] rounded-full shrink-0">
+                                    <div className="flex gap-3 items-start p-3 bg-[#FF6600]/5 dark:bg-[#FF6600]/10 rounded-2xl rounded-bl-sm shadow-sm border border-[#FF6600]/20 dark:border-[#FF6600]/30 backdrop-blur-sm">
+                                        <div className="p-1.5 bg-[#FF6600]/10 dark:bg-[#FF6600]/20 text-[#FF6600] rounded-full shrink-0">
                                             <Sparkles size={14} />
                                         </div>
-                                        <div className="text-xs text-gray-800 dark:text-[#F6A34A] font-medium">
-                                            <p className="font-bold text-[9px] text-[#F6A34A] dark:text-[#F6A34A] mb-0.5 uppercase tracking-wider">Obra Plana</p>
+                                        <div className="text-xs text-gray-800 dark:text-gray-200 font-medium">
+                                            <p className="font-bold text-[9px] text-[#FF6600] dark:text-[#FF6600] mb-1 uppercase tracking-wider">Obra Plana</p>
+                                            <p className="text-[10px] mb-2 text-gray-600 dark:text-gray-400">Para eu criar um orçamento mais específico, preciso que responda as perguntas abaixo:</p>
                                             <div className="whitespace-pre-line leading-relaxed">{msg.text}</div>
                                         </div>
                                     </div>
@@ -266,7 +269,7 @@ export default function AiAssistant() {
                             ) : (
                                 <div className="max-w-[85%] bg-white/40 dark:bg-gray-800/40 backdrop-blur-md rounded-2xl rounded-bl-sm p-4 border border-white/20 dark:border-gray-700/30 shadow-sm">
                                     <div className="flex gap-3">
-                                        <div className="mt-1 bg-[#F6A34A]/10 dark:bg-[#F6A34A]/20 p-1.5 rounded-lg h-fit text-[#F6A34A] dark:text-[#F6A34A] shrink-0">
+                                        <div className="mt-1 bg-[#FF6600]/10 dark:bg-[#FF6600]/20 p-1.5 rounded-lg h-fit text-[#FF6600] dark:text-[#FF6600] shrink-0">
                                             <Bot size={16} />
                                         </div>
                                         <div className="space-y-4 w-full">
@@ -275,10 +278,10 @@ export default function AiAssistant() {
                                             </div>
 
                                             {msg.suggestedBudget && (
-                                                <div className="bg-[#F6A34A]/5 dark:bg-[#F6A34A]/10 rounded-lg p-4 border border-[#F6A34A]/10 dark:border-[#F6A34A]/20">
+                                                <div className="bg-[#FF6600]/5 dark:bg-[#FF6600]/10 rounded-lg p-4 border border-[#FF6600]/10 dark:border-[#FF6600]/20">
                                                     <div className="flex items-center justify-between mb-3">
-                                                        <h4 className="font-semibold text-[#8B4513] dark:text-[#F6A34A] text-sm">Orçamento Sugerido</h4>
-                                                        <span className="text-xs text-[#F6A34A] dark:text-[#F6A34A] bg-[#F6A34A]/10 dark:bg-[#F6A34A]/20 px-2 py-1 rounded-full">
+                                                        <h4 className="font-semibold text-[#FF6600] dark:text-[#FF6600] text-sm">Orçamento Sugerido</h4>
+                                                        <span className="text-xs text-[#FF6600] dark:text-[#FF6600] bg-[#FF6600]/10 dark:bg-[#FF6600]/20 px-2 py-1 rounded-full">
                                                             {msg.suggestedBudget.items.filter(i => i.included !== false).length} itens
                                                         </span>
                                                     </div>
@@ -299,7 +302,7 @@ export default function AiAssistant() {
 
                                                     <button
                                                         onClick={() => handleCreateBudget(msg.suggestedBudget!, msg.text, msg.text)}
-                                                        className="w-full py-2 bg-[#F6A34A] hover:bg-[#E5933C] text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
+                                                        className="w-full py-2 bg-[#FF6600] hover:bg-[#E55C00] text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm"
                                                     >
                                                         <FilePlus size={16} />
                                                         Criar orçamento com estes itens
@@ -316,7 +319,7 @@ export default function AiAssistant() {
                     {isLoading && (
                         <div className="flex justify-start animate-in fade-in">
                             <div className="bg-white/40 dark:bg-gray-800/40 backdrop-blur-md rounded-2xl rounded-bl-sm p-4 flex items-center gap-3">
-                                <Loader2 size={16} className="animate-spin text-[#F6A34A]" />
+                                <Loader2 size={16} className="animate-spin text-[#FF6600]" />
                                 <span className="text-xs text-gray-500 font-medium">Analisando...</span>
                             </div>
                         </div>

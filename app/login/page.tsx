@@ -105,15 +105,18 @@ function LoginForm() {
     return (
         <div className="flex min-h-screen w-full bg-background relative overflow-y-auto">
 
-            {/* FULL PAGE BACKGROUND IMAGE - FIXED */}
-            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0">
+            {/* FULL PAGE BACKGROUND IMAGE - FIXED with Premium Effects */}
+            <div className="fixed top-0 left-0 w-full h-full pointer-events-none z-0 bg-white dark:bg-black">
                 <Image
-                    src="/login-bg-new.webp"
+                    src="/login-bg.webp"
                     alt="Background"
                     fill
-                    className="object-contain object-left opacity-50 dark:opacity-30 blur-[1px]"
+                    className="object-cover opacity-60 dark:opacity-40 blur-[3px] grayscale-[30%] brightness-[0.9] transition-all"
                     priority
                 />
+                {/* Sophisticated Overlay for better focus */}
+                <div className="absolute inset-0 bg-gradient-to-br from-white/60 via-transparent to-transparent dark:from-black/80 dark:via-transparent dark:to-transparent" />
+                <div className="absolute inset-0 bg-black/5 dark:bg-black/20" />
             </div>
 
 
@@ -133,14 +136,39 @@ function LoginForm() {
                         Junte-se a milhares de engenheiros e arquitetos que utilizam o ObraPlana para criar orçamentos precisos em segundos.
                     </p>
 
-                    <div className="flex items-center gap-4 pt-4">
+                    <div className="space-y-6 pt-6">
                         <div className="flex -space-x-3">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="w-10 h-10 rounded-full border-2 border-white dark:border-white/20 bg-gray-200 dark:bg-white/10 backdrop-blur-sm" />
+                            {[
+                                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=100&h=100&auto=format&fit=crop",
+                                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&h=100&auto=format&fit=crop",
+                                "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&h=100&auto=format&fit=crop",
+                                "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=100&h=100&auto=format&fit=crop"
+                            ].map((src, i) => (
+                                <div key={i} className="w-11 h-11 rounded-full border-2 border-white dark:border-[#333130] overflow-hidden bg-gray-100 shadow-sm relative z-[10]">
+                                    <Image
+                                        src={src}
+                                        alt={`User ${i + 1}`}
+                                        width={44}
+                                        height={44}
+                                        className="object-cover"
+                                    />
+                                </div>
                             ))}
                         </div>
-                        <div className="text-sm font-bold text-[#1a1a1a] dark:text-white drop-shadow-md">
-                            4.9/5 <span className="font-medium opacity-90">de aprovação</span>
+
+                        <div className="grid grid-cols-3 gap-6 lg:gap-8">
+                            <div>
+                                <div className="text-2xl font-bold text-[#1a1a1a] dark:text-white drop-shadow-sm">5M+</div>
+                                <div className="text-[11px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Usuários Felizes</div>
+                            </div>
+                            <div>
+                                <div className="text-2xl font-bold text-[#1a1a1a] dark:text-white drop-shadow-sm">2M+</div>
+                                <div className="text-[11px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Avaliações</div>
+                            </div>
+                            <div>
+                                <div className="text-2xl font-bold text-[#1a1a1a] dark:text-white drop-shadow-sm">4.8</div>
+                                <div className="text-[11px] font-medium text-gray-600 dark:text-gray-400 uppercase tracking-wider">Nota Positiva</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,7 +245,7 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
@@ -225,7 +253,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2"
+                                className="w-full bg-[#FF6600] hover:bg-[#E55C00] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#FF6600]/20 hover:shadow-[#FF6600]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : 'Enviar Instruções'}
                             </button>
@@ -254,7 +282,7 @@ function LoginForm() {
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
                                             placeholder="Ex: Ana Silva"
-                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
@@ -270,7 +298,7 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
@@ -284,7 +312,7 @@ function LoginForm() {
                                             <button
                                                 type="button"
                                                 onClick={() => { setIsRecovery(true); setMessage(null); }}
-                                                className="text-[#F6A24A] hover:text-[#D85B2F] normal-case font-medium transition-colors"
+                                                className="text-[#FF6600] hover:text-[#E55C00] normal-case font-medium transition-colors"
                                             >
                                                 Esqueceu?
                                             </button>
@@ -299,7 +327,7 @@ function LoginForm() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder="******"
-                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#F6A24A]/20 focus:border-[#F6A24A] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
@@ -314,7 +342,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#E9813C] hover:bg-[#d46d2a] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#E9813C]/20 hover:shadow-[#E9813C]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2 mt-2"
+                                className="w-full bg-[#FF6600] hover:bg-[#E55C00] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#FF6600]/20 hover:shadow-[#FF6600]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2 mt-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : (
                                     <>
