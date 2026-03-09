@@ -56,13 +56,13 @@ export function BudgetOverview({ budgets }: BudgetOverviewProps) {
                 {/* Left: Key Stats */}
                 <div className="lg:col-span-1 flex flex-col justify-between space-y-6">
                     <div>
-                        <h3 className="text-sm font-medium text-muted-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
+                        <h3 className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
                             <TrendingUp size={16} className="text-primary" />
                             Insights da Carteira
                         </h3>
                         <div className="space-y-4">
                             <div className="p-4 rounded-2xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5">
-                                <p className="text-xs text-muted-foreground mb-1">Ticket Médio</p>
+                                <p className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-1">Ticket Médio</p>
                                 <div className="flex items-center gap-2">
                                     <div className="p-1.5 rounded-lg bg-green-100 text-green-700 dark:bg-green-900/30">
                                         <DollarSign size={14} />
@@ -73,31 +73,14 @@ export function BudgetOverview({ budgets }: BudgetOverviewProps) {
                                 </div>
                             </div>
 
-                            <div className="p-4 rounded-2xl bg-white/50 dark:bg-black/20 border border-black/5 dark:border-white/5">
-                                <p className="text-xs text-muted-foreground mb-1">Composição de Custo</p>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <div className="p-1.5 rounded-lg bg-orange-100 text-orange-700 dark:bg-orange-900/30">
-                                        <Briefcase size={14} />
-                                    </div>
-                                    <span className="text-sm font-bold text-foreground">
-                                        {stats.materialPct.toFixed(0)}% Material
-                                    </span>
-                                    <span className="text-xs text-muted-foreground">vs {(100 - stats.materialPct).toFixed(0)}% Mão de obra</span>
-                                </div>
-                                <div className="w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-orange-500 rounded-full"
-                                        style={{ width: `${stats.materialPct}%` }}
-                                    />
-                                </div>
-                            </div>
+
                         </div>
                     </div>
                 </div>
 
                 {/* Right: Chart */}
                 <div className="lg:col-span-2 min-h-[200px] relative">
-                    <h4 className="text-xs font-bold text-muted-foreground uppercase mb-4 absolute top-0 left-0 z-10">
+                    <h4 className="text-muted-foreground text-[10px] font-bold uppercase tracking-widest mb-4 absolute top-0 left-0 z-10">
                         Evolução dos Orçamentos
                     </h4>
                     <div className="h-[200px] w-full mt-6">

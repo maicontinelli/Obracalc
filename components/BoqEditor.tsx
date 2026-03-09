@@ -1506,33 +1506,10 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                 />
                                             </div>
                                         </div>
-
-                                        {/* Status do Orçamento */}
-                                        <div className="col-span-2 mt-6 pt-4 border-t border-white/5">
-                                            <label className="block text-[9px] text-muted-foreground uppercase mb-3">Status do Orçamento</label>
-                                            <div className="grid grid-cols-3 gap-2">
-                                                {[
-                                                    { id: 'parado', label: 'Parado', icon: '🔴' },
-                                                    { id: 'andamento', label: 'Andamento', icon: '🟡' },
-                                                    { id: 'concluido', label: 'Concluído', icon: '🟢' }
-                                                ].map((s) => (
-                                                    <button
-                                                        key={s.id}
-                                                        onClick={() => setStatus(s.id as any)}
-                                                        className={`flex flex-col items-center gap-1.5 p-2 rounded-xl border transition-all ${status === s.id
-                                                            ? 'bg-white dark:bg-white/10 border-blue-500/50 shadow-sm'
-                                                            : 'bg-transparent border-transparent opacity-40 hover:opacity-100'
-                                                            }`}
-                                                    >
-                                                        <span className="text-base leading-none">{s.icon}</span>
-                                                        <span className="text-[9px] font-bold uppercase tracking-wider">{s.label}</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+
 
 
 

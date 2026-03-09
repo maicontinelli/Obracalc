@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import AiAssistant from './AiAssistant';
 import MathParticles from './MathParticles';
 import Link from 'next/link';
@@ -21,6 +22,7 @@ const WELCOME_MESSAGES = [
 ];
 
 export function Hero() {
+    const router = useRouter();
     const [user, setUser] = useState<User | null>(null);
     const [greeting, setGreeting] = useState<string>("Planejar muda tudo");
 
@@ -65,6 +67,11 @@ export function Hero() {
         return () => subscription.unsubscribe();
     }, []);
 
+    const handleCreateNew = () => {
+        const newId = crypto.randomUUID();
+        router.push(`/editor/${newId}?type=obra_nova`);
+    };
+
     return (
         <section className="relative pt-8 pb-56 bg-transparent">
             {/* Background elements removed */}
@@ -88,7 +95,14 @@ export function Hero() {
 
                 {/* Hero Preview Image */}
                 <div className="mt-4 flex justify-center">
-                    <div className="w-[80%]">
+                    <div
+                        onClick={handleCreateNew}
+                        className="w-[80%] block transition-transform hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+                        role="button"
+                        aria-label="Criar novo orçamento"
+                        tabIndex={0}
+                        onKeyDown={(e) => { if (e.key === 'Enter') handleCreateNew(); }}
+                    >
                         <Image
                             src="/hero-preview.webp"
                             alt="ObraPlana Preview"
