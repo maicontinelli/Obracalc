@@ -35,6 +35,7 @@ import {
 } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
 import { BudgetOverview } from '@/components/dashboard/BudgetOverview';
+import { DashboardSkeleton } from '@/components/ui/dashboard-skeleton';
 import { downloadReceipt } from '@/lib/receipt';
 import {
     LineChart,
@@ -483,11 +484,7 @@ export default function DashboardPage() {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-background">
-                <Loader2 className="w-8 h-8 text-primary animate-spin" />
-            </div>
-        );
+        return <DashboardSkeleton />;
     }
 
     return (

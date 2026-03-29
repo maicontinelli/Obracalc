@@ -1,5 +1,5 @@
 
-> obraplana@3.7.0 dev
+> obraplana@3.8.0 dev
 > next dev
 
 [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
@@ -9,46 +9,58 @@
    - Environments: .env.local
 
  ✓ Starting...
- ✓ Ready in 758ms
- HEAD / 200 in 1733ms (compile: 1626ms, render: 107ms)
- GET / 200 in 130ms (compile: 34ms, render: 96ms)
- GET /login 200 in 430ms (compile: 416ms, render: 14ms)
- GET /?code=d43bd41c-9de8-4c0b-8b94-442375fe0411 200 in 61ms (compile: 12ms, render: 49ms)
- GET /dashboard 200 in 1094ms (compile: 1062ms, render: 32ms)
- GET /report/739c06d6-6765-43ea-a42c-6cc3257e2a93 200 in 1023ms (compile: 1010ms, render: 14ms)
- GET /editor/739c06d6-6765-43ea-a42c-6cc3257e2a93 200 in 937ms (compile: 920ms, render: 17ms)
- GET /report/739c06d6-6765-43ea-a42c-6cc3257e2a93 200 in 37ms (compile: 12ms, render: 25ms)
- ✓ Compiled in 460ms
- GET /report/739c06d6-6765-43ea-a42c-6cc3257e2a93 200 in 102ms (compile: 64ms, render: 38ms)
- GET /report/739c06d6-6765-43ea-a42c-6cc3257e2a93 200 in 268ms (compile: 22ms, render: 246ms)
- ✓ Compiled in 373ms
- ✓ Compiled in 201ms
- ✓ Compiled in 222ms
- GET / 200 in 711ms (compile: 459ms, render: 252ms)
- ✓ Compiled in 354ms
- ✓ Compiled in 137ms
- ✓ Compiled in 152ms
- ✓ Compiled in 207ms
- ✓ Compiled in 1073ms
- ✓ Compiled in 168ms
- GET /dashboard 200 in 1047ms (compile: 1005ms, render: 41ms)
- ✓ Compiled in 508ms
- ✓ Compiled in 650ms
- ✓ Compiled in 720ms
+ ✓ Ready in 721ms
+ GET / 200 in 2.0s (compile: 1864ms, render: 144ms)
+ GET /dashboard 200 in 1736ms (compile: 1702ms, render: 34ms)
+ GET / 200 in 87ms (compile: 51ms, render: 36ms)
+ ✓ Compiled in 487ms
+ GET /dashboard 200 in 88ms (compile: 69ms, render: 19ms)
+ GET /editor/32a52cc0-8b94-48b4-8657-bb6d7a75f7de 200 in 1333ms (compile: 1311ms, render: 21ms)
  ✓ Compiled in 429ms
- ✓ Compiled in 427ms
- GET /dashboard 200 in 453ms (compile: 417ms, render: 35ms)
- ⚠ Fast Refresh had to perform a full reload due to a runtime error.
- ✓ Compiled in 651ms
- GET /dashboard 200 in 406ms (compile: 150ms, render: 255ms)
- ✓ Compiled in 831ms
- ✓ Compiled in 2.2s
- ✓ Compiled in 556ms
- ✓ Compiled in 543ms
+ ✓ Compiled in 354ms
+ ✓ Compiled in 326ms
+ GET /editor/32a52cc0-8b94-48b4-8657-bb6d7a75f7de 200 in 148ms (compile: 104ms, render: 44ms)
  ✓ Compiled in 228ms
- ✓ Compiled in 373ms
- ✓ Compiled in 1066ms
- GET /dashboard 200 in 781ms (compile: 654ms, render: 128ms)
- ✓ Compiled in 371ms
- GET /editor/5bfc82f4-df6c-445e-8614-271d3e7ec785 200 in 488ms (compile: 408ms, render: 80ms)
- GET /dashboard 200 in 126ms (compile: 111ms, render: 16ms)
+ ✓ Compiled in 286ms
+ GET /dashboard 200 in 275ms (compile: 221ms, render: 54ms)
+ ✓ Compiled in 530ms
+ ✓ Compiled in 235ms
+ ✓ Compiled in 681ms
+ GET /dashboard 200 in 104ms (compile: 77ms, render: 28ms)
+ ✓ Compiled in 518ms
+ GET /editor/2bdbf84c-21e7-42df-a756-615476f6b98f 200 in 180ms (compile: 115ms, render: 65ms)
+ GET /dashboard 200 in 109ms (compile: 94ms, render: 15ms)
+ GET / 200 in 56ms (compile: 33ms, render: 23ms)
+ ✓ Compiled in 441ms
+ ✓ Compiled in 146ms
+ ✓ Compiled in 223ms
+ ✓ Compiled in 221ms
+ GET /dashboard 200 in 96ms (compile: 32ms, render: 64ms)
+ ✓ Compiled in 546ms
+ ✓ Compiled in 472ms
+ ✓ Compiled in 795ms
+ GET /dashboard 200 in 447ms (compile: 297ms, render: 150ms)
+ ✓ Compiled in 393ms
+ ✓ Compiled in 721ms
+ GET /editor/5bfc82f4-df6c-445e-8614-271d3e7ec785 200 in 127ms (compile: 78ms, render: 48ms)
+ GET /dashboard 200 in 90ms (compile: 79ms, render: 12ms)
+ ✓ Compiled in 695ms
+ ✓ Compiled in 611ms
+ ✓ Compiled in 419ms
+ ✓ Compiled in 463ms
+ ✓ Compiled in 356ms
+ ✓ Compiled in 433ms
+ ✓ Compiled in 442ms
+ ✓ Compiled in 585ms
+ ✓ Compiled in 417ms
+ ✓ Compiled in 617ms
+ ✓ Compiled in 295ms
+ ✓ Compiled in 381ms
+ GET / 200 in 267ms (compile: 154ms, render: 113ms)
+ GET /dashboard 200 in 234ms (compile: 193ms, render: 41ms)
+ ✓ Compiled in 376ms
+ ✓ Compiled in 465ms
+ ✓ Compiled in 157ms
+ GET /editor/2d94ea8b-6317-4f37-b846-5775b3b89b13 200 in 430ms (compile: 351ms, render: 79ms)
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[?25h

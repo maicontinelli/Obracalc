@@ -17,7 +17,6 @@ const WELCOME_MESSAGES = [
     "{name}, vamos criar algo incrível?",
     "E aí, {name}! Bora orçar?",
     "Opa, {name}! Que projeto vamos fazer hoje?",
-    "{name}, seu próximo orçamento começa aqui!",
     "Prazer em te ver, {name}!"
 ];
 

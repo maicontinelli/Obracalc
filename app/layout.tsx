@@ -24,8 +24,8 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-    title: "ObraPlana - Orçamentos de Construção",
-    description: "Sistema simples e gratuito para criar orçamentos de construção com IA",
+    title: "ObraPlana - Orçamentos de Construção Civil",
+    description: "Crie orçamentos de construção civil profissionais com IA. SINAPI integrado, BDI calculado, curva ABC e relatórios em PDF.",
 };
 
 export default function RootLayout({

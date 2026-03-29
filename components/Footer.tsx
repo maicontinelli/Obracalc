@@ -30,13 +30,13 @@ export function Footer() {
                             Pare de chutar orçamentos e perder clientes.
                         </p>
                         <div className="flex gap-4">
-                            <a href="#" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="Github">
+                            <a href="https://github.com/maicontinelli/Obracalc" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="Github">
                                 <Github className="w-5 h-5" />
                             </a>
-                            <a href="#" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="Twitter">
+                            <a href="https://twitter.com/obraplana" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="Twitter">
                                 <Twitter className="w-5 h-5" />
                             </a>
-                            <a href="#" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="LinkedIn">
+                            <a href="https://linkedin.com/company/obraplana" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-primary transition-colors dark:text-gray-400 dark:hover:text-primary" aria-label="LinkedIn">
                                 <Linkedin className="w-5 h-5" />
                             </a>
                         </div>
@@ -56,9 +56,9 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold mb-4 text-gray-900 dark:text-white">Legal</h4>
                         <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-300 font-medium">
-                            <li><Link href="#" className="hover:text-primary transition-colors">Privacidade</Link></li>
+                            <li><Link href="/privacidade" className="hover:text-primary transition-colors">Privacidade</Link></li>
                             <li><Link href="/termos" className="hover:text-primary transition-colors">Termos de Uso</Link></li>
-                            <li><Link href="#" className="hover:text-primary transition-colors">Segurança</Link></li>
+                            <li><Link href="/seguranca" className="hover:text-primary transition-colors">Segurança</Link></li>
                         </ul>
                     </div>
                 </div>

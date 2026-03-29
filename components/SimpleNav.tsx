@@ -157,13 +157,13 @@ export default function SimpleNav() {
                             <Link
                                 href="/"
                                 title="Início"
-                                className={`transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex ${pathname === '/'
+                                className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/'
                                     ? 'text-orange-500'
                                     : 'text-gray-500 dark:text-gray-400 hover:text-orange-500'
                                     }`}
                             >
-                                <Home size={18} />
-                                <span className="sr-only">Início</span>
+                                <Home size={16} />
+                                <span className="text-[9px] font-medium leading-none">Início</span>
                             </Link>
 
                             {/* 2. Dashboard (If logged in) */}
@@ -171,17 +171,17 @@ export default function SimpleNav() {
                                 <Link
                                     href="/dashboard"
                                     title="Painel"
-                                    className={`transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex ${pathname === '/dashboard'
+                                    className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/dashboard'
                                         ? 'text-orange-500'
                                         : 'text-gray-500 dark:text-gray-400 hover:text-orange-500'
                                         }`}
                                 >
                                     <User
-                                        size={18}
+                                        size={16}
                                         className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(234,88,12,0.4)] ${pathname === '/dashboard' ? 'fill-orange-500' : 'fill-transparent'
                                             }`}
                                     />
-                                    <span className="sr-only">Painel</span>
+                                    <span className="text-[9px] font-medium leading-none">Painel</span>
                                 </Link>
                             )}
 
@@ -193,17 +193,17 @@ export default function SimpleNav() {
                             <Link
                                 href="/planos"
                                 title="Planos"
-                                className={`transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex ${pathname === '/planos'
+                                className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/planos'
                                     ? 'text-[#74D2E7]'
                                     : 'text-gray-500 dark:text-gray-400 hover:text-[#74D2E7]'
                                     }`}
                             >
                                 <Gem
-                                    size={18}
+                                    size={16}
                                     className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(116,210,231,0.6)] ${pathname === '/planos' ? 'fill-[#74D2E7]' : 'fill-transparent'
                                         }`}
                                 />
-                                <span className="sr-only">Planos</span>
+                                <span className="text-[9px] font-medium leading-none">Planos</span>
                             </Link>
 
                             <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
@@ -232,11 +232,11 @@ export default function SimpleNav() {
                             ) : (
                                 <Link
                                     href="/login"
-                                    className="ml-1 flex items-center gap-2 bg-[#FF6600] hover:bg-[#E55C00] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#FF6600]/20 active:scale-95"
+                                    className="ml-1 flex items-center gap-1.5 bg-[#FF6600] hover:bg-[#E55C00] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#FF6600]/20 active:scale-95"
                                     title="Entrar"
                                 >
                                     <LogIn size={14} />
-                                    <span className="hidden xs:block">Entrar</span>
+                                    <span>Entrar</span>
                                 </Link>
                             )}
                         </>
