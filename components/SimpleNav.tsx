@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { Gem, Info, Mail, Heart, LogIn, User, LogOut, LayoutDashboard, MoreHorizontal, Sparkles, Sun, Moon, Home, ArrowLeft, FileSpreadsheet, Printer, Cloud } from 'lucide-react';
+import { Gem, Info, Mail, Heart, LogIn, User, LogOut, LayoutDashboard, MoreHorizontal, Sparkles, Sun, Moon, Home, ArrowLeft, FileSpreadsheet, Printer, Cloud, FilePlus2, Map, Camera } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState, useMemo } from 'react';
 import { User as SupabaseUser } from '@supabase/supabase-js';
@@ -65,6 +65,11 @@ export default function SimpleNav() {
 
     const triggerAction = (action: string) => {
         window.dispatchEvent(new CustomEvent('report-action', { detail: action }));
+    };
+
+    const handleNewBudget = () => {
+        const newId = crypto.randomUUID();
+        router.push(`/editor/${newId}?type=obra_nova`);
     };
 
     const toggleContract = () => {
@@ -185,11 +190,56 @@ export default function SimpleNav() {
                                 </Link>
                             )}
 
-                            {(!isReportPage) && (
+                            {/* 3. Ferramentas */}
+                            {!isReportPage && (
+                                <>
+                                    <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
+
+                                    {/* Iniciar Orçamento */}
+                                    <button
+                                        onClick={handleNewBudget}
+                                        title="Iniciar Orçamento"
+                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#FF6600]`}
+                                    >
+                                        <FilePlus2 size={16} />
+                                        <span className="text-[9px] font-medium leading-none">Orçamento</span>
+                                    </button>
+
+                                    {/* Relatório de Topografia */}
+                                    <Link
+                                        href="/topografia"
+                                        title="Relatório de Topografia"
+                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/topografia'
+                                            ? 'text-[#FF6600]'
+                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#FF6600]'
+                                            }`}
+                                    >
+                                        <Map size={16} />
+                                        <span className="text-[9px] font-medium leading-none">Topografia</span>
+                                    </Link>
+
+                                    {/* Diagnóstico de Obra por Imagem */}
+                                    <Link
+                                        href="/novo-diagnostico"
+                                        title="Diagnóstico de Obra por Imagem"
+                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/novo-diagnostico' || pathname.startsWith('/editor-diagnostico')
+                                            ? 'text-[#FF6600]'
+                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#FF6600]'
+                                            }`}
+                                    >
+                                        <Camera size={16} />
+                                        <span className="text-[9px] font-medium leading-none">Diagnóstico</span>
+                                    </Link>
+
+                                    <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
+                                </>
+                            )}
+
+                            {isReportPage && (
                                 <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
                             )}
 
-                            {/* 3. Planos */}
+                            {/* 4. Planos */}
                             <Link
                                 href="/planos"
                                 title="Planos"
