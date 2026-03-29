@@ -79,18 +79,13 @@ export function Hero() {
                     {greeting}
                 </h1>
 
-                {/* Subtitle */}
-                <p className="text-lg md:text-xl text-[#3D3A36]/60 dark:text-[#E8E6E3]/60 max-w-xl font-medium">
-                    Descreva seu projeto e receba um orçamento detalhado em segundos.
-                </p>
-
                 {/* AI Search Bar */}
                 <div className="w-full mt-2">
                     <AiAssistant />
                 </div>
 
                 {/* Social proof */}
-                <div className="flex items-center gap-6 text-sm text-[#3D3A36]/40 dark:text-[#E8E6E3]/40 mt-2">
+                <div className="flex items-center gap-6 text-sm text-[#3D3A36]/40 dark:text-[#E8E6E3]/40 mt-8">
                     <span>5.000+ engenheiros</span>
                     <span className="w-1 h-1 rounded-full bg-current" />
                     <span>80% menos tempo</span>

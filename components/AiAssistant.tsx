@@ -255,17 +255,6 @@ export default function AiAssistant() {
                         </div>
                     </div>
 
-                    {/* Bottom row: hint + shortcut */}
-                    {!hasMessages && (
-                        <div className="px-4 pb-3 flex items-center justify-between">
-                            <span className="text-xs text-neutral-400 dark:text-neutral-600">
-                                Powered by IA · Pressione <kbd className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 font-mono text-[10px]">Enter</kbd> para enviar
-                            </span>
-                            <span className="text-xs text-neutral-400 dark:text-neutral-600">
-                                Shift+Enter para nova linha
-                            </span>
-                        </div>
-                    )}
                 </form>
 
                 {/* Chat messages (inside the card when active) */}
@@ -342,18 +331,11 @@ export default function AiAssistant() {
                     </div>
                 )}
 
-                {/* Bottom input row when chatting */}
-                {hasMessages && (
-                    <div className="px-4 pb-3 pt-1 flex items-center justify-between border-t border-neutral-100 dark:border-neutral-800 mt-1">
-                        <span className="text-xs text-neutral-400 dark:text-neutral-600">Enter para enviar</span>
-                        <span className="text-xs text-neutral-400 dark:text-neutral-600">Shift+Enter para nova linha</span>
-                    </div>
-                )}
             </div>
 
             {/* Quick suggestion chips */}
             {!hasMessages && (
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
+                <div className="flex flex-wrap justify-center gap-2 mt-8">
                     {QUICK_SUGGESTIONS.map((s) => (
                         <button
                             key={s.label}
