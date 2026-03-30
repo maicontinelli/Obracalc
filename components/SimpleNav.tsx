@@ -206,32 +206,6 @@ export default function SimpleNav() {
                                         <span className="text-[9px] font-medium leading-none">Orçamento</span>
                                     </button>
 
-                                    {/* Relatório de Topografia — oculto em mobile */}
-                                    <Link
-                                        href="/topografia"
-                                        title="Relatório de Topografia"
-                                        className={`hidden sm:flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 ${pathname === '/topografia'
-                                            ? 'text-[#0D9488]'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
-                                            }`}
-                                    >
-                                        <Map size={16} />
-                                        <span className="text-[9px] font-medium leading-none">Topografia</span>
-                                    </Link>
-
-                                    {/* Diagnóstico — oculto em mobile */}
-                                    <Link
-                                        href="/novo-diagnostico"
-                                        title="Diagnóstico de Obra por Imagem"
-                                        className={`hidden sm:flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 ${pathname === '/novo-diagnostico' || pathname.startsWith('/editor-diagnostico')
-                                            ? 'text-[#0D9488]'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
-                                            }`}
-                                    >
-                                        <Camera size={16} />
-                                        <span className="text-[9px] font-medium leading-none">Diagnóstico</span>
-                                    </Link>
-
                                     <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
                                 </>
                             )}
