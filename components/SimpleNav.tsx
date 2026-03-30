@@ -200,9 +200,16 @@ export default function SimpleNav() {
                                     <button
                                         onClick={handleNewBudget}
                                         title="Iniciar Orçamento"
-                                        className={`flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#0D9488]`}
+                                        className={`flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 ${
+                                            pathname.startsWith('/editor')
+                                                ? 'text-[#0D9488]'
+                                                : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
+                                        }`}
                                     >
-                                        <FilePlus2 size={16} />
+                                        <FilePlus2
+                                            size={16}
+                                            className={pathname.startsWith('/editor') ? 'fill-[#0D9488]' : 'fill-transparent'}
+                                        />
                                         <span className="text-[9px] font-medium leading-none">Orçamento</span>
                                     </button>
 
