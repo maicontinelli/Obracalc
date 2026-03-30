@@ -190,16 +190,16 @@ export default function SimpleNav() {
                                 </Link>
                             )}
 
-                            {/* 3. Ferramentas */}
+                            {/* 3. Ferramentas — oculto em mobile, visível em sm+ */}
                             {!isReportPage && (
                                 <>
-                                    <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
+                                    <div className="hidden sm:block h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
 
                                     {/* Iniciar Orçamento */}
                                     <button
                                         onClick={handleNewBudget}
                                         title="Iniciar Orçamento"
-                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#0D9488]`}
+                                        className={`hidden sm:flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#0D9488]`}
                                     >
                                         <FilePlus2 size={16} />
                                         <span className="text-[9px] font-medium leading-none">Orçamento</span>
@@ -209,7 +209,7 @@ export default function SimpleNav() {
                                     <Link
                                         href="/topografia"
                                         title="Relatório de Topografia"
-                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/topografia'
+                                        className={`hidden sm:flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 ${pathname === '/topografia'
                                             ? 'text-[#0D9488]'
                                             : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
                                             }`}
@@ -222,7 +222,7 @@ export default function SimpleNav() {
                                     <Link
                                         href="/novo-diagnostico"
                                         title="Diagnóstico de Obra por Imagem"
-                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/novo-diagnostico' || pathname.startsWith('/editor-diagnostico')
+                                        className={`hidden sm:flex transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex-col items-center gap-0.5 ${pathname === '/novo-diagnostico' || pathname.startsWith('/editor-diagnostico')
                                             ? 'text-[#0D9488]'
                                             : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
                                             }`}
@@ -231,7 +231,7 @@ export default function SimpleNav() {
                                         <span className="text-[9px] font-medium leading-none">Diagnóstico</span>
                                     </Link>
 
-                                    <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
+                                    <div className="hidden sm:block h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
                                 </>
                             )}
 
