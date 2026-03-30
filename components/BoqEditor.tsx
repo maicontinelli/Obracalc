@@ -1264,95 +1264,10 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                     </div>
 
 
-                    {/* RIGHT COLUMN: Resumo Financeiro (Fixed/Sticky) */}
+                    {/* RIGHT COLUMN: Detalhes da Obra + Resumo Financeiro */}
                     <div className="lg:col-span-1">
+                        {/* LEAD CAPTURE FORM */}
                         <div className="bg-card rounded-lg p-6 border border-white/5 shadow-2xl">
-                            <h2 className="text-sm font-bold text-foreground dark:text-[#F5E6D3] uppercase tracking-wider mb-6 pb-2 border-b border-black/10 dark:border-white/10">
-                                📊 Resumo Financeiro
-                            </h2>
-
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-muted-foreground">Subtotal</span>
-                                    <span className="text-foreground tabular-nums font-medium">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
-                                    </span>
-                                </div>
-
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-muted-foreground">BDI ({bdi}%)</span>
-                                    <span className="text-foreground tabular-nums font-medium">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bdiValue)}
-                                    </span>
-                                </div>
-
-                                <div className="pt-4 border-t border-black/10 dark:border-white/10 flex justify-between items-center">
-                                    <span className="text-base font-bold text-foreground dark:text-[#F5E6D3]">TOTAL GERAL</span>
-                                    <span className="text-xl font-bold text-teal-600 tabular-nums">
-                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
-                                    </span>
-                                </div>
-                            </div>
-
-                            {/* Configuration Toggles */}
-                            <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-bold text-foreground">BDI Personalizado</span>
-                                        <span className="text-[10px] text-muted-foreground">Taxa de Benefícios e Despesas</span>
-                                    </div>
-                                    <div className="flex items-center gap-2 bg-black/5 dark:bg-[#222120] rounded border border-black/10 dark:border-white/10 px-2 py-1">
-                                        <input
-                                            type="number"
-                                            value={bdi}
-                                            onChange={(e) => setBdi(Number(e.target.value))}
-                                            className="w-10 bg-transparent text-right text-xs font-bold text-foreground border-none p-0 focus:ring-0"
-                                            title="Porcentagem de BDI"
-                                        />
-                                        <span className="text-xs text-muted-foreground">%</span>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-bold text-foreground">Incluir Materiais</span>
-                                        <span className="text-[10px] text-muted-foreground">Calcular com insumos</span>
-                                    </div>
-                                    <button
-                                        onClick={() => setIncludeMaterials(!includeMaterials)}
-                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeMaterials ? 'bg-teal-600' : 'bg-[#4A4A4A]'}`}
-                                        title="Alternar Inclusão de Materiais"
-                                    >
-                                        <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeMaterials ? 'left-6' : 'left-1'}`} />
-                                    </button>
-                                </div>
-
-                                <div className="flex items-center justify-between">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-bold text-foreground">Gerar Contrato de Serviço</span>
-                                        <span className="text-[10px] text-muted-foreground">Anexa um modelo jurídico padrão ao final.</span>
-                                    </div>
-                                    <button
-                                        onClick={() => setIncludeContract(!includeContract)}
-                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeContract ? 'bg-blue-600' : 'bg-[#4A4A4A]'}`}
-                                        title="Alternar Geração de Contrato"
-                                    >
-                                        <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeContract ? 'left-6' : 'left-1'}`} />
-                                    </button>
-                                </div>
-                            </div>
-
-
-
-                            {/* Info */}
-                            <div className="mt-4 text-[10px] text-center text-muted-foreground opacity-50">
-                                <p>Os valores são estimados com base no SINAPI/ORSE.</p>
-                                <p>Revisão de preços recomendada antes do fechamento.</p>
-                            </div>
-                        </div>
-
-                        {/* LEAD CAPTURE FORM (Moved to Sidebar) */}
-                        <div className="bg-card rounded-lg p-6 mt-6 border border-white/5 shadow-2xl">
                             <h2 className="text-sm font-bold text-foreground dark:text-[#F5E6D3] uppercase tracking-wider mb-4 pb-2 border-b border-black/10 dark:border-white/10 flex items-center gap-2">
                                 📝 Detalhes da Obra
                             </h2>
@@ -1538,6 +1453,90 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     </>
                                 )}
                             </button>
+                        </div>
+
+                        {/* Resumo Financeiro */}
+                        <div className="bg-card rounded-lg p-6 mt-6 border border-white/5 shadow-2xl">
+                            <h2 className="text-sm font-bold text-foreground dark:text-[#F5E6D3] uppercase tracking-wider mb-6 pb-2 border-b border-black/10 dark:border-white/10">
+                                📊 Resumo Financeiro
+                            </h2>
+
+                            <div className="space-y-4">
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-muted-foreground">Subtotal</span>
+                                    <span className="text-foreground tabular-nums font-medium">
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(subtotal)}
+                                    </span>
+                                </div>
+
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className="text-muted-foreground">BDI ({bdi}%)</span>
+                                    <span className="text-foreground tabular-nums font-medium">
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(bdiValue)}
+                                    </span>
+                                </div>
+
+                                <div className="pt-4 border-t border-black/10 dark:border-white/10 flex justify-between items-center">
+                                    <span className="text-base font-bold text-foreground dark:text-[#F5E6D3]">TOTAL GERAL</span>
+                                    <span className="text-xl font-bold text-teal-600 tabular-nums">
+                                        {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Configuration Toggles */}
+                            <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-foreground">BDI Personalizado</span>
+                                        <span className="text-[10px] text-muted-foreground">Taxa de Benefícios e Despesas</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 bg-black/5 dark:bg-[#222120] rounded border border-black/10 dark:border-white/10 px-2 py-1">
+                                        <input
+                                            type="number"
+                                            value={bdi}
+                                            onChange={(e) => setBdi(Number(e.target.value))}
+                                            className="w-10 bg-transparent text-right text-xs font-bold text-foreground border-none p-0 focus:ring-0"
+                                            title="Porcentagem de BDI"
+                                        />
+                                        <span className="text-xs text-muted-foreground">%</span>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-foreground">Incluir Materiais</span>
+                                        <span className="text-[10px] text-muted-foreground">Calcular com insumos</span>
+                                    </div>
+                                    <button
+                                        onClick={() => setIncludeMaterials(!includeMaterials)}
+                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeMaterials ? 'bg-teal-600' : 'bg-[#4A4A4A]'}`}
+                                        title="Alternar Inclusão de Materiais"
+                                    >
+                                        <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeMaterials ? 'left-6' : 'left-1'}`} />
+                                    </button>
+                                </div>
+
+                                <div className="flex items-center justify-between">
+                                    <div className="flex flex-col">
+                                        <span className="text-xs font-bold text-foreground">Gerar Contrato de Serviço</span>
+                                        <span className="text-[10px] text-muted-foreground">Anexa um modelo jurídico padrão ao final.</span>
+                                    </div>
+                                    <button
+                                        onClick={() => setIncludeContract(!includeContract)}
+                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeContract ? 'bg-blue-600' : 'bg-[#4A4A4A]'}`}
+                                        title="Alternar Geração de Contrato"
+                                    >
+                                        <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeContract ? 'left-6' : 'left-1'}`} />
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Info */}
+                            <div className="mt-4 text-[10px] text-center text-muted-foreground opacity-50">
+                                <p>Os valores são estimados com base no SINAPI/ORSE.</p>
+                                <p>Revisão de preços recomendada antes do fechamento.</p>
+                            </div>
                         </div>
                     </div>
 
