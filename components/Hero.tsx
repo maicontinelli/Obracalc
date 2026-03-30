@@ -85,7 +85,7 @@ export function Hero() {
                         IA para obras e reformas
                     </div>
 
-                    <h1 className="text-[34px] md:text-[60px] font-heading font-bold tracking-tight leading-[1.05] text-[#3D3A36] dark:text-[#E8E6E3] whitespace-nowrap">
+                    <h1 className="text-[34px] md:text-[60px] font-heading font-bold tracking-tight leading-[1.1] text-[#3D3A36] dark:text-[#E8E6E3] break-words w-full">
                         {greeting}
                     </h1>
                 </div>

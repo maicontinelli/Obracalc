@@ -308,7 +308,7 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                                     </div>
 
                                     {/* Content — no bubble, just text */}
-                                    <div className="flex-1 space-y-4 pt-0.5">
+                                    <div className="flex-1 min-w-0 space-y-4 pt-0.5">
                                         {msg.text && (
                                             <p className="text-[15px] text-neutral-800 dark:text-neutral-200 leading-relaxed whitespace-pre-line">
                                                 {msg.text}
@@ -324,11 +324,11 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                                                 className="rounded-2xl border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 overflow-hidden"
                                             >
                                                 {/* Card header */}
-                                                <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-100 dark:border-neutral-800">
-                                                    <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-200">
+                                                <div className="flex items-center justify-between px-3 py-2.5 border-b border-neutral-100 dark:border-neutral-800">
+                                                    <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 truncate pr-2">
                                                         {msg.suggestedBudget.title}
                                                     </span>
-                                                    <span className="text-xs bg-[#0D9488]/10 text-[#0D9488] px-2.5 py-1 rounded-full font-medium">
+                                                    <span className="text-[10px] bg-[#0D9488]/10 text-[#0D9488] px-2 py-0.5 rounded-full font-medium shrink-0">
                                                         {msg.suggestedBudget.items.filter(i => i.included !== false).length} itens
                                                     </span>
                                                 </div>
@@ -336,27 +336,27 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                                                 {/* Items */}
                                                 <div className="divide-y divide-neutral-100 dark:divide-neutral-800">
                                                     {msg.suggestedBudget.items.filter(i => i.included !== false).map((item, idx) => (
-                                                        <div key={idx} className="flex items-center justify-between px-4 py-2.5">
-                                                            <div className="flex items-center gap-2.5 overflow-hidden">
-                                                                <span className="text-sm shrink-0">
+                                                        <div key={idx} className="flex items-center justify-between px-3 py-2">
+                                                            <div className="flex items-center gap-1.5 overflow-hidden">
+                                                                <span className="text-xs shrink-0">
                                                                     {item.type === 'service' ? '🔨' : '🧱'}
                                                                 </span>
-                                                                <span className="text-sm text-neutral-700 dark:text-neutral-300 truncate">
+                                                                <span className="text-xs text-neutral-700 dark:text-neutral-300 truncate">
                                                                     {item.name}
                                                                 </span>
                                                             </div>
-                                                            <span className="text-sm font-semibold text-neutral-800 dark:text-neutral-200 shrink-0 ml-4">
+                                                            <span className="text-xs font-semibold text-neutral-800 dark:text-neutral-200 shrink-0 ml-2">
                                                                 R$ {(item.price * item.quantity).toLocaleString('pt-BR')}
                                                             </span>
                                                         </div>
                                                     ))}
                                                 </div>
 
-                                                {/* Total + CTA */}
-                                                <div className="px-4 py-3 bg-neutral-50 dark:bg-neutral-800/50 flex items-center justify-between">
+                                                {/* Total + CTA — stacked on mobile, side by side on sm+ */}
+                                                <div className="px-3 py-3 bg-neutral-50 dark:bg-neutral-800/50 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                     <div>
-                                                        <p className="text-xs text-neutral-500 dark:text-neutral-400">Total estimado</p>
-                                                        <p className="text-base font-bold text-neutral-900 dark:text-neutral-100">
+                                                        <p className="text-[10px] text-neutral-500 dark:text-neutral-400">Total estimado</p>
+                                                        <p className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
                                                             R$ {msg.suggestedBudget.items
                                                                 .filter(i => i.included !== false)
                                                                 .reduce((sum, i) => sum + (i.price * i.quantity), 0)
@@ -365,11 +365,11 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                                                     </div>
                                                     <button
                                                         onClick={() => handleCreateBudget(msg.suggestedBudget!, msg.suggestedBudget!.title, msg.text)}
-                                                        className="flex items-center gap-2 bg-[#0D9488] hover:bg-[#0F766E] active:scale-[0.98] text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all"
+                                                        className="flex items-center justify-center gap-1.5 bg-[#0D9488] hover:bg-[#0F766E] active:scale-[0.98] text-white px-3 py-2 rounded-xl text-xs font-semibold transition-all w-full sm:w-auto"
                                                     >
-                                                        <FilePlus size={15} />
+                                                        <FilePlus size={13} />
                                                         Iniciar orçamento
-                                                        <ArrowUpRight size={14} />
+                                                        <ArrowUpRight size={12} />
                                                     </button>
                                                 </div>
                                             </motion.div>
