@@ -164,10 +164,9 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
         router.push(`/editor/${newId}?type=obra_nova`);
     };
 
-    // ─── Input box (shared between both states via layoutId) ──────────────────
-    const InputBox = ({ inChat = false }: { inChat?: boolean }) => (
-        <motion.div
-            layoutId="ai-input-box"
+    // ─── Input box render function (NOT a component — avoids remount on re-render) ──
+    const renderInputBox = (inChat = false) => (
+        <div
             className={`
                 w-full rounded-2xl bg-white dark:bg-[#1c1c1c]
                 border border-neutral-200 dark:border-neutral-800
@@ -180,12 +179,11 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
         >
             <form onSubmit={(e) => handleSearch(e)}>
                 <div className="flex items-center gap-3 px-4 py-3.5">
-                    <motion.div
-                        layoutId="ai-input-icon"
+                    <div
                         className={`shrink-0 p-1.5 rounded-lg transition-colors ${isFocused || inChat ? 'bg-[#0D9488]' : 'bg-[#0D9488]/10'}`}
                     >
                         <Sparkles size={15} className={isFocused || inChat ? 'text-white' : 'text-[#0D9488]'} />
-                    </motion.div>
+                    </div>
 
                     <textarea
                         ref={textareaRef}
@@ -218,14 +216,14 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                     </button>
                 </div>
             </form>
-        </motion.div>
+        </div>
     );
 
     // ─── EMPTY STATE ──────────────────────────────────────────────────────────
     if (!hasMessages) {
         return (
             <div className="w-full">
-                <InputBox />
+                {renderInputBox()}
 
                 <AnimatePresence>
                     <motion.div
@@ -417,7 +415,7 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
 
             {/* Input — slides down to bottom */}
             <div className="mt-4">
-                <InputBox inChat />
+                {renderInputBox(true)}
                 <p className="text-center text-[11px] text-neutral-400 dark:text-neutral-600 mt-2">
                     Enter para enviar · Shift+Enter para nova linha
                 </p>
