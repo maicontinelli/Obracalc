@@ -56,21 +56,34 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
     const messagesContainerRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    // Typewriter placeholder
-    const [placeholder, setPlaceholder] = useState('');
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [loopNum, setLoopNum] = useState(0);
-    const [typingSpeed, setTypingSpeed] = useState(100);
-    const [isFocused, setIsFocused] = useState(false);
-
-    const texts = [
-        'Descreva seu projeto...',
-        'Ex: Pintar uma sala de 20m²',
-        'Ex: Construir um muro de 10m',
-        'Ex: Reforma completa de banheiro',
+    const PLACEHOLDERS = [
+        'Descreva seu projeto de obra ou reforma...',
+        'Ex: Reforma de banheiro 6m²...',
+        'Ex: Muro de alvenaria 15m linear...',
+        'Ex: Pintura interna de apartamento 80m²...',
+        'Ex: Troca de piso cerâmico na cozinha...',
+        'Ex: Instalação elétrica residencial...',
     ];
 
+    const [placeholder, setPlaceholder] = useState(PLACEHOLDERS[0]);
+    const [placeholderVisible, setPlaceholderVisible] = useState(true);
+    const [isFocused, setIsFocused] = useState(false);
+
     const hasMessages = messages.length > 0;
+
+    useEffect(() => {
+        if (isFocused || hasMessages) return;
+        let index = 0;
+        const cycle = setInterval(() => {
+            setPlaceholderVisible(false);
+            setTimeout(() => {
+                index = (index + 1) % PLACEHOLDERS.length;
+                setPlaceholder(PLACEHOLDERS[index]);
+                setPlaceholderVisible(true);
+            }, 600);
+        }, 4000);
+        return () => clearInterval(cycle);
+    }, [isFocused, hasMessages]);
 
     useEffect(() => {
         if (messagesContainerRef.current) {
@@ -84,20 +97,6 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
             textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 120)}px`;
         }
     }, [query]);
-
-    useEffect(() => {
-        if (isFocused || hasMessages || isClarifying) return;
-        const handleTyping = () => {
-            const i = loopNum % texts.length;
-            const fullText = texts[i];
-            setPlaceholder(isDeleting ? fullText.substring(0, placeholder.length - 1) : fullText.substring(0, placeholder.length + 1));
-            setTypingSpeed(isDeleting ? 25 : 100);
-            if (!isDeleting && placeholder === fullText) setTimeout(() => setIsDeleting(true), 2500);
-            else if (isDeleting && placeholder === '') { setIsDeleting(false); setLoopNum(loopNum + 1); }
-        };
-        const timer = setTimeout(handleTyping, typingSpeed);
-        return () => clearTimeout(timer);
-    }, [placeholder, isDeleting, loopNum, typingSpeed, isFocused, hasMessages, isClarifying]);
 
     const handleSearch = async (e: React.FormEvent | null, overrideQuery?: string) => {
         if (e) e.preventDefault();
@@ -198,7 +197,7 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                             ? (isClarifying ? 'Digite sua resposta...' : 'Continue a conversa...')
                             : placeholder
                         }
-                        className="flex-1 bg-transparent border-none outline-none resize-none text-[#3D3A36] dark:text-[#E8E6E3] text-base placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:ring-0 min-h-[24px] max-h-[120px] leading-relaxed"
+                        className={`flex-1 bg-transparent border-none outline-none resize-none text-[#3D3A36] dark:text-[#E8E6E3] text-base focus:ring-0 min-h-[24px] max-h-[120px] leading-relaxed placeholder:transition-opacity placeholder:duration-500 ${placeholderVisible ? 'placeholder:opacity-100' : 'placeholder:opacity-0'} placeholder:text-neutral-400 dark:placeholder:text-neutral-500`}
                         rows={1}
                         disabled={isLoading}
                         autoFocus={inChat}
