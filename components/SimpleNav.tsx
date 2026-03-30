@@ -80,7 +80,7 @@ export default function SimpleNav() {
 
     return (
         <div className="fixed top-4 left-0 right-0 z-50 pointer-events-none px-4">
-            <div className="max-w-7xl mx-auto flex justify-center sm:justify-end items-center pointer-events-none">
+            <div className="max-w-7xl mx-auto flex justify-center items-center pointer-events-none">
                 {/* Single Island - Ordered: [Report Actions] | Home, Dashboard | Planos, Theme, Logout/Login */}
                 <div className="flex items-center gap-1 sm:gap-1.5 bg-white/80 dark:bg-[#1a1918]/80 backdrop-blur-md p-1.5 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.1)] pointer-events-auto">
 
