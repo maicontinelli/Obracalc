@@ -53,13 +53,12 @@ interface CommandSearchProps {
 // ... imports
 // Add these at the top level or inside the component if you prefer, but outside is better for constants
 const PROMPT_PLACEHOLDERS = [
-    "Podemos continuar a partir daqui . . .",
-    "Veja se não faltou nada antes de finalizar",
-    "Incluiu a demolição local?",
-    "Considerou a retirada de entulho?",
-    "Adicionou a regularização do terreno?",
-    "Haverá pintura ou limpeza final?",
-    "Quem será o engenheiro responsável pela obra?"
+    "Ex: Adicionar instalação elétrica completa...",
+    "Ex: Incluir revestimento cerâmico no banheiro...",
+    "Ex: Acrescentar pintura de fachada 80m²...",
+    "Ex: Cobertura metálica para área de 40m²...",
+    "Ex: Revisão de telhado com troca de telhas...",
+    "Ex: Esquadrias de alumínio para 4 janelas...",
 ];
 
 export default function CommandSearch({ items, onSelect, onAddCustom }: CommandSearchProps) {
@@ -70,38 +69,30 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
     const [aiResponse, setAiResponse] = useState<AiResponse | null>(null);
     const [aiError, setAiError] = useState<string | null>(null);
 
-    // Typewriter Effect State
-    const [placeholder, setPlaceholder] = useState("");
-    const [loopNum, setLoopNum] = useState(0);
-    const [isDeleting, setIsDeleting] = useState(false);
-    const [typingSpeed, setTypingSpeed] = useState(150);
+    // Smooth fade-cycle placeholder
+    const [placeholder, setPlaceholder] = useState(PROMPT_PLACEHOLDERS[0]);
+    const [placeholderIndex, setPlaceholderIndex] = useState(0);
+    const [placeholderVisible, setPlaceholderVisible] = useState(true);
 
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const handleType = () => {
-            const i = loopNum % PROMPT_PLACEHOLDERS.length;
-            const fullText = PROMPT_PLACEHOLDERS[i];
+        const cycle = setInterval(() => {
+            // Fade out
+            setPlaceholderVisible(false);
+            setTimeout(() => {
+                // Swap text while invisible, then fade in
+                setPlaceholderIndex(i => {
+                    const next = (i + 1) % PROMPT_PLACEHOLDERS.length;
+                    setPlaceholder(PROMPT_PLACEHOLDERS[next]);
+                    return next;
+                });
+                setPlaceholderVisible(true);
+            }, 600); // matches CSS transition duration
+        }, 4000); // show each phrase for 4s
 
-            setPlaceholder(isDeleting
-                ? fullText.substring(0, placeholder.length - 1)
-                : fullText.substring(0, placeholder.length + 1)
-            );
-
-            // Faster typing speeds: 50ms typing, 20ms deleting
-            setTypingSpeed(isDeleting ? 20 : 50);
-
-            if (!isDeleting && placeholder === fullText) {
-                setTimeout(() => setIsDeleting(true), 2000); // Wait before deleting
-            } else if (isDeleting && placeholder === '') {
-                setIsDeleting(false);
-                setLoopNum(loopNum + 1);
-            }
-        };
-
-        const timer = setTimeout(handleType, typingSpeed);
-        return () => clearTimeout(timer);
-    }, [placeholder, isDeleting, loopNum, typingSpeed]);
+        return () => clearInterval(cycle);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -259,7 +250,7 @@ export default function CommandSearch({ items, onSelect, onAddCustom }: CommandS
                                 }}
                                 onFocus={() => query && !aiResponse && !isClarifying && setIsOpen(true)}
                                 placeholder={isClarifying ? 'Digite sua resposta...' : placeholder}
-                                className="flex-1 bg-transparent border-none outline-none resize-none text-[#3D3A36] dark:text-[#E8E6E3] text-base placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:ring-0 leading-relaxed"
+                                className={`flex-1 bg-transparent border-none outline-none resize-none text-[#3D3A36] dark:text-[#E8E6E3] text-base focus:ring-0 leading-relaxed transition-opacity duration-500 ${placeholderVisible ? 'placeholder:opacity-100' : 'placeholder:opacity-0'} placeholder:text-neutral-400 dark:placeholder:text-neutral-500 placeholder:transition-opacity placeholder:duration-500`}
                             />
 
                             <button
