@@ -83,6 +83,16 @@ body {
     background-color: white !important;
     color: black !important;
   }
+
+  /* Hide navbar when printing */
+  .navbar-island {
+    display: none !important;
+  }
+
+  /* Force dark text for headings that rely on dark mode colors */
+  h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+  }
 }
 
 

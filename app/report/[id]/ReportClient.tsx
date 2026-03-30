@@ -768,10 +768,10 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
             {/* NEW REPORT VISUALS SECTION */}
             <div className="analysis-section space-y-6 mb-8 mt-12 print:mb-0 print:mt-0 print:block">
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-12 pb-6 print:pt-6 print:pb-3 text-center">
-                    <h2 className="text-2xl font-bold uppercase text-gray-900 dark:text-gray-100 mb-2">
+                    <h2 className="text-2xl font-bold uppercase text-gray-900 dark:text-gray-100 print:text-gray-900 mb-2">
                         ANÁLISE E PROJEÇÃO
                     </h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mx-auto leading-relaxed">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 print:text-gray-600 mx-auto leading-relaxed">
                         Indicadores com projeção de custos para controle de prazos e posicionamento estratégico.
                     </p>
                 </div>
