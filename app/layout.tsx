@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk, Manrope } from "next/font/google";
 import "./globals.css";
 import SimpleNav from "@/components/SimpleNav";
-import { Footer } from "@/components/Footer";
+import { ConditionalFooter } from "@/components/ConditionalFooter";
 import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({
@@ -44,7 +44,7 @@ export default function RootLayout({
                 >
                     <SimpleNav />
                     <main className="pt-20">{children}</main>
-                    <Footer />
+                    <ConditionalFooter />
                 </ThemeProvider>
             </body>
         </html>
