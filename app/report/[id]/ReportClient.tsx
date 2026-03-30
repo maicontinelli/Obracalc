@@ -18,6 +18,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     const [user, setUser] = useState<User | null>(null);
     const [showToast, setShowToast] = useState(false);
     const [includeContract, setIncludeContract] = useState(false);
+    const [showGuestModal, setShowGuestModal] = useState(false);
 
     const supabase = createClient();
     const { profile, isLoading: isProfileLoading } = useProfile();
@@ -164,6 +165,13 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     useEffect(() => {
         const handleAction = (e: any) => {
             const action = e.detail;
+
+            // Block all actions for guest users
+            if (!user) {
+                setShowGuestModal(true);
+                return;
+            }
+
             if (action === 'print') {
                 handlePrint();
             } else if (action === 'excel') {
@@ -809,6 +817,47 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     >
                         Ver Planos
                     </button>
+                </div>
+            )}
+
+            {/* Guest Modal */}
+            {showGuestModal && (
+                <div
+                    className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                    onClick={() => setShowGuestModal(false)}
+                >
+                    <div
+                        className="bg-white dark:bg-[#1e1c1a] rounded-2xl shadow-2xl p-8 max-w-sm w-full text-center"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="w-14 h-14 rounded-full bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center mx-auto mb-5">
+                            <Cloud className="text-teal-600" size={26} />
+                        </div>
+
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100 mb-2">
+                            Crie sua conta gratuita
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 mb-6 leading-relaxed">
+                            Para exportar, salvar e acessar todas as funcionalidades do relatório, você precisa de uma conta. É grátis e leva menos de 1 minuto.
+                        </p>
+
+                        <button
+                            onClick={() => {
+                                window.open('/login', '_blank');
+                                setShowGuestModal(false);
+                            }}
+                            className="w-full bg-teal-600 hover:bg-teal-700 text-white font-semibold py-3 rounded-xl transition-all active:scale-95 shadow-lg shadow-teal-600/20 mb-3"
+                        >
+                            Criar conta grátis
+                        </button>
+
+                        <button
+                            onClick={() => setShowGuestModal(false)}
+                            className="w-full text-sm text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors py-1"
+                        >
+                            Agora não
+                        </button>
+                    </div>
                 </div>
             )}
         </div>
