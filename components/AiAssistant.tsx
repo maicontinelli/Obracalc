@@ -231,17 +231,17 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-2 mt-8 w-full"
+                        className="flex gap-1.5 mt-4 w-full overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
                     >
-                        {QUICK_SUGGESTIONS.map((s, i) => (
+                        {QUICK_SUGGESTIONS.map((s) => (
                             <button
                                 key={s.label}
                                 type="button"
                                 onClick={() => { const q = (s as any).query ?? s.label; setQuery(q); setTimeout(() => handleSearch(null, q), 50); }}
-                                className={`inline-flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 hover:border-[#0D9488]/40 hover:text-[#0D9488] hover:bg-[#0D9488]/5 dark:hover:border-[#0D9488]/30 dark:hover:text-[#0D9488] dark:hover:bg-[#0D9488]/10 transition-all duration-150 shadow-sm cursor-pointer w-full sm:w-auto${i === QUICK_SUGGESTIONS.length - 1 && QUICK_SUGGESTIONS.length % 2 !== 0 ? ' col-span-2 sm:col-span-1' : ''}`}
+                                className="inline-flex shrink-0 items-center gap-1 px-2.5 py-1 rounded-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-[11px] text-neutral-500 dark:text-neutral-400 hover:border-[#0D9488]/40 hover:text-[#0D9488] hover:bg-[#0D9488]/5 dark:hover:border-[#0D9488]/30 dark:hover:text-[#0D9488] dark:hover:bg-[#0D9488]/10 transition-all duration-150 cursor-pointer whitespace-nowrap"
                             >
-                                <span className="shrink-0">{s.icon}</span>
-                                <span className="text-center leading-tight">{s.label}</span>
+                                <span>{s.icon}</span>
+                                <span>{s.label}</span>
                             </button>
                         ))}
                     </motion.div>
