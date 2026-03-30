@@ -194,7 +194,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                     /* Exceptions (Green total, Blue suggestion) */
                     .text-green-600 { color: #16a34a !important; }
                     .text-blue-600 { color: #2563eb !important; }
-                    .text-teal-600, .text-teal-700 { color: #ea580c !important; }
+                    .text-teal-600, .text-teal-700 { color: #0D9488 !important; }
 
                     /* Borders */
                     .border, .border-b, .border-t, .border-l, .border-r {

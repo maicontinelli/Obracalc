@@ -88,8 +88,8 @@ export function BudgetOverview({ budgets }: BudgetOverviewProps) {
                             <AreaChart data={data}>
                                 <defs>
                                     <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#E9813C" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#E9813C" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#0D9488" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#0D9488" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <Tooltip
@@ -107,7 +107,7 @@ export function BudgetOverview({ budgets }: BudgetOverviewProps) {
                                 <Area
                                     type="monotone"
                                     dataKey="total"
-                                    stroke="#E9813C"
+                                    stroke="#0D9488"
                                     strokeWidth={3}
                                     fillOpacity={1}
                                     fill="url(#colorTotal)"

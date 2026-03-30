@@ -148,7 +148,7 @@ export default function NovoDiagnostico() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {/* Left Column: Image Upload */}
                     <div className="md:col-span-1 space-y-6">
-                        <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(255, 102, 0, 0.15)">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(13, 148, 136, 0.15)">
                             <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
                                 <Camera size={20} className="text-[#0D9488]" />
                                 Foto do Ambiente
@@ -205,7 +205,7 @@ export default function NovoDiagnostico() {
 
                     {/* Right Column: Form */}
                     <div className="md:col-span-2">
-                        <SpotlightCard className="rounded-2xl shadow-xl p-8 border border-neutral-200 dark:border-white/10" spotlightColor="rgba(255, 102, 0, 0.15)">
+                        <SpotlightCard className="rounded-2xl shadow-xl p-8 border border-neutral-200 dark:border-white/10" spotlightColor="rgba(13, 148, 136, 0.15)">
                             <h3 className="text-2xl font-bold mb-6 text-foreground font-heading">
                                 Conte-nos mais sobre o projeto
                             </h3>

@@ -22,7 +22,7 @@ export async function downloadReceipt(data: ReceiptData): Promise<void> {
     const contentW = pageW - margin * 2;
 
     // ── Colors ──────────────────────────────────────────────────────────────
-    const orange: [number, number, number] = [13, 148, 136];
+    const teal: [number, number, number] = [13, 148, 136];
     const dark: [number, number, number] = [30, 30, 30];
     const gray: [number, number, number] = [120, 120, 120];
     const lightGray: [number, number, number] = [240, 240, 240];
@@ -30,7 +30,7 @@ export async function downloadReceipt(data: ReceiptData): Promise<void> {
     let y = margin;
 
     // ── Header band ─────────────────────────────────────────────────────────
-    doc.setFillColor(...orange);
+    doc.setFillColor(...teal);
     doc.rect(0, 0, pageW, 40, 'F');
 
     doc.setFont('helvetica', 'bold');
@@ -124,7 +124,7 @@ export async function downloadReceipt(data: ReceiptData): Promise<void> {
     doc.setFontSize(13);
     doc.setTextColor(...dark);
     doc.text('TOTAL', margin, y);
-    doc.setTextColor(...orange);
+    doc.setTextColor(...teal);
     doc.text(data.amount, pageW - margin - 3, y, { align: 'right' });
     y += 18;
 

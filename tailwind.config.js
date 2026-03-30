@@ -21,7 +21,7 @@ module.exports = {
                 primary: {
                     DEFAULT: "hsl(var(--primary))",
                     foreground: "hsl(var(--primary-foreground))",
-                    hover: '#005c3d',
+                    hover: '#0F766E',
                 },
                 secondary: {
                     DEFAULT: "hsl(var(--secondary))",
@@ -39,8 +39,8 @@ module.exports = {
                 accent: {
                     DEFAULT: "hsl(var(--accent))",
                     foreground: "hsl(var(--accent-foreground))",
-                    hover: '#ea580c',
-                    light: '#FFF7ED',
+                    hover: '#0F766E',
+                    light: '#F0FDFA',
                 },
                 popover: {
                     DEFAULT: "hsl(var(--popover))",

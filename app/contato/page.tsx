@@ -53,22 +53,22 @@ export default function ContatoPage() {
     return (
         <div className="min-h-screen bg-background text-foreground">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#F97316]/5 via-background to-[#F97316]/5 py-20 border-b border-white/5">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#0D9488]/5 via-background to-[#0D9488]/5 py-20 border-b border-white/5">
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#F97316]/10 rounded-full blur-3xl"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#F97316]/10 rounded-full blur-3xl"></div>
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#0D9488]/10 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#0D9488]/10 rounded-full blur-3xl"></div>
                 </div>
 
                 <div className="container mx-auto px-4 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
-                        <div className="inline-flex items-center gap-2 bg-[#F97316]/10 text-[#F97316] px-4 py-2 rounded-full mb-6">
+                        <div className="inline-flex items-center gap-2 bg-[#0D9488]/10 text-[#0D9488] px-4 py-2 rounded-full mb-6">
                             <Award className="w-4 h-4" />
                             <span className="text-sm font-semibold">Engenheiro Civil • CREA-BA</span>
                         </div>
 
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
                             Transformando Complexidade em{' '}
-                            <span className="text-[#F97316]">Clareza</span>
+                            <span className="text-[#0D9488]">Clareza</span>
                         </h1>
 
                         <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
@@ -79,14 +79,14 @@ export default function ContatoPage() {
                         <div className="flex flex-wrap gap-4 justify-center">
                             <Link
                                 href="#formulario"
-                                className="btn bg-[#F97316] hover:bg-[#F97316]/90 text-white px-8 py-3 text-lg flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                                className="btn bg-[#0D9488] hover:bg-[#0F766E] text-white px-8 py-3 text-lg flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
                             >
                                 <MessageSquare className="w-5 h-5" />
                                 Entrar em Contato
                             </Link>
                             <Link
                                 href="/sobre"
-                                className="btn bg-card border border-input text-foreground px-8 py-3 text-lg hover:border-[#F97316] transition-all"
+                                className="btn bg-card border border-input text-foreground px-8 py-3 text-lg hover:border-[#0D9488] transition-all"
                             >
                                 Conhecer o ObraPlana
                             </Link>
@@ -111,10 +111,10 @@ export default function ContatoPage() {
                         {expertise.map((item, idx) => (
                             <div
                                 key={idx}
-                                className="bg-card rounded-xl p-6 border border-white/5 hover:border-[#F97316] transition-all hover:shadow-lg group"
+                                className="bg-card rounded-xl p-6 border border-white/5 hover:border-[#0D9488] transition-all hover:shadow-lg group"
                             >
-                                <div className="w-12 h-12 bg-[#F97316]/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#F97316] group-hover:scale-110 transition-all">
-                                    <item.icon className="w-6 h-6 text-[#F97316] group-hover:text-white transition-colors" />
+                                <div className="w-12 h-12 bg-[#0D9488]/10 rounded-lg flex items-center justify-center mb-4 group-hover:bg-[#0D9488] group-hover:scale-110 transition-all">
+                                    <item.icon className="w-6 h-6 text-[#0D9488] group-hover:text-white transition-colors" />
                                 </div>
                                 <h3 className="text-lg font-bold text-foreground mb-2">{item.title}</h3>
                                 <p className="text-muted-foreground">{item.description}</p>
@@ -130,8 +130,8 @@ export default function ContatoPage() {
                     <div className="max-w-4xl mx-auto">
                         <div className="bg-card rounded-2xl p-8 md:p-12 border border-white/5 shadow-xl">
                             <div className="flex items-start gap-4 mb-6">
-                                <div className="w-12 h-12 bg-[#F97316]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                                    <MessageSquare className="w-6 h-6 text-[#F97316]" />
+                                <div className="w-12 h-12 bg-[#0D9488]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <MessageSquare className="w-6 h-6 text-[#0D9488]" />
                                 </div>
                                 <div>
                                     <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
@@ -148,7 +148,7 @@ export default function ContatoPage() {
                                             desde uma reforma residencial até grandes empreendimentos.
                                         </p>
                                         <p>
-                                            Meu compromisso é com a <strong className="text-[#F97316]">transparência, precisão e democratização do conhecimento</strong> técnico
+                                            Meu compromisso é com a <strong className="text-[#0D9488]">transparência, precisão e democratização do conhecimento</strong> técnico
                                             na construção civil. Cada orçamento gerado reflete padrões profissionais rigorosos, normas técnicas atualizadas e
                                             preços de mercado reais.
                                         </p>
@@ -229,7 +229,7 @@ export default function ContatoPage() {
                                             required
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all placeholder-muted-foreground"
+                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#0D9488] focus:border-transparent transition-all placeholder-muted-foreground"
                                             placeholder="Seu nome"
                                         />
                                     </div>
@@ -243,7 +243,7 @@ export default function ContatoPage() {
                                             required
                                             value={formData.email}
                                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all placeholder-muted-foreground"
+                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#0D9488] focus:border-transparent transition-all placeholder-muted-foreground"
                                             placeholder="seu@email.com"
                                         />
                                     </div>
@@ -256,7 +256,7 @@ export default function ContatoPage() {
                                             type="tel"
                                             value={formData.phone}
                                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all placeholder-muted-foreground"
+                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#0D9488] focus:border-transparent transition-all placeholder-muted-foreground"
                                             placeholder="(00) 00000-0000"
                                         />
                                     </div>
@@ -270,14 +270,14 @@ export default function ContatoPage() {
                                             rows={5}
                                             value={formData.message}
                                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#F97316] focus:border-transparent transition-all resize-none placeholder-muted-foreground"
+                                            className="w-full px-4 py-3 rounded-lg border border-input bg-background text-foreground focus:ring-2 focus:ring-[#0D9488] focus:border-transparent transition-all resize-none placeholder-muted-foreground"
                                             placeholder="Como podemos ajudar?"
                                         ></textarea>
                                     </div>
 
                                     <button
                                         type="submit"
-                                        className="w-full btn bg-[#F97316] hover:bg-[#F97316]/90 text-white py-4 text-lg font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                                        className="w-full btn bg-[#0D9488] hover:bg-[#0F766E] text-white py-4 text-lg font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all"
                                     >
                                         <Mail className="w-5 h-5" />
                                         Enviar Mensagem
@@ -289,8 +289,8 @@ export default function ContatoPage() {
                         {/* Direct Contact Info */}
                         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="bg-card rounded-lg p-6 border border-border flex items-center gap-4">
-                                <div className="w-12 h-12 bg-[#F97316]/10 rounded-lg flex items-center justify-center">
-                                    <Mail className="w-6 h-6 text-[#F97316]" />
+                                <div className="w-12 h-12 bg-[#0D9488]/10 rounded-lg flex items-center justify-center">
+                                    <Mail className="w-6 h-6 text-[#0D9488]" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Email</p>
@@ -299,8 +299,8 @@ export default function ContatoPage() {
                             </div>
 
                             <div className="bg-card rounded-lg p-6 border border-border flex items-center gap-4">
-                                <div className="w-12 h-12 bg-[#F97316]/10 rounded-lg flex items-center justify-center">
-                                    <Phone className="w-6 h-6 text-[#F97316]" />
+                                <div className="w-12 h-12 bg-[#0D9488]/10 rounded-lg flex items-center justify-center">
+                                    <Phone className="w-6 h-6 text-[#0D9488]" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-[#8a8886]">Telefone</p>

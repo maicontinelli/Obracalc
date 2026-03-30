@@ -7,8 +7,8 @@ const COLORS = {
     card: "#ffffff",
     cardHover: "#f9fafb",
     border: "#e5e7eb",
-    orange: "#0d9488", // Tailwind orange-500
-    orangeLight: "#2dd4bf",
+    teal: "#0d9488", // teal-600
+    tealLight: "#2dd4bf",
     text: "#1f2937", // gray-800
     textMuted: "#6b7280", // gray-500
     textDim: "#9ca3af", // gray-400
@@ -140,7 +140,7 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
             color = COLORS.red;
         } else if (accumulated <= 90) {
             classe = 'B';
-            color = COLORS.orange;
+            color = COLORS.teal;
         } else {
             classe = 'C';
             color = COLORS.yellow;
@@ -236,7 +236,7 @@ export function CronogramaEstimado({ deadline, projectType, projectDuration, tot
     // Phases Distribution (Physical & Financial Weights)
     const phases = [
         { name: "Preliminares", startPct: 0, durPct: 15, color: COLORS.textDim, weight: 0.05 },
-        { name: "Estrutura/Alvenaria", startPct: 10, durPct: 35, color: COLORS.orange, weight: 0.35 },
+        { name: "Estrutura/Alvenaria", startPct: 10, durPct: 35, color: COLORS.teal, weight: 0.35 },
         { name: "Instalações", startPct: 35, durPct: 30, color: COLORS.blue, weight: 0.20 },
         { name: "Acabamentos", startPct: 55, durPct: 40, color: COLORS.purple, weight: 0.35 },
         { name: "Limpeza/Entrega", startPct: 90, durPct: 10, color: COLORS.green, weight: 0.05 },

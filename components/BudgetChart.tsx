@@ -118,7 +118,7 @@ export function BudgetChart({ budgets }: BudgetChartProps) {
                             strokeWidth={3}
                             fillOpacity={1}
                             fill="url(#colorValue)"
-                            activeDot={{ r: 6, strokeWidth: 0, fill: '#ea580c' }}
+                            activeDot={{ r: 6, strokeWidth: 0, fill: '#0D9488' }}
                             animationDuration={1500}
                         />
                     </AreaChart>
