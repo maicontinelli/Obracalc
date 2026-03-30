@@ -91,29 +91,27 @@ export default function SimpleNav() {
                             <Link
                                 href={`/editor/${estimateId}`}
                                 title="Voltar ao Editor"
-                                className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-teal-600 group"
+                                className="transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-teal-600 flex flex-col items-center gap-0.5"
                             >
-                                <ArrowLeft size={18} />
-                                <span className="sr-only">Editor</span>
+                                <ArrowLeft size={16} />
+                                <span className="text-[9px] font-medium leading-none">Editor</span>
                             </Link>
 
                             <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
 
                             {/* Contract Toggle */}
-                            <div className="flex items-center gap-2 px-1.5 sm:px-3 py-1">
-                                <span className="text-[10px] font-bold uppercase tracking-tight text-gray-600 dark:text-gray-400 hidden xs:block select-none">Contrato</span>
+                            <div className="flex flex-col items-center gap-0.5 px-1.5 sm:px-2 py-1.5">
                                 <button
                                     type="button"
                                     onClick={toggleContract}
                                     title="Incluir Contrato"
-                                    className={`relative inline-flex h-5 w-9 sm:w-10 items-center rounded-full transition-all duration-200 focus:outline-none ${includeContract ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'
-                                        }`}
+                                    className={`relative inline-flex h-5 w-9 items-center rounded-full transition-all duration-200 focus:outline-none ${includeContract ? 'bg-blue-600' : 'bg-gray-300 dark:bg-gray-600'}`}
                                 >
                                     <span
-                                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-all duration-200 ${includeContract ? 'translate-x-4.5 sm:translate-x-5.5' : 'translate-x-1'
-                                            }`}
+                                        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-sm transition-all duration-200 ${includeContract ? 'translate-x-4' : 'translate-x-1'}`}
                                     />
                                 </button>
+                                <span className="text-[9px] font-medium leading-none text-gray-500 dark:text-gray-400">Contrato</span>
                             </div>
 
                             <div className="h-4 w-px mx-0.5 bg-gray-200/50 dark:bg-white/10" />
@@ -123,9 +121,10 @@ export default function SimpleNav() {
                                 type="button"
                                 onClick={() => triggerAction('excel')}
                                 title="Exportar Excel"
-                                className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-green-600"
+                                className="transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-green-600 flex flex-col items-center gap-0.5"
                             >
-                                <FileSpreadsheet size={18} />
+                                <FileSpreadsheet size={16} />
+                                <span className="text-[9px] font-medium leading-none">Excel</span>
                             </button>
 
                             {/* Export PDF (Print) */}
@@ -133,9 +132,10 @@ export default function SimpleNav() {
                                 type="button"
                                 onClick={() => triggerAction('print')}
                                 title="Exportar PDF"
-                                className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-primary"
+                                className="transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-500 dark:text-gray-400 hover:text-primary flex flex-col items-center gap-0.5"
                             >
-                                <Printer size={18} />
+                                <Printer size={16} />
+                                <span className="text-[9px] font-medium leading-none">PDF</span>
                             </button>
 
                             {/* Guest Save Button */}
@@ -144,9 +144,10 @@ export default function SimpleNav() {
                                     href="/login"
                                     target="_blank"
                                     title="Salvar Orçamento"
-                                    className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-teal-600"
+                                    className="transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-teal-600 flex flex-col items-center gap-0.5"
                                 >
-                                    <Cloud size={18} />
+                                    <Cloud size={16} />
+                                    <span className="text-[9px] font-medium leading-none">Salvar</span>
                                 </Link>
                             )}
 
