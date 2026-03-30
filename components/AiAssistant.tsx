@@ -261,7 +261,7 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
     // ─── CHAT STATE (Gemini-style) ────────────────────────────────────────────
     return (
         <motion.div
-            className="w-full flex flex-col"
+            className="w-full flex flex-col text-left"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
