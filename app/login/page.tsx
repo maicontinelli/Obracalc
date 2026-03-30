@@ -245,7 +245,7 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#0D9488]/20 focus:border-[#0D9488] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
@@ -253,7 +253,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#FF6600] hover:bg-[#E55C00] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#FF6600]/20 hover:shadow-[#FF6600]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2"
+                                className="w-full bg-[#0D9488] hover:bg-[#0F766E] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#0D9488]/20 hover:shadow-[#0D9488]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : 'Enviar Instruções'}
                             </button>
@@ -282,7 +282,7 @@ function LoginForm() {
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
                                             placeholder="Ex: Ana Silva"
-                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#0D9488]/20 focus:border-[#0D9488] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
@@ -298,7 +298,7 @@ function LoginForm() {
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
                                         placeholder="seu@email.com"
-                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
+                                        className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#0D9488]/20 focus:border-[#0D9488] transition-all outline-none text-sm font-medium"
                                     />
                                 </div>
                             </div>
@@ -312,7 +312,7 @@ function LoginForm() {
                                             <button
                                                 type="button"
                                                 onClick={() => { setIsRecovery(true); setMessage(null); }}
-                                                className="text-[#FF6600] hover:text-[#E55C00] normal-case font-medium transition-colors"
+                                                className="text-[#0D9488] hover:text-[#0F766E] normal-case font-medium transition-colors"
                                             >
                                                 Esqueceu?
                                             </button>
@@ -327,7 +327,7 @@ function LoginForm() {
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
                                             placeholder="******"
-                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#FF6600]/20 focus:border-[#FF6600] transition-all outline-none text-sm font-medium"
+                                            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-white/30 dark:border-white/10 bg-white/30 dark:bg-[#1a1a1a]/30 backdrop-blur-sm text-[#222120] dark:text-white placeholder-[#B6B8BC] focus:ring-2 focus:ring-[#0D9488]/20 focus:border-[#0D9488] transition-all outline-none text-sm font-medium"
                                         />
                                     </div>
                                 </div>
@@ -342,7 +342,7 @@ function LoginForm() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-[#FF6600] hover:bg-[#E55C00] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#FF6600]/20 hover:shadow-[#FF6600]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2 mt-2"
+                                className="w-full bg-[#0D9488] hover:bg-[#0F766E] text-white font-bold p-2.5 rounded-xl transition-all shadow-lg shadow-[#0D9488]/20 hover:shadow-[#0D9488]/40 active:scale-[0.98] h-11 flex items-center justify-center gap-2 mt-2"
                             >
                                 {loading ? <Loader2 className="animate-spin" /> : (
                                     <>

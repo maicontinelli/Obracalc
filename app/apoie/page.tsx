@@ -50,8 +50,8 @@ export default function SupportPage() {
 
                     <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                         <div className="bg-card p-8 rounded-2xl border border-border hover:shadow-lg transition-shadow">
-                            <div className="w-12 h-12 bg-orange-900/30 rounded-xl flex items-center justify-center mb-6">
-                                <BrickWall className="w-6 h-6 text-orange-400" />
+                            <div className="w-12 h-12 bg-teal-900/30 rounded-xl flex items-center justify-center mb-6">
+                                <BrickWall className="w-6 h-6 text-teal-500" />
                             </div>
                             <h3 className="text-xl font-bold text-card-foreground mb-4">
                                 Você ajuda a construir uma ferramenta real

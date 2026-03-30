@@ -75,7 +75,7 @@ export function PlanStatus({ tier = 'free', usageCount }: PlanStatusProps) {
         <div className="bg-card rounded-2xl p-6 shadow-sm border border-border relative overflow-hidden group">
             {/* Progress Background Effect */}
             <div
-                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-1000 ease-out"
+                className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-teal-600 to-red-500 transition-all duration-1000 ease-out"
                 style={{ width: `${progress}%` }}
             ></div>
 
@@ -98,7 +98,7 @@ export function PlanStatus({ tier = 'free', usageCount }: PlanStatusProps) {
                             cy="24"
                         />
                         <circle
-                            className="text-orange-500 transition-all duration-1000 ease-out"
+                            className="text-teal-600 transition-all duration-1000 ease-out"
                             strokeWidth="4"
                             strokeDasharray={126}
                             strokeDashoffset={126 - (126 * progress) / 100}
@@ -125,7 +125,7 @@ export function PlanStatus({ tier = 'free', usageCount }: PlanStatusProps) {
                 {/* Visual Bar */}
                 <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                     <div
-                        className={`h-full rounded-full transition-all duration-1000 ${progress >= 100 ? 'bg-red-500' : 'bg-orange-500'}`}
+                        className={`h-full rounded-full transition-all duration-1000 ${progress >= 100 ? 'bg-red-500' : 'bg-teal-600'}`}
                         style={{ width: `${progress}%` }}
                     />
                 </div>

@@ -91,7 +91,7 @@ export default function SimpleNav() {
                             <Link
                                 href={`/editor/${estimateId}`}
                                 title="Voltar ao Editor"
-                                className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-orange-500 group"
+                                className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-gray-700 dark:text-gray-300 hover:text-teal-600 group"
                             >
                                 <ArrowLeft size={18} />
                                 <span className="sr-only">Editor</span>
@@ -144,7 +144,7 @@ export default function SimpleNav() {
                                     href="/login"
                                     target="_blank"
                                     title="Salvar Orçamento"
-                                    className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-orange-500"
+                                    className="transition-all p-2 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 text-teal-600"
                                 >
                                     <Cloud size={18} />
                                 </Link>
@@ -163,8 +163,8 @@ export default function SimpleNav() {
                                 href="/"
                                 title="Início"
                                 className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/'
-                                    ? 'text-orange-500'
-                                    : 'text-gray-500 dark:text-gray-400 hover:text-orange-500'
+                                    ? 'text-teal-600'
+                                    : 'text-gray-500 dark:text-gray-400 hover:text-teal-600'
                                     }`}
                             >
                                 <Home size={16} />
@@ -177,13 +177,13 @@ export default function SimpleNav() {
                                     href="/dashboard"
                                     title="Painel"
                                     className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/dashboard'
-                                        ? 'text-orange-500'
-                                        : 'text-gray-500 dark:text-gray-400 hover:text-orange-500'
+                                        ? 'text-teal-600'
+                                        : 'text-gray-500 dark:text-gray-400 hover:text-teal-600'
                                         }`}
                                 >
                                     <User
                                         size={16}
-                                        className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(234,88,12,0.4)] ${pathname === '/dashboard' ? 'fill-orange-500' : 'fill-transparent'
+                                        className={`transition-all duration-300 group-hover:drop-shadow-[0_0_5px_rgba(13,148,136,0.4)] ${pathname === '/dashboard' ? 'fill-teal-600' : 'fill-transparent'
                                             }`}
                                     />
                                     <span className="text-[9px] font-medium leading-none">Painel</span>
@@ -199,7 +199,7 @@ export default function SimpleNav() {
                                     <button
                                         onClick={handleNewBudget}
                                         title="Iniciar Orçamento"
-                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#FF6600]`}
+                                        className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 text-gray-500 dark:text-gray-400 hover:text-[#0D9488]`}
                                     >
                                         <FilePlus2 size={16} />
                                         <span className="text-[9px] font-medium leading-none">Orçamento</span>
@@ -210,8 +210,8 @@ export default function SimpleNav() {
                                         href="/topografia"
                                         title="Relatório de Topografia"
                                         className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/topografia'
-                                            ? 'text-[#FF6600]'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#FF6600]'
+                                            ? 'text-[#0D9488]'
+                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
                                             }`}
                                     >
                                         <Map size={16} />
@@ -223,8 +223,8 @@ export default function SimpleNav() {
                                         href="/novo-diagnostico"
                                         title="Diagnóstico de Obra por Imagem"
                                         className={`transition-all px-2 py-1.5 rounded-full hover:bg-gray-100/50 dark:hover:bg-white/5 group flex flex-col items-center gap-0.5 ${pathname === '/novo-diagnostico' || pathname.startsWith('/editor-diagnostico')
-                                            ? 'text-[#FF6600]'
-                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#FF6600]'
+                                            ? 'text-[#0D9488]'
+                                            : 'text-gray-500 dark:text-gray-400 hover:text-[#0D9488]'
                                             }`}
                                     >
                                         <Camera size={16} />
@@ -282,7 +282,7 @@ export default function SimpleNav() {
                             ) : (
                                 <Link
                                     href="/login"
-                                    className="ml-1 flex items-center gap-1.5 bg-[#FF6600] hover:bg-[#E55C00] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#FF6600]/20 active:scale-95"
+                                    className="ml-1 flex items-center gap-1.5 bg-[#0D9488] hover:bg-[#0F766E] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#0D9488]/20 active:scale-95"
                                     title="Entrar"
                                 >
                                     <LogIn size={14} />

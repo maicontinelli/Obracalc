@@ -7,7 +7,7 @@ export function DemoSection() {
                 <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
                     <div className="lg:w-1/2">
                         <h2 className="text-3xl md:text-5xl font-heading font-bold text-gray-900 dark:text-white mb-6 tracking-tight">
-                            Você pede e o ObraPlana <span className="text-[#FF6600]">organiza</span> tudo
+                            Você pede e o ObraPlana <span className="text-[#0D9488]">organiza</span> tudo
                         </h2>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-8 leading-relaxed">
                             Comece com uma descrição simples e deixe nossa IA fazer o trabalho pesado.

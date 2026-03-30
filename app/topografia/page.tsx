@@ -278,7 +278,7 @@ export default function MemorialPage() {
                                     className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all flex items-center justify-center gap-2 mt-4
                                         ${!file ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed' :
                                             isLoading ? 'bg-[#C2410C]/80 cursor-wait' :
-                                                'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-orange-500/20 active:scale-[0.98]'}`}
+                                                'bg-[#C2410C] hover:bg-[#9A3412] hover:shadow-teal-500/20 active:scale-[0.98]'}`}
                                 >
                                     {isLoading ? (
                                         <>

@@ -7,8 +7,8 @@ const COLORS = {
     card: "#ffffff",
     cardHover: "#f9fafb",
     border: "#e5e7eb",
-    orange: "#f97316", // Tailwind orange-500
-    orangeLight: "#fb923c",
+    orange: "#0d9488", // Tailwind orange-500
+    orangeLight: "#2dd4bf",
     text: "#1f2937", // gray-800
     textMuted: "#6b7280", // gray-500
     textDim: "#9ca3af", // gray-400
@@ -35,7 +35,7 @@ function SectionHeader({ title, subtitle, badge }: { title: string, subtitle?: s
             <div className="flex items-center gap-2.5">
                 <h3 className="m-0 text-[17px] font-bold text-gray-900 dark:text-gray-100 print:text-black print:text-base">{title}</h3>
                 {badge && (
-                    <span className="text-[10px] font-bold uppercase tracking-widest bg-orange-500/20 text-orange-500 px-2 py-0.5 rounded-full print:border print:border-orange-500 print:bg-transparent">
+                    <span className="text-[10px] font-bold uppercase tracking-widest bg-teal-600/20 text-teal-600 px-2 py-0.5 rounded-full print:border print:border-teal-600 print:bg-transparent">
                         {badge}
                     </span>
                 )}
@@ -379,12 +379,12 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
                     {bdiItems.map((item, i) => (
                         <div key={i} className="flex justify-between items-center py-[7px] border-b border-gray-200 dark:border-gray-700 print:border-gray-200">
                             <span className="text-xs text-gray-800 dark:text-gray-200 print:text-black">{item.label}</span>
-                            <span className="text-xs text-orange-500 font-semibold">{item.valor.toFixed(2)}%</span>
+                            <span className="text-xs text-teal-600 font-semibold">{item.valor.toFixed(2)}%</span>
                         </div>
                     ))}
                     <div className="mt-2.5 pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center">
                         <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">BDI Total</span>
-                        <span className="text-sm font-black text-orange-500">{bdiPct.toFixed(2)}%</span>
+                        <span className="text-sm font-black text-teal-600">{bdiPct.toFixed(2)}%</span>
                     </div>
                 </div>
 
@@ -394,7 +394,7 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
                         <span>Direto:</span>
                         <span className="font-bold">{formatCurrency(totalDirect)}</span>
                     </div>
-                    <div className="flex justify-between mb-1.5 text-orange-500">
+                    <div className="flex justify-between mb-1.5 text-teal-600">
                         <span>+ BDI:</span>
                         <span className="font-bold">{formatCurrency(totalWithBDI - totalDirect)}</span>
                     </div>

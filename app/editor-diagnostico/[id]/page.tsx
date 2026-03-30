@@ -107,7 +107,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
         return (
             <div className="flex justify-center items-center min-h-screen bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 mx-auto mb-4"></div>
                     <p className="text-gray-600">Carregando diagnóstico...</p>
                 </div>
             </div>
@@ -119,7 +119,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
             <div className="flex flex-col justify-center items-center min-h-screen bg-gray-50">
                 <div className="text-center">
                     <p className="text-xl mb-6 text-gray-800">Diagnóstico não encontrado</p>
-                    <button onClick={() => router.push('/')} className="px-4 py-2 bg-orange-500 text-white rounded-lg">
+                    <button onClick={() => router.push('/')} className="px-4 py-2 bg-teal-600 text-white rounded-lg">
                         Voltar para Home
                     </button>
                 </div>
@@ -194,7 +194,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                     /* Exceptions (Green total, Blue suggestion) */
                     .text-green-600 { color: #16a34a !important; }
                     .text-blue-600 { color: #2563eb !important; }
-                    .text-orange-500, .text-orange-600 { color: #ea580c !important; }
+                    .text-teal-600, .text-teal-700 { color: #ea580c !important; }
 
                     /* Borders */
                     .border, .border-b, .border-t, .border-l, .border-r {
@@ -243,7 +243,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                         )}
                         <button
                             onClick={handlePrint}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 rounded-lg transition-colors shadow-sm"
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors shadow-sm"
                         >
                             <Printer size={18} /> Gerar PDF / Imprimir
                         </button>
@@ -359,7 +359,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                                             transform: pos.transform
                                         }}
                                     >
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-md text-xs print:w-6 print:h-6 print:text-[10px] ${isSelected ? 'bg-orange-600 ring-2 ring-orange-300' : 'bg-orange-500'}`}>
+                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-md text-xs print:w-6 print:h-6 print:text-[10px] ${isSelected ? 'bg-teal-700 ring-2 ring-teal-300' : 'bg-teal-600'}`}>
                                             {grupo.id_grupo}
                                         </div>
                                     </button>
@@ -376,11 +376,11 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                 {/* Service Groups List */}
                 <div className="space-y-6">
                     {resultado.grupos_servicos.map((grupo) => (
-                        <div key={grupo.id_grupo} className={`break-inside-avoid transition-all ${selectedGrupo === grupo.id_grupo ? 'ring-2 ring-orange-500 rounded-lg' : ''}`}>
+                        <div key={grupo.id_grupo} className={`break-inside-avoid transition-all ${selectedGrupo === grupo.id_grupo ? 'ring-2 ring-teal-600 rounded-lg' : ''}`}>
                             {/* Group Header */}
                             <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center font-bold text-xs">
+                                    <div className="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">
                                         {grupo.id_grupo}
                                     </div>
                                     <h3 className="text-xs font-bold text-gray-600 dark:text-gray-400 uppercase tracking-wide">
@@ -434,7 +434,7 @@ export default function EditorDiagnostico({ params }: { params: Promise<{ id: st
                             <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Legenda Visual:</h3>
                             <div className="flex flex-col gap-2 text-[10px] text-gray-500 uppercase tracking-wide font-medium">
                                 <div className="flex items-center gap-2">
-                                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                                    <div className="w-3 h-3 rounded-full bg-teal-600"></div>
                                     <span>Área de Intervenção Identificada</span>
                                 </div>
                                 <div className="flex items-center gap-2">

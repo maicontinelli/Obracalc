@@ -519,15 +519,15 @@ export default function DashboardPage() {
 
                 {/* Soft block / Warning banner (1st failure) */}
                 {subscriptionInfo.status === 'active' && subscriptionInfo.paymentFailures === 1 && (
-                    <div className="flex items-start gap-4 bg-orange-50 dark:bg-orange-950/40 border border-orange-200 dark:border-orange-800 rounded-2xl p-4 text-sm">
-                        <AlertTriangle className="text-orange-500 shrink-0 mt-0.5" size={18} />
+                    <div className="flex items-start gap-4 bg-teal-50 dark:bg-teal-950/40 border border-teal-200 dark:border-teal-800 rounded-2xl p-4 text-sm">
+                        <AlertTriangle className="text-teal-600 shrink-0 mt-0.5" size={18} />
                         <div className="flex-1">
-                            <p className="font-bold text-orange-700 dark:text-orange-400">Problema no pagamento identificado.</p>
-                            <p className="text-orange-700 dark:text-orange-500 text-xs mt-0.5">Houve uma falha na sua renovação. Tente regularizar em até 48h para evitar a suspensão do acesso.</p>
+                            <p className="font-bold text-orange-700 dark:text-teal-500">Problema no pagamento identificado.</p>
+                            <p className="text-orange-700 dark:text-teal-600 text-xs mt-0.5">Houve uma falha na sua renovação. Tente regularizar em até 48h para evitar a suspensão do acesso.</p>
                         </div>
                         <button
                             onClick={() => router.push('/planos')}
-                            className="shrink-0 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
+                            className="shrink-0 bg-teal-700 hover:bg-teal-700 text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors"
                         >
                             Verificar Pagamento
                         </button>
@@ -566,7 +566,7 @@ export default function DashboardPage() {
                             onClick={() => handleFeatureAction('/novo-diagnostico')}
                             className="bg-white dark:bg-[#1A1A1A] hover:bg-gray-100 dark:hover:bg-white/10 text-foreground border border-border px-5 py-2.5 rounded-full font-medium flex items-center gap-2 transition-all active:scale-95 text-xs shadow-sm"
                         >
-                            <Sparkles size={16} className="text-[#FF6600]" />
+                            <Sparkles size={16} className="text-[#0D9488]" />
                             <span>Orçamento por Imagem</span>
                         </button>
                         <button
@@ -789,13 +789,13 @@ export default function DashboardPage() {
                                     </div>
                                     <div className="w-full h-1.5 bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden">
                                         <div
-                                            className={`h-full rounded-full ${subscriptionInfo.tier === 'business' ? 'bg-[#FF6600]' : 'bg-[#74D2E7]'}`}
+                                            className={`h-full rounded-full ${subscriptionInfo.tier === 'business' ? 'bg-[#0D9488]' : 'bg-[#74D2E7]'}`}
                                             style={{ width: `${Math.min(100, ((subscriptionInfo.daysRemaining ?? 365) / 365) * 100)}%` }}
                                         />
                                     </div>
                                     <div className="flex justify-between items-center">
                                         <p className="text-[10px] text-muted-foreground flex items-center gap-1">
-                                            <span className={`w-2 h-2 rounded-full ${subscriptionInfo.tier === 'business' ? 'bg-[#FF6600]' : 'bg-[#74D2E7]'}`}></span>
+                                            <span className={`w-2 h-2 rounded-full ${subscriptionInfo.tier === 'business' ? 'bg-[#0D9488]' : 'bg-[#74D2E7]'}`}></span>
                                             {subscriptionInfo.tier === 'business' ? 'Plano Empresarial' : 'Plano Profissional'}
                                         </p>
                                         <p className="text-[10px] text-muted-foreground">

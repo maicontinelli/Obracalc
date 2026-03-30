@@ -22,7 +22,7 @@ export async function downloadReceipt(data: ReceiptData): Promise<void> {
     const contentW = pageW - margin * 2;
 
     // ── Colors ──────────────────────────────────────────────────────────────
-    const orange: [number, number, number] = [255, 102, 0];
+    const orange: [number, number, number] = [13, 148, 136];
     const dark: [number, number, number] = [30, 30, 30];
     const gray: [number, number, number] = [120, 120, 120];
     const lightGray: [number, number, number] = [240, 240, 240];

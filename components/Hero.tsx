@@ -49,28 +49,28 @@ export function Hero() {
     }, []);
 
     return (
-        <section className="relative flex flex-col items-center justify-center px-4 py-16 md:py-24 bg-transparent">
+        <section className={`relative flex flex-col items-center justify-center px-4 bg-transparent transition-all duration-500 ${chatActive ? 'py-8' : 'py-16 md:py-24'}`}>
 
             {/* Grid background */}
             <div
                 className="pointer-events-none absolute inset-0 opacity-[0.03] dark:opacity-[0.05]"
                 style={{
-                    backgroundImage: 'linear-gradient(#FF6600 1px, transparent 1px), linear-gradient(to right, #FF6600 1px, transparent 1px)',
+                    backgroundImage: 'linear-gradient(#0D9488 1px, transparent 1px), linear-gradient(to right, #0D9488 1px, transparent 1px)',
                     backgroundSize: '48px 48px',
                 }}
             />
 
             {/* Glow */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                <div className="w-[600px] h-[600px] rounded-full bg-[#FF6600]/5 dark:bg-[#FF6600]/8 blur-3xl" />
+                <div className="w-[600px] h-[600px] rounded-full bg-[#0D9488]/5 dark:bg-[#0D9488]/8 blur-3xl" />
             </div>
 
             <div className="relative z-10 w-full max-w-2xl mx-auto flex flex-col items-center text-center gap-5">
 
                 {/* Badge + Title — somem quando chat ativo */}
                 <div className={`flex flex-col items-center gap-4 overflow-hidden transition-all duration-300 ease-in-out ${chatActive ? 'opacity-0 max-h-0 pointer-events-none' : 'opacity-100 max-h-56'}`}>
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF6600]/10 dark:bg-[#FF6600]/15 border border-[#FF6600]/20 text-[#FF6600] text-sm font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600] animate-pulse" />
+                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#0D9488]/10 dark:bg-[#0D9488]/15 border border-[#0D9488]/20 text-[#0D9488] text-sm font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#0D9488] animate-pulse" />
                         IA para obras e reformas
                     </div>
 

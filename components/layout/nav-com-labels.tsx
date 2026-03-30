@@ -65,7 +65,7 @@ export function NavComLabels({ isLoggedIn = false, userName }: Props) {
                       ? 'bg-primary/10 text-primary'
                       : item.highlight
                       ? 'bg-primary hover:bg-primary/90 text-white shadow-lg shadow-primary/30'
-                      : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-white/5 hover:text-orange-500'
+                      : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100/50 dark:hover:bg-white/5 hover:text-teal-600'
                     }
                   `}
                   aria-current={ativo ? 'page' : undefined}
@@ -106,7 +106,7 @@ export function NavComLabels({ isLoggedIn = false, userName }: Props) {
               <Link
                 href="/login"
                 title="Entrar na sua conta"
-                className="flex items-center gap-1.5 bg-[#FF6600] hover:bg-[#E55C00] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#FF6600]/20 active:scale-95"
+                className="flex items-center gap-1.5 bg-[#0D9488] hover:bg-[#0F766E] text-white px-4 py-1.5 rounded-full font-medium text-xs sm:text-sm transition-all shadow-lg shadow-[#0D9488]/20 active:scale-95"
               >
                 <LogIn className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>Entrar</span>

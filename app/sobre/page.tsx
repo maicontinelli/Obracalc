@@ -57,8 +57,8 @@ export default function AboutPage() {
                         </div>
 
                         <div className="bg-card p-8 rounded-2xl border border-white/5 hover:border-[#3B82F6]/50 transition-all hover:shadow-lg hover:-translate-y-1">
-                            <div className="w-12 h-12 bg-orange-900/30 rounded-xl flex items-center justify-center mb-6">
-                                <Heart className="w-6 h-6 text-orange-400" />
+                            <div className="w-12 h-12 bg-teal-900/30 rounded-xl flex items-center justify-center mb-6">
+                                <Heart className="w-6 h-6 text-teal-500" />
                             </div>
                             <h3 className="text-xl font-bold text-foreground mb-4">Nossos Valores</h3>
                             <ul className="space-y-2 text-muted-foreground">

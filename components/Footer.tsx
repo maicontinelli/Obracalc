@@ -57,17 +57,17 @@ export function Footer() {
                         <div>
                             <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">Institucional</h4>
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                                <li><Link href="/sobre" className="hover:text-[#FF6600] transition-colors">Sobre Nós</Link></li>
-                                <li><Link href="/contato" className="hover:text-[#FF6600] transition-colors">Contato</Link></li>
-                                <li><Link href="/apoie" className="hover:text-[#FF6600] transition-colors">Apoie o Projeto</Link></li>
+                                <li><Link href="/sobre" className="hover:text-[#0D9488] transition-colors">Sobre Nós</Link></li>
+                                <li><Link href="/contato" className="hover:text-[#0D9488] transition-colors">Contato</Link></li>
+                                <li><Link href="/apoie" className="hover:text-[#0D9488] transition-colors">Apoie o Projeto</Link></li>
                             </ul>
                         </div>
                         <div>
                             <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-4">Legal</h4>
                             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
-                                <li><Link href="/privacidade" className="hover:text-[#FF6600] transition-colors">Privacidade</Link></li>
-                                <li><Link href="/termos" className="hover:text-[#FF6600] transition-colors">Termos de Uso</Link></li>
-                                <li><Link href="/seguranca" className="hover:text-[#FF6600] transition-colors">Segurança</Link></li>
+                                <li><Link href="/privacidade" className="hover:text-[#0D9488] transition-colors">Privacidade</Link></li>
+                                <li><Link href="/termos" className="hover:text-[#0D9488] transition-colors">Termos de Uso</Link></li>
+                                <li><Link href="/seguranca" className="hover:text-[#0D9488] transition-colors">Segurança</Link></li>
                             </ul>
                         </div>
                     </div>

@@ -54,21 +54,21 @@ export function LeadsWall({ tier }: LeadsWallProps) {
     if (tier === 'free') {
         return (
             <div className="bg-gradient-to-br from-card to-muted/50 rounded-2xl p-6 border border-border relative overflow-hidden group">
-                <div className="absolute inset-0 bg-orange-500/5 group-hover:bg-orange-500/10 transition-colors" />
+                <div className="absolute inset-0 bg-teal-600/5 group-hover:bg-teal-600/10 transition-colors" />
 
                 <div className="relative z-10 flex flex-col items-center text-center">
-                    <div className="w-12 h-12 bg-orange-500/10 text-orange-600 dark:bg-orange-500/20 dark:text-orange-500 rounded-full flex items-center justify-center mb-4">
+                    <div className="w-12 h-12 bg-teal-600/10 text-teal-700 dark:bg-teal-600/20 dark:text-teal-600 rounded-full flex items-center justify-center mb-4">
                         <Briefcase size={24} />
                     </div>
 
                     <h3 className="text-lg font-bold text-foreground mb-2">Oportunidades Próximas</h3>
                     <p className="text-sm text-muted-foreground mb-6 max-w-[240px] leading-relaxed">
-                        Existem pessoas orçando obras <span className="text-orange-600 dark:text-orange-400 font-medium">na sua região</span>. Assine o plano Empresarial para ter acesso aos contatos.
+                        Existem pessoas orçando obras <span className="text-teal-700 dark:text-teal-500 font-medium">na sua região</span>. Assine o plano Empresarial para ter acesso aos contatos.
                     </p>
 
                     <Link
                         href="/planos"
-                        className="w-full py-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-orange-900/20"
+                        className="w-full py-2.5 bg-teal-700 hover:bg-teal-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg hover:shadow-teal-900/20"
                     >
                         Ver Planos
                     </Link>
@@ -82,7 +82,7 @@ export function LeadsWall({ tier }: LeadsWallProps) {
         <div className="bg-card rounded-2xl border border-border overflow-hidden flex flex-col">
             <div className="p-4 border-b border-border flex justify-between items-center bg-muted/30">
                 <div className="flex items-center gap-2">
-                    <Briefcase size={16} className="text-orange-600 dark:text-orange-500" />
+                    <Briefcase size={16} className="text-teal-700 dark:text-teal-600" />
                     <h3 className="font-bold text-foreground text-sm">Oportunidades Recentes</h3>
                 </div>
                 {tier === 'pro' && <div title="Acesso Limitado"><Lock size={14} className="text-muted-foreground" /></div>}
@@ -97,7 +97,7 @@ export function LeadsWall({ tier }: LeadsWallProps) {
                 ) : leads.map(lead => (
                     <div key={lead.id} className="p-4 hover:bg-muted/50 transition-colors group">
                         <div className="flex justify-between items-start mb-2">
-                            <span className="text-[10px] font-bold text-orange-600 dark:text-orange-500 uppercase tracking-wide bg-orange-500/10 px-2 py-0.5 rounded-full ring-1 ring-orange-500/20">
+                            <span className="text-[10px] font-bold text-teal-700 dark:text-teal-600 uppercase tracking-wide bg-teal-600/10 px-2 py-0.5 rounded-full ring-1 ring-teal-600/20">
                                 {lead.project_type || 'Obra'}
                             </span>
                             <span className="text-[10px] text-muted-foreground flex items-center gap-1">
@@ -143,7 +143,7 @@ export function LeadsWall({ tier }: LeadsWallProps) {
                             ) : (
                                 <Link
                                     href="/planos"
-                                    className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-muted-foreground border border-border text-[10px] uppercase font-bold rounded-lg flex items-center gap-1.5 transition-colors group-hover:border-orange-500/30 group-hover:text-orange-600 dark:group-hover:text-orange-200"
+                                    className="px-3 py-1.5 bg-muted hover:bg-muted/80 text-muted-foreground border border-border text-[10px] uppercase font-bold rounded-lg flex items-center gap-1.5 transition-colors group-hover:border-teal-600/30 group-hover:text-teal-700 dark:group-hover:text-teal-200"
                                 >
                                     <Lock size={10} />
                                     Desbloquear
@@ -154,8 +154,8 @@ export function LeadsWall({ tier }: LeadsWallProps) {
                 ))}
             </div>
             {tier === 'pro' && (
-                <div className="p-3 bg-gradient-to-r from-orange-500/5 to-orange-900/5 border-t border-border text-center">
-                    <Link href="/planos" className="text-xs font-bold text-orange-600 dark:text-orange-500 hover:text-orange-500 flex items-center justify-center gap-1 transition-colors">
+                <div className="p-3 bg-gradient-to-r from-teal-600/5 to-teal-900/5 border-t border-border text-center">
+                    <Link href="/planos" className="text-xs font-bold text-teal-700 dark:text-teal-600 hover:text-teal-600 flex items-center justify-center gap-1 transition-colors">
                         Upgrade para Ver Contatos <ArrowRight size={12} />
                     </Link>
                 </div>

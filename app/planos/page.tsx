@@ -375,7 +375,7 @@ export default function PlansPage() {
 
                                 <div className="w-full space-y-3">
                                     <Link href={`/login?next=${encodeURIComponent(typeof window !== 'undefined' ? window.location.pathname : '/planos')}`} className="w-full block">
-                                        <Button className="w-full h-12 bg-[#E9813C] hover:bg-[#d67332] text-white font-bold rounded-xl shadow-lg shadow-orange-500/20 text-base flex items-center justify-center gap-2">
+                                        <Button className="w-full h-12 bg-[#E9813C] hover:bg-[#d67332] text-white font-bold rounded-xl shadow-lg shadow-teal-500/20 text-base flex items-center justify-center gap-2">
                                             Criar conta Grátis
                                             <ArrowRight size={18} />
                                         </Button>

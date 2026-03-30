@@ -23,7 +23,7 @@ export function Features() {
             <div className="container mx-auto px-4 relative z-10">
                 <div className="text-center max-w-4xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
-                        Muito mais que uma <span className="text-[#FF6600]">simples planilha</span>
+                        Muito mais que uma <span className="text-[#0D9488]">simples planilha</span>
                     </h2>
                     <p className="text-muted-foreground text-lg md:text-xl leading-relaxed">
                         Entregue análises completas e detalhadas, tudo pronto para impressionar o cliente.

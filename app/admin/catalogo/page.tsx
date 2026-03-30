@@ -177,7 +177,7 @@ export default function AdminCatalog() {
                     </Link>
                     <div>
                         <h1 className="text-xl font-bold flex items-center gap-2">
-                            <Database className="text-orange-500" />
+                            <Database className="text-teal-600" />
                             Gerenciador de Catálogo
                         </h1>
                         <p className="text-xs text-gray-500">Base de Preços Oficiais</p>
@@ -217,7 +217,7 @@ export default function AdminCatalog() {
                             placeholder="Buscar serviço ou categoria..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                            className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-teal-600/20 outline-none"
                         />
                     </div>
 
@@ -239,7 +239,7 @@ export default function AdminCatalog() {
 
                 {isLoading ? (
                     <div className="flex flex-col items-center justify-center py-20 text-gray-400">
-                        <Loader2 className="w-10 h-10 animate-spin mb-4 text-orange-500" />
+                        <Loader2 className="w-10 h-10 animate-spin mb-4 text-teal-600" />
                         <p>Carregando catálogo...</p>
                     </div>
                 ) : (
@@ -279,7 +279,7 @@ export default function AdminCatalog() {
                                                         type="number"
                                                         defaultValue={item.price}
                                                         onBlur={(e) => handleUpdatePrice(item.id, e.target.value)}
-                                                        className="w-full text-right bg-transparent border-b border-transparent hover:border-orange-300 focus:border-orange-500 focus:outline-none font-mono font-medium text-gray-900 dark:text-gray-200 py-1 transition-colors"
+                                                        className="w-full text-right bg-transparent border-b border-transparent hover:border-teal-300 focus:border-teal-600 focus:outline-none font-mono font-medium text-gray-900 dark:text-gray-200 py-1 transition-colors"
                                                         step="0.01"
                                                     />
                                                     <span className="absolute right-0 -bottom-4 text-[9px] text-green-600 opacity-0 group-focus-within/price:opacity-100 transition-opacity">

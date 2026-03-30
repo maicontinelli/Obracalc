@@ -815,7 +815,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                         {/* Labels for AI vs Manual */}
                         <div className="flex items-center justify-between px-1 mb-2">
-                            <span className="text-[10px] uppercase font-bold tracking-wider text-orange-500/80">
+                            <span className="text-[10px] uppercase font-bold tracking-wider text-teal-600/80">
                                 ✨ Gerar com IA
                             </span>
 
@@ -899,7 +899,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                                             ({categoryItems.length})
                                                         </span>
                                                         {bdi > 0 && category === 'ITENS ADICIONAIS' && (
-                                                            <span className="ml-2 text-[9px] text-orange-400 bg-orange-400/10 px-1.5 py-0.5 rounded border border-orange-400/20">
+                                                            <span className="ml-2 text-[9px] text-teal-500 bg-teal-500/10 px-1.5 py-0.5 rounded border border-teal-500/20">
                                                                 SUGESTÃO IA
                                                             </span>
                                                         )}
@@ -1288,7 +1288,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
 
                                 <div className="pt-4 border-t border-black/10 dark:border-white/10 flex justify-between items-center">
                                     <span className="text-base font-bold text-foreground dark:text-[#F5E6D3]">TOTAL GERAL</span>
-                                    <span className="text-xl font-bold text-orange-500 tabular-nums">
+                                    <span className="text-xl font-bold text-teal-600 tabular-nums">
                                         {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}
                                     </span>
                                 </div>
@@ -1320,7 +1320,7 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                     </div>
                                     <button
                                         onClick={() => setIncludeMaterials(!includeMaterials)}
-                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeMaterials ? 'bg-orange-500' : 'bg-[#4A4A4A]'}`}
+                                        className={`w-10 h-5 rounded-full transition-colors relative ${includeMaterials ? 'bg-teal-600' : 'bg-[#4A4A4A]'}`}
                                         title="Alternar Inclusão de Materiais"
                                     >
                                         <div className={`w-3 h-3 bg-white rounded-full absolute top-1 transition-transform ${includeMaterials ? 'left-6' : 'left-1'}`} />
@@ -1367,13 +1367,13 @@ export default function BoqEditor({ estimateId }: { estimateId: string }) {
                                         <Link href="/dashboard" className="text-[10px] text-muted-foreground underline hover:text-blue-400">Gerenciar Dados no Perfil</Link>
                                     </div>
                                 ) : (
-                                    <Link href="/login" className="block p-3 bg-orange-50/10 border border-orange-500/20 rounded-lg mb-4 hover:bg-orange-50/20 transition-colors cursor-pointer group">
+                                    <Link href="/login" className="block p-3 bg-teal-50/10 border border-teal-600/20 rounded-lg mb-4 hover:bg-teal-50/20 transition-colors cursor-pointer group">
                                         <div className="flex justify-between items-center">
                                             <div>
-                                                <p className="text-[10px] text-orange-400 font-bold uppercase tracking-wide mb-1">Modo Visitante</p>
-                                                <p className="text-[10px] text-muted-foreground group-hover:text-orange-200/80 transition-colors">Crie uma conta grátis para personalizar seus dados no relatório.</p>
+                                                <p className="text-[10px] text-teal-500 font-bold uppercase tracking-wide mb-1">Modo Visitante</p>
+                                                <p className="text-[10px] text-muted-foreground group-hover:text-teal-200/80 transition-colors">Crie uma conta grátis para personalizar seus dados no relatório.</p>
                                             </div>
-                                            <div className="text-orange-400 opacity-50 group-hover:opacity-100 transition-opacity">
+                                            <div className="text-teal-500 opacity-50 group-hover:opacity-100 transition-opacity">
                                                 →
                                             </div>
                                         </div>

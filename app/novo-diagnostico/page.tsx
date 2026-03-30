@@ -118,23 +118,23 @@ export default function NovoDiagnostico() {
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#FF6600]/5 via-background to-[#FF6600]/5 border-b border-white/5 pt-16 pb-12 mb-40">
+            <section className="relative overflow-hidden bg-gradient-to-br from-[#0D9488]/5 via-background to-[#0D9488]/5 border-b border-white/5 pt-16 pb-12 mb-40">
                 <div className="absolute inset-0 overflow-hidden">
-                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#FF6600]/10 rounded-full blur-3xl"></div>
-                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#FF6600]/10 rounded-full blur-3xl"></div>
+                    <div className="absolute -top-40 -right-40 w-80 h-80 bg-[#0D9488]/10 rounded-full blur-3xl"></div>
+                    <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#0D9488]/10 rounded-full blur-3xl"></div>
                 </div>
 
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="max-w-4xl mx-auto text-center">
                         <button
                             onClick={() => router.push('/')}
-                            className="inline-flex items-center gap-2 text-muted-foreground hover:text-[#FF6600] transition-colors mb-6 text-sm font-medium"
+                            className="inline-flex items-center gap-2 text-muted-foreground hover:text-[#0D9488] transition-colors mb-6 text-sm font-medium"
                         >
                             <ArrowLeft size={16} />
                             Voltar para o Início
                         </button>
                         <h1 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight">
-                            Diagnóstico Visual com <span className="text-[#FF6600]">IA</span>
+                            Diagnóstico Visual com <span className="text-[#0D9488]">IA</span>
                         </h1>
                         <p className="text-xl font-manrope text-muted-foreground max-w-2xl mx-auto">
                             Envie uma foto do ambiente e a IA analisará os problemas, sugerindo soluções técnicas e gerando um orçamento preliminar.
@@ -150,7 +150,7 @@ export default function NovoDiagnostico() {
                     <div className="md:col-span-1 space-y-6">
                         <SpotlightCard className="rounded-2xl shadow-xl p-6 border border-neutral-200 dark:border-white/10 sticky top-24" spotlightColor="rgba(255, 102, 0, 0.15)">
                             <h3 className="text-lg font-heading font-bold mb-4 text-foreground flex items-center gap-2">
-                                <Camera size={20} className="text-[#FF6600]" />
+                                <Camera size={20} className="text-[#0D9488]" />
                                 Foto do Ambiente
                             </h3>
 
@@ -175,15 +175,15 @@ export default function NovoDiagnostico() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="border-2 border-dashed border-neutral-200 dark:border-white/10 hover:border-[#FF6600] dark:hover:border-[#FF6600] hover:bg-[#FF6600]/5 rounded-xl p-8 text-center transition-all group cursor-pointer" onClick={() => document.getElementById('file-upload')?.click()}>
+                                <div className="border-2 border-dashed border-neutral-200 dark:border-white/10 hover:border-[#0D9488] dark:hover:border-[#0D9488] hover:bg-[#0D9488]/5 rounded-xl p-8 text-center transition-all group cursor-pointer" onClick={() => document.getElementById('file-upload')?.click()}>
                                     <div className="mb-4 p-4 bg-gray-50 dark:bg-white/5 rounded-full w-fit mx-auto group-hover:scale-110 transition-transform duration-300">
-                                        <Upload className="h-8 w-8 text-gray-400 group-hover:text-[#FF6600] transition-colors" />
+                                        <Upload className="h-8 w-8 text-gray-400 group-hover:text-[#0D9488] transition-colors" />
                                     </div>
                                     <h4 className="font-bold text-foreground mb-1">Upload da Foto</h4>
                                     <p className="text-sm text-muted-foreground mb-6">
                                         Arraste uma foto ou clique para selecionar
                                     </p>
-                                    <label className="inline-block w-full py-3 bg-[#FF6600] hover:bg-[#CC5200] text-white rounded-xl cursor-pointer transition-colors text-sm font-bold shadow-lg shadow-orange-500/20">
+                                    <label className="inline-block w-full py-3 bg-[#0D9488] hover:bg-[#CC5200] text-white rounded-xl cursor-pointer transition-colors text-sm font-bold shadow-lg shadow-teal-500/20">
                                         {loading ? (
                                             <Loader2 className="animate-spin mx-auto" size={18} />
                                         ) : (
@@ -280,7 +280,7 @@ export default function NovoDiagnostico() {
                                         value={formData.area}
                                         onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                                         placeholder="12"
-                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#FF6600] focus:border-[#FF6600] placeholder-muted-foreground transition-all outline-none shadow-sm"
+                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#0D9488] focus:border-[#0D9488] placeholder-muted-foreground transition-all outline-none shadow-sm"
                                     />
                                 </div>
 
@@ -295,7 +295,7 @@ export default function NovoDiagnostico() {
                                         onChange={(e) => setFormData({ ...formData, observacoes: e.target.value })}
                                         placeholder="Ex: Quero trocar essa janela por um blindex e pintar tudo de branco"
                                         rows={3}
-                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#FF6600] focus:border-[#FF6600] placeholder-muted-foreground transition-all outline-none shadow-sm"
+                                        className="w-full px-4 py-3 text-base rounded-xl border border-neutral-200 dark:border-white/10 bg-neutral-50 dark:bg-black/20 text-foreground resize-none focus:ring-1 focus:ring-[#0D9488] focus:border-[#0D9488] placeholder-muted-foreground transition-all outline-none shadow-sm"
                                     />
                                 </div>
                             </div>
@@ -306,7 +306,7 @@ export default function NovoDiagnostico() {
                                 className={`w-full mt-8 px-6 py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 shadow-lg
                                     ${!image
                                         ? 'bg-gray-300 dark:bg-gray-800 text-gray-500 cursor-not-allowed'
-                                        : 'bg-[#FF6600] hover:bg-[#CC5200] text-white hover:shadow-orange-500/20 hover:scale-[1.01] active:scale-[0.99]'
+                                        : 'bg-[#0D9488] hover:bg-[#CC5200] text-white hover:shadow-teal-500/20 hover:scale-[1.01] active:scale-[0.99]'
                                     }`}
                             >
                                 {loading ? (

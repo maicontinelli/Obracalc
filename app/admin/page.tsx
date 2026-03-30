@@ -189,17 +189,17 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 border-l-4 border-l-orange-500">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-800 border-l-4 border-l-teal-600">
                         <div className="flex justify-between items-start">
                             <div>
                                 <p className="text-sm font-medium text-gray-500 mb-1">Leads Externos</p>
                                 <h3 className="text-3xl font-bold text-gray-900 dark:text-white">{anonymousLeads.length}</h3>
                             </div>
-                            <div className="p-2 bg-orange-50 text-orange-600 rounded-lg">
+                            <div className="p-2 bg-teal-50 text-teal-700 rounded-lg">
                                 <Search size={20} />
                             </div>
                         </div>
-                        <p className="text-xs text-orange-600 mt-2 font-bold">
+                        <p className="text-xs text-teal-700 mt-2 font-bold">
                             Sem cadastro
                         </p>
                     </div>
@@ -319,7 +319,7 @@ export default function AdminDashboard() {
                                                     </td>
                                                     <td className="p-4">
                                                         <div className="flex items-center gap-2">
-                                                            <div className="w-6 h-6 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold shrink-0">
+                                                            <div className="w-6 h-6 rounded-full bg-teal-100 text-teal-700 flex items-center justify-center text-xs font-bold shrink-0">
                                                                 {lead.user_email?.[0]?.toUpperCase()}
                                                             </div>
                                                             <span className="text-gray-600 dark:text-gray-400 truncate max-w-[150px] text-xs" title={lead.user_email}>
@@ -399,7 +399,7 @@ export default function AdminDashboard() {
                             // ANONYMOUS LEADS TABLE
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm">
-                                    <thead className="bg-orange-50 dark:bg-orange-950/20 text-orange-800 dark:text-orange-400 font-medium border-b border-orange-100 dark:border-orange-900">
+                                    <thead className="bg-teal-50 dark:bg-teal-950/20 text-teal-800 dark:text-teal-500 font-medium border-b border-teal-100 dark:border-teal-900">
                                         <tr>
                                             <th className="p-4 pl-6">Prestador (Sem cadastro)</th>
                                             <th className="p-4">Cliente / Obra Captada</th>

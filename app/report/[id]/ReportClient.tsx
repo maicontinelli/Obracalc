@@ -658,7 +658,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                     <div className="grid grid-cols-2 md:grid-cols-5 print:grid-cols-5 gap-3 p-4 md:p-6 bg-white dark:bg-[#262423] print:bg-white print:p-4 print:pt-2">
                         <div className="p-2.5 bg-gray-50/50 dark:bg-gray-700/20 rounded-lg border border-gray-100 dark:border-gray-700 print:border-none print:bg-gray-50/50">
                             <div className="flex items-center gap-1.5 mb-1">
-                                <span className="text-orange-500 text-[11px]">🏗️</span>
+                                <span className="text-teal-600 text-[11px]">🏗️</span>
                                 <span className="text-[9px] font-bold text-gray-400 uppercase">Tipo</span>
                             </div>
                             <div className="font-bold text-[12px] text-gray-900 dark:text-gray-100 leading-tight">{data.projectType || 'Obra Geral'}</div>

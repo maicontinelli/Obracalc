@@ -27,10 +27,10 @@ export function TargetAudience() {
         {
             id: "pro",
             icon: <HardHat className="w-6 h-6" />,
-            color: "text-[#FF6600]",
-            bg: "bg-[#FF6600]/10",
+            color: "text-[#0D9488]",
+            bg: "bg-[#0D9488]/10",
             badge: "Profissionais da Construção",
-            badgeBg: "bg-[#FF6600]/10 text-[#C95F1A]",
+            badgeBg: "bg-[#0D9488]/10 text-[#C95F1A]",
             title: "Monte orçamentos completos em minutos, não em horas",
             benefit: (
                 <>
@@ -40,8 +40,8 @@ export function TargetAudience() {
             ),
             chips: ["Relatório em PDF", "Composição de BDI", "Tabelas SINAPI"],
             cta: "Ver como funciona",
-            hoverBorder: "hover:border-[#FF6600]/50",
-            ctaColor: "text-[#FF6600]"
+            hoverBorder: "hover:border-[#0D9488]/50",
+            ctaColor: "text-[#0D9488]"
         },
         {
             id: "partner",
@@ -69,7 +69,7 @@ export function TargetAudience() {
             <div className="container mx-auto px-4">
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-5xl font-heading font-bold text-foreground mb-6 tracking-tight leading-[1.1]">
-                        Um orçamento confiável para <br /> <span className="text-[#FF6600]">decisões reais</span>
+                        Um orçamento confiável para <br /> <span className="text-[#0D9488]">decisões reais</span>
                     </h2>
                     <p className="text-muted-foreground text-lg">
                         Quem você é define como a ObraPlana pode te ajudar.
