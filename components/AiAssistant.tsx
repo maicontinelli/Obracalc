@@ -57,12 +57,10 @@ export default function AiAssistant({ onActivate, onReset }: AiAssistantProps) {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const PLACEHOLDERS = [
-        'Descreva seu projeto de obra ou reforma...',
-        'Ex: Reforma de banheiro 6m²...',
-        'Ex: Muro de alvenaria 15m linear...',
-        'Ex: Pintura interna de apartamento 80m²...',
-        'Ex: Troca de piso cerâmico na cozinha...',
-        'Ex: Instalação elétrica residencial...',
+        'Descreva o que você quer construir ou reformar...',
+        'Quanto mais detalhes, mais preciso o orçamento...',
+        'Informe área, materiais e tipo de serviço...',
+        'Pode perguntar também sobre custos e prazos...',
     ];
 
     const [placeholder, setPlaceholder] = useState(PLACEHOLDERS[0]);

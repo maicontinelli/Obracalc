@@ -74,12 +74,6 @@ body {
   @apply bg-background text-foreground transition-colors;
 }
 
-/* Prevent textarea placeholder from wrapping (causes height expansion) */
-textarea::placeholder {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
 
 
 
