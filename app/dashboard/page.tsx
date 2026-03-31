@@ -41,6 +41,7 @@ import {
     Menu,
     Copy,
     Share2,
+    MoreHorizontal,
 } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
 import { BudgetOverview } from '@/components/dashboard/BudgetOverview';
@@ -700,6 +701,7 @@ export default function DashboardPage() {
         const area = budget.content?.projectArea || 0;
         const avgPrice = area > 0 ? totalValue / area : 0;
         const status = budget.content?.status || 'andamento';
+        const [menuOpen, setMenuOpen] = React.useState(false);
 
         const StatusIcon = status === 'concluido' ? CheckCircle2 : status === 'parado' ? PauseCircle : Clock;
         const statusColor = status === 'concluido' ? 'text-green-500' : status === 'parado' ? 'text-red-500' : 'text-yellow-500';
@@ -741,13 +743,19 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Name */}
-                <div className="col-span-3 overflow-hidden">
+                <div className="col-span-5 md:col-span-4 overflow-hidden">
                     <h4 className="font-bold text-xs md:text-sm text-foreground truncate">{budget.content?.clientName || budget.title || 'Novo Orçamento'}</h4>
+                    {/* Tag badge — visible on mobile only (type hidden on md+) */}
+                    {budget.content?.projectType && (
+                        <span className="md:hidden inline-block mt-0.5 max-w-fit px-2 py-0.5 rounded-full text-[9px] font-semibold bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-800 truncate">
+                            {budget.content.projectType}
+                        </span>
+                    )}
                 </div>
 
-                {/* Type */}
-                <div className="col-span-3 overflow-hidden flex flex-col gap-1">
-                    <p className="text-[10px] text-muted-foreground truncate opacity-70 font-medium">{budget.content?.projectType || 'Obra Residencial'}</p>
+                {/* Type — hidden on mobile */}
+                <div className="hidden md:flex col-span-2 overflow-hidden flex-col gap-1">
+                    <p className="text-[10px] text-muted-foreground truncate opacity-70 font-medium">{budget.content?.projectType || '—'}</p>
                     {budget.content?.projectType && (
                         <span className="inline-block max-w-fit px-2 py-0.5 rounded-full text-[9px] font-semibold bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-800 truncate">
                             {budget.content.projectType}
@@ -755,57 +763,57 @@ export default function DashboardPage() {
                     )}
                 </div>
 
-                {/* Date */}
-                <div className="col-span-1 text-center">
+                {/* Date — hidden on mobile */}
+                <div className="hidden md:block col-span-1 text-center">
                     <span className="text-[11px] text-muted-foreground opacity-80">{new Date(budget.updated_at).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
                 </div>
 
                 {/* Value */}
-                <div className="col-span-2 text-right pr-2">
+                <div className="col-span-4 md:col-span-2 text-right pr-1">
                     <div className="flex flex-col items-end">
-                        <span className="font-bold text-xs md:text-sm">
+                        <span className="font-bold text-xs md:text-sm tabular-nums">
                             {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalValue)}
                         </span>
-                        <span className="text-[9px] text-muted-foreground opacity-60">
-                            {avgPrice > 0 ? (
-                                new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(avgPrice) + '/m²'
-                            ) : ''}
+                        <span className="text-[9px] text-muted-foreground opacity-60 tabular-nums">
+                            {avgPrice > 0 ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(avgPrice) + '/m²' : ''}
                         </span>
                     </div>
                 </div>
 
                 {/* Actions */}
-                <div className="col-span-2 flex justify-end gap-1 md:gap-2 pr-2">
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        handleShareReport(budget.id);
-                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-teal-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Compartilhar">
-                        <Share2 size={16} />
-                    </button>
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        handleDuplicateBudget(budget);
-                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-purple-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Duplicar">
-                        <Copy size={16} />
-                    </button>
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/report/${budget.id}`);
-                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-blue-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Ver Relatório">
-                        <FileText size={16} />
-                    </button>
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/editor/${budget.id}`);
-                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-primary transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Editar">
-                        <Edit3 size={16} />
-                    </button>
-                    <button onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteBudget(budget.id);
-                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-red-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Excluir">
-                        <Trash2 size={16} />
-                    </button>
+                <div className="col-span-2 md:col-span-3 flex justify-end items-center gap-1 pr-1" onClick={e => e.stopPropagation()}>
+
+                    {/* Desktop: show all 5 buttons */}
+                    <div className="hidden md:flex items-center gap-1">
+                        <button onClick={() => handleShareReport(budget.id)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-teal-500 transition-all" title="Compartilhar"><Share2 size={15} /></button>
+                        <button onClick={() => handleDuplicateBudget(budget)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-purple-500 transition-all" title="Duplicar"><Copy size={15} /></button>
+                        <button onClick={() => router.push(`/report/${budget.id}`)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-blue-500 transition-all" title="Relatório"><FileText size={15} /></button>
+                        <button onClick={() => router.push(`/editor/${budget.id}`)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-teal-600 transition-all" title="Editar"><Edit3 size={15} /></button>
+                        <button onClick={() => handleDeleteBudget(budget.id)} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 text-gray-400 hover:text-red-500 transition-all" title="Excluir"><Trash2 size={15} /></button>
+                    </div>
+
+                    {/* Mobile: edit + "…" dropdown */}
+                    <div className="flex md:hidden items-center gap-1">
+                        <button onClick={() => router.push(`/editor/${budget.id}`)} className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400" title="Editar"><Edit3 size={15} /></button>
+                        <div className="relative">
+                            <button
+                                onClick={() => setMenuOpen(v => !v)}
+                                className="p-1.5 rounded-lg bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400"
+                                title="Mais ações"
+                            >
+                                <MoreHorizontal size={15} />
+                            </button>
+                            {menuOpen && (
+                                <div className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-[#1e1c1a] border border-black/5 dark:border-white/10 shadow-xl rounded-xl p-1 z-50">
+                                    <button onClick={() => { router.push(`/report/${budget.id}`); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/70 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg"><FileText size={13} /> Ver Relatório</button>
+                                    <button onClick={() => { handleShareReport(budget.id); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/70 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg"><Share2 size={13} /> Compartilhar link</button>
+                                    <button onClick={() => { handleDuplicateBudget(budget); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-foreground/70 hover:bg-gray-50 dark:hover:bg-white/5 rounded-lg"><Copy size={13} /> Duplicar</button>
+                                    <div className="h-px bg-black/5 dark:bg-white/10 my-1" />
+                                    <button onClick={() => { handleDeleteBudget(budget.id); setMenuOpen(false); }} className="w-full flex items-center gap-2 px-3 py-2 text-xs text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 size={13} /> Excluir</button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -962,13 +970,13 @@ export default function DashboardPage() {
                                     Ver todos <ChevronRight size={14} />
                                 </button>
                             </div>
-                            <div className="hidden md:grid grid-cols-12 gap-4 px-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-black/5 dark:border-white/5 pb-2">
+                            <div className="hidden md:grid grid-cols-12 gap-2 px-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-black/5 dark:border-white/5 pb-2">
                                 <div className="col-span-1 text-center">Status</div>
-                                <div className="col-span-3">Cliente</div>
-                                <div className="col-span-3">Tipo de Obra</div>
+                                <div className="col-span-4">Cliente</div>
+                                <div className="col-span-2">Tipo</div>
                                 <div className="col-span-1 text-center">Data</div>
                                 <div className="col-span-2 text-right">Total</div>
-                                <div className="col-span-2 text-center">Ações</div>
+                                <div className="col-span-2 text-right pr-1">Ações</div>
                             </div>
                             <div className="space-y-2">
                                 {budgets.length === 0 ? (
@@ -1036,13 +1044,13 @@ export default function DashboardPage() {
                         )}
 
                         <div className={`${cardClass} p-6`}>
-                            <div className="hidden md:grid grid-cols-12 gap-4 px-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-black/5 dark:border-white/5 pb-2">
+                            <div className="hidden md:grid grid-cols-12 gap-2 px-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-black/5 dark:border-white/5 pb-2">
                                 <div className="col-span-1 text-center">Status</div>
-                                <div className="col-span-3">Cliente</div>
-                                <div className="col-span-3">Tipo de Obra</div>
+                                <div className="col-span-4">Cliente</div>
+                                <div className="col-span-2">Tipo</div>
                                 <div className="col-span-1 text-center">Data</div>
                                 <div className="col-span-2 text-right">Total</div>
-                                <div className="col-span-2 text-center">Ações</div>
+                                <div className="col-span-2 text-right pr-1">Ações</div>
                             </div>
 
                             <div className="space-y-2">
