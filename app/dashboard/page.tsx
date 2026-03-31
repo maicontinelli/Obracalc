@@ -39,6 +39,8 @@ import {
     ChevronRight,
     FilePlus2,
     Menu,
+    Copy,
+    Share2,
 } from 'lucide-react';
 import { useProfile } from '@/hooks/useProfile';
 import { BudgetOverview } from '@/components/dashboard/BudgetOverview';
@@ -97,6 +99,8 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [budgets, setBudgets] = useState<Budget[]>([]);
     const [showToast, setShowToast] = useState(false);
+    const [shareToast, setShareToast] = useState(false);
+    const [filterTag, setFilterTag] = useState<string | null>(null);
     const [isSubscriptionExpanded, setIsSubscriptionExpanded] = useState(false);
 
     // Simple Stats
@@ -473,6 +477,65 @@ export default function DashboardPage() {
         }
     };
 
+    const handleDuplicateBudget = async (budget: Budget) => {
+        if (profile?.tier === 'free' && budgets.length >= 2) {
+            alert('Limite de 2 orçamentos no plano grátis.');
+            router.push('/planos');
+            return;
+        }
+        const newId = crypto.randomUUID();
+        const now = new Date().toISOString();
+        const newContent = {
+            ...(budget.content || {}),
+            clientName: `${budget.content?.clientName || 'Cópia'} (cópia)`,
+        };
+        const { error } = await supabase.from('budgets').insert({
+            id: newId,
+            user_id: user!.id,
+            title: `${budget.title || 'Orçamento'} (cópia)`,
+            content: newContent,
+            created_at: now,
+            updated_at: now,
+        });
+        if (!error) {
+            setBudgets(prev => [{ id: newId, title: `${budget.title || 'Orçamento'} (cópia)`, updated_at: now, content: newContent }, ...prev]);
+        }
+    };
+
+    const handleShareReport = (budgetId: string) => {
+        const url = `${window.location.origin}/report/${budgetId}`;
+        navigator.clipboard.writeText(url).then(() => {
+            setShareToast(true);
+            setTimeout(() => setShareToast(false), 2500);
+        });
+    };
+
+    const handleExportCSV = () => {
+        if (budgets.length === 0) return;
+        const rows = budgets.map(b => {
+            const totalValue = b.content?.items?.filter((i: any) => i.included)
+                .reduce((sum: number, item: any) => sum + ((item.manualPrice ?? item.price) * item.quantity), 0)
+                * (1 + (b.content?.bdi || 0) / 100) || 0;
+            return [
+                b.content?.clientName || b.title || 'Sem nome',
+                b.content?.projectType || '',
+                new Date(b.updated_at).toLocaleDateString('pt-BR'),
+                b.content?.projectArea || '',
+                totalValue.toFixed(2).replace('.', ','),
+                b.content?.status || 'andamento',
+            ];
+        });
+        const header = ['Cliente', 'Tipo de Obra', 'Última Atualização', 'Área (m²)', 'Total (R$)', 'Status'];
+        const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(';')).join('\n');
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `orcamentos_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
     const handleNewBudget = () => {
         // Simple limit check - keep logic for now but maybe relax in future
         if (profile?.tier === 'free' && budgets.length >= 2) {
@@ -683,8 +746,13 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Type */}
-                <div className="col-span-3 overflow-hidden">
+                <div className="col-span-3 overflow-hidden flex flex-col gap-1">
                     <p className="text-[10px] text-muted-foreground truncate opacity-70 font-medium">{budget.content?.projectType || 'Obra Residencial'}</p>
+                    {budget.content?.projectType && (
+                        <span className="inline-block max-w-fit px-2 py-0.5 rounded-full text-[9px] font-semibold bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-800 truncate">
+                            {budget.content.projectType}
+                        </span>
+                    )}
                 </div>
 
                 {/* Date */}
@@ -708,6 +776,18 @@ export default function DashboardPage() {
 
                 {/* Actions */}
                 <div className="col-span-2 flex justify-end gap-1 md:gap-2 pr-2">
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        handleShareReport(budget.id);
+                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-teal-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Compartilhar">
+                        <Share2 size={16} />
+                    </button>
+                    <button onClick={(e) => {
+                        e.stopPropagation();
+                        handleDuplicateBudget(budget);
+                    }} className="p-2 bg-white dark:bg-white/5 shadow-sm rounded-xl hover:text-purple-500 transition-all border border-black/5 dark:border-white/10 group-hover:scale-105" title="Duplicar">
+                        <Copy size={16} />
+                    </button>
                     <button onClick={(e) => {
                         e.stopPropagation();
                         router.push(`/report/${budget.id}`);
@@ -906,18 +986,54 @@ export default function DashboardPage() {
                 )}
 
                 {/* ── SECTION: ORCAMENTOS ── */}
-                {activeSection === 'orcamentos' && (
+                {activeSection === 'orcamentos' && (() => {
+                    const allTags = Array.from(new Set(budgets.map(b => b.content?.projectType).filter(Boolean)));
+                    const filteredBudgets = filterTag ? budgets.filter(b => b.content?.projectType === filterTag) : budgets;
+                    return (
                     <div className="space-y-6">
                         <div className="flex justify-between items-center">
-                            <h1 className="text-2xl font-semibold text-foreground tracking-tight">Meus Orçamentos</h1>
-                            <button
-                                onClick={handleNewBudget}
-                                className="bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-xl flex items-center gap-2 transition-colors"
-                            >
-                                <Plus size={16} />
-                                Novo
-                            </button>
+                            <div>
+                                <h1 className="text-2xl font-semibold text-foreground tracking-tight">Meus Orçamentos</h1>
+                                <p className="text-xs text-muted-foreground mt-0.5">{filteredBudgets.length} orçamento(s)</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={handleExportCSV}
+                                    title="Exportar CSV"
+                                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-600 dark:text-gray-400 rounded-lg transition-colors"
+                                >
+                                    <Download size={14} />
+                                    Exportar CSV
+                                </button>
+                                <button
+                                    onClick={handleNewBudget}
+                                    className="bg-teal-600 hover:bg-teal-700 text-white text-sm font-bold px-4 py-2 rounded-xl flex items-center gap-2 transition-colors"
+                                >
+                                    <Plus size={16} />
+                                    Novo
+                                </button>
+                            </div>
                         </div>
+
+                        {allTags.length > 0 && (
+                            <div className="flex gap-2 overflow-x-auto pb-1 mt-3 mb-4">
+                                <button
+                                    onClick={() => setFilterTag(null)}
+                                    className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-all ${!filterTag ? 'bg-teal-600 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'}`}
+                                >
+                                    Todos
+                                </button>
+                                {allTags.map(tag => (
+                                    <button
+                                        key={tag}
+                                        onClick={() => setFilterTag(filterTag === tag ? null : tag)}
+                                        className={`shrink-0 px-3 py-1 rounded-full text-xs font-medium transition-all ${filterTag === tag ? 'bg-teal-600 text-white' : 'bg-gray-100 dark:bg-white/5 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10'}`}
+                                    >
+                                        {tag}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         <div className={`${cardClass} p-6`}>
                             <div className="hidden md:grid grid-cols-12 gap-4 px-3 mb-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-black/5 dark:border-white/5 pb-2">
@@ -930,24 +1046,66 @@ export default function DashboardPage() {
                             </div>
 
                             <div className="space-y-2">
-                                {budgets.length === 0 ? (
+                                {filteredBudgets.length === 0 ? (
                                     <div className="text-center py-10 text-muted-foreground">
                                         <FileText className="w-12 h-12 mx-auto mb-3 opacity-20" />
-                                        <p>Nenhum orçamento ainda.</p>
-                                        <button onClick={handleNewBudget} className="mt-4 text-primary font-bold hover:underline">Criar agora</button>
+                                        <p>{budgets.length === 0 ? 'Nenhum orçamento ainda.' : 'Nenhum orçamento com este filtro.'}</p>
+                                        {budgets.length === 0 && <button onClick={handleNewBudget} className="mt-4 text-primary font-bold hover:underline">Criar agora</button>}
                                     </div>
-                                ) : budgets.map(budget => (
+                                ) : filteredBudgets.map(budget => (
                                     <BudgetRow key={budget.id} budget={budget} />
                                 ))}
                             </div>
                         </div>
                     </div>
-                )}
+                    );
+                })()}
 
                 {/* ── SECTION: PERFIL ── */}
-                {activeSection === 'perfil' && (
+                {activeSection === 'perfil' && (() => {
+                    const profileFields = [
+                        { key: 'full_name', label: 'Nome completo' },
+                        { key: 'company_name', label: 'Empresa' },
+                        { key: 'profession', label: 'Profissão' },
+                        { key: 'phone', label: 'Telefone' },
+                        { key: 'document_id', label: 'CPF/CNPJ' },
+                        { key: 'city', label: 'Cidade' },
+                        { key: 'address', label: 'Endereço' },
+                        { key: 'pix_key', label: 'Chave PIX' },
+                        { key: 'avatar_url', label: 'Foto de perfil' },
+                    ];
+                    const filledCount = profileFields.filter(f => !!profileData[f.key as keyof typeof profileData]).length;
+                    const completeness = Math.round((filledCount / profileFields.length) * 100);
+                    return (
                     <div className="space-y-6">
                         <h1 className="text-2xl font-semibold text-foreground tracking-tight">Meu Perfil</h1>
+
+                        <div className="bg-white/70 dark:bg-[#1A1A1A]/70 backdrop-blur-xl rounded-2xl border border-black/5 dark:border-white/5 p-5 mb-6">
+                            <div className="flex items-center justify-between mb-3">
+                                <div>
+                                    <p className="text-sm font-bold text-foreground">Perfil {completeness}% completo</p>
+                                    <p className="text-xs text-muted-foreground mt-0.5">
+                                        {completeness === 100 ? 'Tudo certo! Seus dados aparecem nos relatórios.' : `Preencha mais ${profileFields.length - filledCount} campo(s) para melhorar seus relatórios.`}
+                                    </p>
+                                </div>
+                                <span className={`text-lg font-black ${completeness === 100 ? 'text-teal-500' : completeness >= 60 ? 'text-yellow-500' : 'text-red-400'}`}>{completeness}%</span>
+                            </div>
+                            <div className="w-full h-2 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full rounded-full transition-all duration-700 ${completeness === 100 ? 'bg-teal-500' : completeness >= 60 ? 'bg-yellow-400' : 'bg-red-400'}`}
+                                    style={{ width: `${completeness}%` }}
+                                />
+                            </div>
+                            {completeness < 100 && (
+                                <div className="flex flex-wrap gap-1.5 mt-3">
+                                    {profileFields.filter(f => !profileData[f.key as keyof typeof profileData]).map(f => (
+                                        <span key={f.key} className="text-[10px] bg-gray-100 dark:bg-white/5 text-muted-foreground px-2 py-0.5 rounded-full">
+                                            {f.label}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
 
                         <div className={`${cardClass} p-6 space-y-6`}>
                             {/* Avatar & Logo Upload */}
@@ -1064,7 +1222,8 @@ export default function DashboardPage() {
                             </div>
                         </div>
                     </div>
-                )}
+                    );
+                })()}
 
                 {/* ── SECTION: ASSINATURA ── */}
                 {activeSection === 'assinatura' && (
@@ -1166,6 +1325,14 @@ export default function DashboardPage() {
                     >
                         Ver Planos
                     </button>
+                </div>
+            )}
+
+            {/* Share Toast */}
+            {shareToast && (
+                <div className="fixed top-8 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-6 py-3 rounded-full shadow-lg z-[100] flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+                    <Share2 className="text-teal-400" size={18} />
+                    <span className="text-sm font-medium">Link copiado! Compartilhe com seu cliente.</span>
                 </div>
             )}
         </div>
