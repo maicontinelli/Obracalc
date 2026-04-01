@@ -790,7 +790,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
 
                 {/* Full Width Sections with Visual Buffers for Print */}
                 <div className="break-inside-avoid print:pt-8">
-                    <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} projectDuration={data.projectDuration} total={total} />
+                    <CronogramaEstimado deadline={data.deadline || ''} projectType={data.projectType || ''} projectDuration={data.projectDuration} total={total} items={data.items || []} />
                 </div>
 
                 <div className="break-inside-avoid print:pt-8">
@@ -800,7 +800,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                 {/* Footer Section: Legend & Totals Side-by-Side - Moved here as requested */}
                 <div className="mt-8 print:mt-4 print:pt-[20px] grid grid-cols-1 print:grid-cols-2 md:grid-cols-2 gap-6 print:gap-4 break-inside-avoid items-stretch">
                     <ComposicaoBDI bdiPct={data.bdi || 0} totalDirect={subtotal} />
-                    <ComparativoMercado total={total} area={data.projectArea || 0} id={estimateId} />
+                    <ComparativoMercado total={total} area={data.projectArea || 0} projectType={data.projectType || ''} id={estimateId} />
                 </div>
 
             </div>

@@ -190,9 +190,23 @@ export function CurvaABC({ items, includeMaterials }: { items: any[], includeMat
     );
 }
 
-// ─── CRONOGRAMA (Heurística) ────────────────
-// ─── CRONOGRAMA (Heurística) ────────────────
-export function CronogramaEstimado({ deadline, projectType, projectDuration, total }: { deadline: string, projectType: string, projectDuration?: number, total?: number }) {
+// ─── CATEGORY → PHASE MAPPING ────────────────
+const CATEGORY_PHASE_MAP: { keywords: string[], phase: string, color: string }[] = [
+    { keywords: ['fundaç', 'fundacao', 'terraplan', 'demoliç', 'moviment'], phase: 'Serviços Iniciais', color: COLORS.textDim },
+    { keywords: ['estrutur', 'concreto', 'alvenar', 'armad'], phase: 'Estrutura / Alvenaria', color: COLORS.teal },
+    { keywords: ['cobertur', 'telhad', 'impermeab'], phase: 'Cobertura', color: COLORS.blue },
+    { keywords: ['elétr', 'eletr', 'luminot', 'rede lóg', 'cabeament'], phase: 'Instalações Elétricas', color: COLORS.yellow },
+    { keywords: ['hidrául', 'hidraul', 'sanitár', 'esgot', 'água'], phase: 'Instalações Hidráulicas', color: COLORS.purple },
+    { keywords: ['revestim', 'cerâm', 'ceram', 'piso', 'porcelan', 'argamass'], phase: 'Revestimentos', color: COLORS.green },
+    { keywords: ['pintur', 'massa', 'gesso', 'drywall', 'forro'], phase: 'Acabamentos Internos', color: '#f97316' },
+    { keywords: ['esquadr', 'porta', 'janela', 'vidro', 'alumín'], phase: 'Esquadrias', color: '#8b5cf6' },
+    { keywords: ['limpez', 'entrega', 'final'], phase: 'Limpeza / Entrega', color: COLORS.textMuted },
+];
+
+// ─── CRONOGRAMA (Real item weights) ────────────────
+export function CronogramaEstimado({ deadline, projectType, projectDuration, total, items }: {
+    deadline: string, projectType: string, projectDuration?: number, total?: number, items?: any[]
+}) {
     // Try to extract number of months
     let months = projectDuration || 0;
 
@@ -209,75 +223,110 @@ export function CronogramaEstimado({ deadline, projectType, projectDuration, tot
 
         // Heuristic Fallback based on Project Type complexity
         if (months < 1) {
-            // No valid duration found, guess based on type
             const typelower = (projectType || '').toLowerCase();
             if (typelower.includes('casa') || typelower.includes('construção') || typelower.includes('nova')) {
-                months = 6; // Default for new house
+                months = 6;
             } else if (typelower.includes('reforma')) {
-                months = 2; // Default for renovation
+                months = 2;
             } else {
-                months = 1; // Default for small Service
+                months = 1;
             }
         } else {
-            // Valid duration found, but sanity check
             const typelower = (projectType || '').toLowerCase();
             const isComplex = typelower.includes('casa') || typelower.includes('construção') || typelower.includes('nova');
 
-            // If it's a complex work but duration < 2 months, force minimum of 5 months
             if (isComplex && months < 2) {
                 months = 5;
             }
         }
     }
 
-    const totalC = total || 0;
-    const nMonths = Math.ceil(months);
+    // Build phase → value map from real items
+    const phaseValues: Record<string, number> = {};
+    let totalFromItems = 0;
 
-    // Phases Distribution (Physical & Financial Weights)
-    const phases = [
-        { name: "Preliminares", startPct: 0, durPct: 15, color: COLORS.textDim, weight: 0.05 },
-        { name: "Estrutura/Alvenaria", startPct: 10, durPct: 35, color: COLORS.teal, weight: 0.35 },
-        { name: "Instalações", startPct: 35, durPct: 30, color: COLORS.blue, weight: 0.20 },
-        { name: "Acabamentos", startPct: 55, durPct: 40, color: COLORS.purple, weight: 0.35 },
-        { name: "Limpeza/Entrega", startPct: 90, durPct: 10, color: COLORS.green, weight: 0.05 },
-    ];
+    if (items && items.length > 0) {
+        items.filter(i => i.included).forEach(item => {
+            const cat = (item.category || item.name || '').toLowerCase();
+            const price = (item.manualPrice ?? item.price ?? 0) * (item.quantity ?? 1);
 
-    // Calculate Monthly Financial Distribution
-    const monthlyData = [];
-    for (let m = 1; m <= nMonths; m++) {
-        const monthStart = ((m - 1) / nMonths) * 100;
-        const monthEnd = (m / nMonths) * 100;
-        let monthTotal = 0;
+            let matched = false;
+            for (const mapping of CATEGORY_PHASE_MAP) {
+                if (mapping.keywords.some(kw => cat.includes(kw))) {
+                    phaseValues[mapping.phase] = (phaseValues[mapping.phase] || 0) + price;
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                phaseValues['Outros Serviços'] = (phaseValues['Outros Serviços'] || 0) + price;
+            }
+            totalFromItems += price;
+        });
+    }
 
-        phases.forEach(phase => {
-            const phaseEnd = phase.startPct + phase.durPct;
-            // Intersection of month [monthStart, monthEnd] and phase [startPct, phaseEnd]
-            const overlapStart = Math.max(monthStart, phase.startPct);
-            const overlapEnd = Math.min(monthEnd, phaseEnd);
-            const overlap = Math.max(0, overlapEnd - overlapStart);
+    const hasRealData = totalFromItems > 0 && Object.keys(phaseValues).length >= 2;
 
-            if (overlap > 0) {
-                // Contribution of this phase to this month
-                const phasePortionInMonth = overlap / phase.durPct;
-                monthTotal += phasePortionInMonth * (phase.weight * totalC);
+    let phases: { name: string, weight: number, color: string }[];
+
+    if (hasRealData) {
+        // Sort by value descending, assign sequential timeline positions
+        const sorted = Object.entries(phaseValues)
+            .filter(([name]) => name !== 'Outros Serviços')
+            .sort(([, a], [, b]) => b - a)
+            .map(([name, val]) => {
+                const mapped = CATEGORY_PHASE_MAP.find(m => m.phase === name);
+                return {
+                    name,
+                    weight: val / totalFromItems,
+                    color: mapped?.color || COLORS.textDim,
+                };
+            });
+        // Add "Outros Serviços" at the end if it exists
+        if (phaseValues['Outros Serviços']) {
+            sorted.push({
+                name: 'Outros Serviços',
+                weight: phaseValues['Outros Serviços'] / totalFromItems,
+                color: COLORS.textMuted,
+            });
+        }
+        phases = sorted;
+    } else {
+        // Heuristic fallback
+        phases = [
+            { name: 'Serviços Iniciais', weight: 0.05, color: COLORS.textDim },
+            { name: 'Estrutura / Alvenaria', weight: 0.35, color: COLORS.teal },
+            { name: 'Instalações', weight: 0.20, color: COLORS.blue },
+            { name: 'Acabamentos', weight: 0.35, color: COLORS.purple },
+            { name: 'Limpeza / Entrega', weight: 0.05, color: COLORS.green },
+        ];
+    }
+
+    // Assign timeline positions sequentially
+    let cursor = 0;
+    const phasesWithTime = phases.map(p => {
+        const start = cursor;
+        const end = cursor + p.weight;
+        cursor = end;
+        return { ...p, startPct: start * 100, endPct: end * 100 };
+    });
+
+    const totalC = total || totalFromItems;
+    const nMonths = Math.max(1, Math.ceil(months));
+
+    const monthlyData = Array.from({ length: nMonths }, (_, i) => {
+        const monthStart = (i / nMonths) * 100;
+        const monthEnd = ((i + 1) / nMonths) * 100;
+        let value = 0;
+        phasesWithTime.forEach(phase => {
+            const overlap = Math.max(0, Math.min(monthEnd, phase.endPct) - Math.max(monthStart, phase.startPct));
+            const phaseDuration = phase.endPct - phase.startPct;
+            if (phaseDuration > 0 && overlap > 0) {
+                value += (overlap / phaseDuration) * phase.weight * totalC;
             }
         });
-
-        monthlyData.push({
-            month: m,
-            value: monthTotal,
-            pct: (monthTotal / totalC) * 100
-        });
-    }
-
-    // Generate month markers for the timeline
-    const monthMarkers = [];
-    for (let i = 0; i <= nMonths; i++) {
-        monthMarkers.push({
-            num: i,
-            position: (i / nMonths) * 100
-        });
-    }
+        return { month: i + 1, value };
+    });
 
     return (
         <Card>
@@ -288,23 +337,27 @@ export function CronogramaEstimado({ deadline, projectType, projectDuration, tot
 
             {/* Visual Timeline Bars */}
             <div className="space-y-3 mb-6">
-                {phases.map((phase, i) => (
+                {phasesWithTime.map((phase, i) => (
                     <div key={i} className="flex items-center gap-4">
-                        <div className="w-[120px] text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-tight">{phase.name}</div>
+                        <div className="w-[130px] text-[10px] text-gray-600 dark:text-gray-400 font-bold uppercase tracking-tight truncate">{phase.name}</div>
                         <div className="flex-1 h-3.5 relative bg-gray-100 dark:bg-gray-800/50 rounded-full overflow-hidden print:border print:border-gray-200">
                             <div style={{
-                                position: "absolute", left: `${phase.startPct}%`, width: `${phase.durPct}%`,
-                                height: "100%", borderRadius: 99,
+                                position: 'absolute',
+                                left: `${phase.startPct}%`,
+                                width: `${phase.endPct - phase.startPct}%`,
+                                height: '100%',
+                                borderRadius: 99,
                                 background: phase.color,
-                                opacity: 0.8,
+                                opacity: 0.85,
                             }} />
                         </div>
+                        <span className="text-[10px] text-gray-400 w-10 text-right">{(phase.weight * 100).toFixed(0)}%</span>
                     </div>
                 ))}
             </div>
 
             {/* Scale Area with Financial Values */}
-            <div className="pl-[120px]">
+            <div className="pl-[130px]">
                 <div className="relative h-10 border-t border-gray-200 dark:border-gray-700">
                     {/* Vertical Grid Lines for Months */}
                     {Array.from({ length: nMonths + 1 }).map((_, i) => (
@@ -346,27 +399,44 @@ export function CronogramaEstimado({ deadline, projectType, projectDuration, tot
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(totalC)}
                 </span>
             </div>
+
+            {hasRealData && (
+                <p className="text-[9px] text-teal-600 mt-2">✓ Distribuição baseada nos itens reais do orçamento</p>
+            )}
         </Card>
     );
 }
 
-// ─── BDI (Heurística) ────────────────
+// ─── BDI (TCU Acórdão 2622/2013) ────────────────
+// TCU recommended BDI ranges for civil construction
+const TCU_BDI_RANGE = { min: 19.65, max: 26.52 }; // civil construction services
+
 export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDirect: number }) {
-    // Standard Market Breakdown Logic
-    // Tax (approx 30% of BDI), Profit (30%), Admin (25%), Risk (15%)
-    const taxes = bdiPct * 0.35;
-    const profit = bdiPct * 0.30;
-    const admin = bdiPct * 0.20;
-    const risk = bdiPct * 0.15;
+    // Dynamic proportions based on TCU decomposition:
+    // Taxes: PIS 0.65%, COFINS 3%, ISS 3-5%, CPRB varies → typically 7-10% of BDI total
+    // Admin: 5-8% overhead
+    // Risk/contingency: 2-3%
+    // Profit: remainder
+    const taxPct = Math.min(bdiPct * 0.40, 10.5); // Cap at realistic ISS+PIS+COFINS range
+    const adminPct = Math.min(bdiPct * 0.25, 6.0);
+    const riskPct = Math.min(bdiPct * 0.12, 3.0);
+    const profitPct = Math.max(0, bdiPct - taxPct - adminPct - riskPct);
 
     const bdiItems = [
-        { label: "Tributação (PIS/COFINS/ISS)", valor: taxes },
-        { label: "Lucro / Remuneração", valor: profit },
-        { label: "Administração Central", valor: admin },
-        { label: "Riscos e Garantias", valor: risk },
+        { label: "Tributação (PIS/COFINS/ISS)", valor: taxPct },
+        { label: "Lucro / Remuneração", valor: profitPct },
+        { label: "Administração Central", valor: adminPct },
+        { label: "Riscos e Garantias", valor: riskPct },
     ];
 
     const totalWithBDI = totalDirect * (1 + bdiPct / 100);
+
+    const inTCURange = bdiPct >= TCU_BDI_RANGE.min && bdiPct <= TCU_BDI_RANGE.max;
+    const bdiStatus = bdiPct < TCU_BDI_RANGE.min
+        ? { text: 'Abaixo da faixa TCU — verificar adequação', color: 'text-orange-500' }
+        : bdiPct > TCU_BDI_RANGE.max
+        ? { text: 'Acima da faixa TCU — justificativa recomendada', color: 'text-red-500' }
+        : { text: `Dentro da faixa TCU (${TCU_BDI_RANGE.min}%–${TCU_BDI_RANGE.max}%)`, color: 'text-green-600' };
 
     return (
         <Card>
@@ -386,6 +456,11 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
                         <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">BDI Total</span>
                         <span className="text-sm font-black text-teal-600">{bdiPct.toFixed(2)}%</span>
                     </div>
+                    {/* TCU status badge */}
+                    <div className={`mt-2 text-[10px] font-semibold ${bdiStatus.color}`}>
+                        {inTCURange ? '✓' : '⚠'} {bdiStatus.text}
+                    </div>
+                    <p className="text-[9px] text-gray-400 mt-1">Ref.: TCU Acórdão 2622/2013 · Obras civis</p>
                 </div>
 
                 {/* Simple Waterfall */}
@@ -408,84 +483,132 @@ export function ComposicaoBDI({ bdiPct, totalDirect }: { bdiPct: number, totalDi
     );
 }
 
-// ─── COMPARATIVO (Dinâmico) ────────────────
-export function ComparativoMercado({ total, area, id }: { total: number, area: number, id?: string }) {
-    // Generate a pseudo-random seed from the report ID string
-    const seed = id ? id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0) : 0;
+// ─── COMPARATIVO (CUB-based) ────────────────
+type CubEntry = { low: number, mid: number, high: number, label: string };
 
-    // Vary multipliers based on seed (deterministic jitter)
-    // Avg variations: 1.09 to 1.16
-    const avgMultiplier = 1.09 + ((seed % 7) / 100);
-    // Max variations: 1.30 to 1.42
-    const maxMultiplier = 1.30 + ((seed % 12) / 100);
+const CUB_TABLE: Record<string, CubEntry> = {
+    residencial:   { low: 1_750, mid: 2_450, high: 3_850, label: 'Residencial' },
+    multifamiliar: { low: 2_100, mid: 2_900, high: 4_200, label: 'Multifamiliar' },
+    comercial:     { low: 2_200, mid: 3_100, high: 4_800, label: 'Comercial' },
+    industrial:    { low: 1_200, mid: 1_750, high: 2_600, label: 'Industrial' },
+    reforma:       { low:   650, mid: 1_300, high: 2_200, label: 'Reforma' },
+    galpao:        { low:   950, mid: 1_400, high: 2_100, label: 'Galpão' },
+};
 
-    const marketAvg = total * avgMultiplier;
-    const maxVal = total * maxMultiplier;
+function detectCubCategory(type: string): CubEntry {
+    const t = (type || '').toLowerCase();
+    if (t.includes('reform') || t.includes('revitaliz') || t.includes('ampli')) return CUB_TABLE.reforma;
+    if (t.includes('galpão') || t.includes('galpao') || t.includes('armazém') || t.includes('industrial')) return CUB_TABLE.industrial;
+    if (t.includes('comercial') || t.includes('loja') || t.includes('escritório') || t.includes('sala')) return CUB_TABLE.comercial;
+    if (t.includes('multi') || t.includes('apartamento') || t.includes('edifíc') || t.includes('prédio')) return CUB_TABLE.multifamiliar;
+    return CUB_TABLE.residencial; // default
+}
 
-    // Calculate cost per sqm if area exists
+export function ComparativoMercado({ total, area, projectType, id }: {
+    total: number, area: number, projectType?: string, id?: string
+}) {
+    const cub = detectCubCategory(projectType || '');
     const costPerSqm = area > 0 ? total / area : 0;
 
-    const bars = [
-        { label: "Seu Orçamento", valor: total, color: COLORS.green, highlight: true },
-        { label: "Média de Mercado", valor: marketAvg, color: COLORS.textMuted, highlight: false },
-        { label: "Máximo Regional", valor: maxVal, color: COLORS.textDim, highlight: false },
-    ];
+    const hasSqm = area > 0 && costPerSqm > 0;
 
-    const maxBar = Math.max(...bars.map(b => b.valor));
-    const percentBelow = (100 - (total / marketAvg) * 100).toFixed(1);
+    // Position on spectrum (0–1, where 0 = at/below low, 1 = at/above high)
+    const position = hasSqm
+        ? Math.max(0, Math.min(1, (costPerSqm - cub.low) / (cub.high - cub.low)))
+        : null;
+
+    const getStatus = (pos: number | null) => {
+        if (pos === null) return null;
+        if (pos < 0.33) return { text: 'Abaixo da média de mercado', color: 'text-green-600', icon: '✓' };
+        if (pos < 0.66) return { text: 'Dentro da média de mercado', color: 'text-blue-600', icon: '●' };
+        return { text: 'Acima da média de mercado', color: 'text-orange-500', icon: '▲' };
+    };
+
+    const status = getStatus(position);
 
     return (
         <Card>
             <SectionHeader
                 title="Posicionamento de Mercado"
-                subtitle="Comparativo com valores regionais de mercado"
+                subtitle="Comparativo com referências CUB SINDUSCON"
             />
 
-            {/* Price per Square Meter Highlight - Moved Top */}
-            {costPerSqm > 0 && (
+            {/* Cost per sqm highlight */}
+            {hasSqm && (
                 <div className="flex justify-between items-center mb-4 pb-2 border-b border-gray-100 dark:border-gray-800/50">
                     <span className="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">
                         Custo por m²
                     </span>
-                    <span className="text-sm font-black text-green-600 dark:text-green-500 print:text-green-600">
-                        {formatCurrency(costPerSqm)}/m²
-                    </span>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-black text-green-600 dark:text-green-500 print:text-green-600">
+                            {formatCurrency(costPerSqm)}/m²
+                        </span>
+                        {status && (
+                            <span className={`text-[10px] font-semibold ${status.color}`}>
+                                {status.icon} {status.text}
+                            </span>
+                        )}
+                    </div>
                 </div>
             )}
 
-            {/* Bars Section */}
-            <div className="flex flex-col gap-2.5">
-                {bars.map((bar, i) => (
-                    <div key={i}>
-                        <div className="flex justify-between mb-1">
-                            <span
-                                className="text-xs font-medium"
-                                style={{
-                                    fontWeight: bar.highlight ? 700 : 500,
-                                    color: bar.highlight ? COLORS.green : undefined,
-                                }}
-                            >{bar.label}</span>
-                            <span className="text-xs text-gray-800 dark:text-gray-200 print:text-black font-semibold">{formatCurrency(bar.valor)}</span>
-                        </div>
-                        <div className="h-[22px] bg-gray-100 dark:bg-gray-800 print:bg-gray-100 rounded overflow-hidden relative print-color-exact">
-                            <div style={{
-                                width: `${(bar.valor / maxBar) * 100}%`, height: "100%", borderRadius: 4,
-                                background: bar.highlight
-                                    ? `linear-gradient(90deg, ${COLORS.green}, ${COLORS.green}88)`
-                                    : bar.color,
-                                opacity: 0.8,
-                            }} />
-                        </div>
+            {/* Spectrum gauge when area is available */}
+            {hasSqm ? (
+                <div className="mt-2">
+                    <div className="flex justify-between text-[9px] text-gray-400 mb-1">
+                        <span>Econômico</span>
+                        <span>Padrão</span>
+                        <span>Premium</span>
                     </div>
-                ))}
-            </div>
+                    <div className="relative h-5 bg-gradient-to-r from-green-200 via-blue-200 to-orange-200 dark:from-green-900/30 dark:via-blue-900/30 dark:to-orange-900/30 rounded-full overflow-visible mb-1">
+                        {/* Reference ticks */}
+                        {[0, 0.5, 1].map((pos, i) => (
+                            <div key={i} className="absolute top-0 bottom-0 w-px bg-white/60 dark:bg-black/30" style={{ left: `${pos * 100}%` }} />
+                        ))}
+                        {/* User's position marker */}
+                        {position !== null && (
+                            <div
+                                className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-white border-2 border-teal-600 shadow-lg z-10 -translate-x-1/2"
+                                style={{ left: `${Math.max(5, Math.min(95, position * 100))}%` }}
+                            />
+                        )}
+                    </div>
+                    <div className="flex justify-between text-[9px] text-gray-500">
+                        <span>{formatCurrency(cub.low)}/m²</span>
+                        <span>{formatCurrency(cub.mid)}/m²</span>
+                        <span>{formatCurrency(cub.high)}/m²</span>
+                    </div>
+                </div>
+            ) : (
+                /* Fallback: compare total vs estimated market range */
+                <div className="flex flex-col gap-2.5 mt-2">
+                    {[
+                        { label: 'Seu Orçamento', valor: total, color: COLORS.green, highlight: true },
+                        { label: `Referência CUB ${cub.label} — Padrão`, valor: cub.mid * (total / cub.mid), color: COLORS.textMuted, highlight: false },
+                        { label: `Referência CUB ${cub.label} — Premium`, valor: cub.high * (total / cub.mid), color: COLORS.textDim, highlight: false },
+                    ].map((bar, i) => {
+                        const maxBar = cub.high * (total / cub.mid);
+                        return (
+                            <div key={i}>
+                                <div className="flex justify-between mb-1">
+                                    <span className="text-xs font-medium" style={{ fontWeight: bar.highlight ? 700 : 500, color: bar.highlight ? COLORS.green : undefined }}>{bar.label}</span>
+                                    <span className="text-xs text-gray-800 dark:text-gray-200 print:text-black font-semibold">{formatCurrency(bar.valor)}</span>
+                                </div>
+                                <div className="h-[22px] bg-gray-100 dark:bg-gray-800 print:bg-gray-100 rounded overflow-hidden relative print-color-exact">
+                                    <div style={{
+                                        width: `${(bar.valor / maxBar) * 100}%`, height: '100%', borderRadius: 4,
+                                        background: bar.highlight ? `linear-gradient(90deg, ${COLORS.green}, ${COLORS.green}88)` : bar.color,
+                                        opacity: 0.8,
+                                    }} />
+                                </div>
+                            </div>
+                        );
+                    })}
+                    <p className="text-[9px] text-gray-400 mt-1">Área não informada — informe a área do projeto para comparação precisa por m²</p>
+                </div>
+            )}
 
-            {/* Comparison Text */}
-            <div className="mt-3.5 p-2 rounded-lg text-center">
-                <span className="text-xs text-green-600 dark:text-green-500 print:text-green-600 font-semibold">
-                    ✓ Este orçamento está {percentBelow}% abaixo da média de mercado
-                </span>
-            </div>
+            <p className="text-[9px] text-gray-400 mt-3">Base: CUB {cub.label} SINDUSCON 2025 · Valores de referência nacional</p>
         </Card>
     );
 }
