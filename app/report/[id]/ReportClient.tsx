@@ -189,7 +189,7 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
         }
 
         return () => window.removeEventListener('report-action', handleAction);
-    }, [loading, data, includeContract]);
+    }, [loading, data, includeContract, user]);
 
     if (loading) {
         return (
