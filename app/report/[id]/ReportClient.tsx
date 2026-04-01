@@ -243,16 +243,6 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
     // CONTRACT JSX (Reused logic for cleaner render)
     const ContractSection = () => includeContract ? (
         <div className="contract-page max-w-none mx-auto p-8 mt-12 bg-white dark:bg-[#262423] rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 print:shadow-none print:border-none print:m-0 print:p-0">
-            <style jsx>{`
-                @media print {
-                    .contract-page { 
-                        page-break-before: always;
-                        break-before: page;
-                        margin-top: 0 !important;
-                        padding-top: 40px !important;
-                    }
-                }
-            `}</style>
 
             <div className="text-center mb-10">
                 <h1 className="text-2xl font-bold uppercase text-gray-900 dark:text-gray-100">Contrato de Prestação de Serviços</h1>
@@ -535,14 +525,18 @@ export default function ReportClient({ estimateId }: { estimateId: string }) {
                         page-break-after: avoid !important;
                     }
                     
-                    /* ensure Analysis starts on new page with visual margin */
+                    /* Analysis section: mandatory page break before */
                     .analysis-section {
-                        page-break-before: always;
+                        break-before: page !important;
+                        page-break-before: always !important;
+                        padding-top: 12mm !important;
+                        margin-top: 0 !important;
                     }
-                    
-                    /* Ensure contract starts on new page with visual margin */
+
+                    /* Contract section: mandatory page break before */
                     .contract-page {
-                        page-break-before: always;
+                        break-before: page !important;
+                        page-break-before: always !important;
                         padding-top: 20mm !important;
                         margin-top: 0 !important;
                     }
