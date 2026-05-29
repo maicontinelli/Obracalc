@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfume Bubbles — Galeria Interativa de Fragrâncias</title>
+  <meta name="description" content="Explore uma galeria interativa de 100 perfumes clássicos e modernos organizados por famílias olfativas em bolhas físicas interativas.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+:root {
+  --bg: #07070a;
+  --surface: rgba(18, 18, 26, 0.85);
+  --surface-opaque: #101016;
+  --border: rgba(255, 255, 255, 0.05);
+  --border-gold: rgba(201, 169, 110, 0.25);
+  --text: #e8e4dc;
+  --text-bright: #ffffff;
+  --muted: #807d95;
+  --accent: #c9a96e;
+  --accent-rgb: 201, 169, 110;
+  --floral: #e8799a;
+  --oriental: #c97b38;
+  --woody: #8b7355;
+  --fresh: #6ab4c8;
+  --fougere: #7ab87a;
+  --chypre: #9b72b0;
+  --gourmand: #d4956a;
+  --aromatic: #5aab9b;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  cursor: grab;
+  user-select: none;
+}
+body::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, rgba(201, 169, 110, 0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+/* ── HEADER ── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 24px;
+  background: linear-gradient(180deg, rgba(7, 7, 10, 0.97) 0%, rgba(7, 7, 10, 0.8) 70%, transparent 100%);
+  pointer-events: none;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  text-shadow: 0 0 20px rgba(201, 169, 110, 0.2);
+  pointer-events: all;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.logo:hover { transform: scale(1.02); }
+.logo span { font-style: italic; font-weight: 400; }
+.header-right {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  pointer-events: all;
+  max-width: 100%;
+  margin-left: auto;
+}
+.filter-btn {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  backdrop-filter: blur(4px);
+}
+.filter-btn:hover {
+  border-color: rgba(201, 169, 110, 0.5);
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.05);
+}
+.filter-btn.active {
+  background: rgba(201, 169, 110, 0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 12px rgba(201, 169, 110, 0.15);
+}
+/* ── SEARCH ── */
+#search {
+  background: rgba(16, 16, 22, 0.75);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 8px 18px;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  width: 190px;
+  outline: none;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  pointer-events: all;
+  flex-shrink: 0;
+}
+#search:focus {
+  border-color: var(--accent);
+  width: 240px;
+  box-shadow: 0 4px 20px rgba(201, 169, 110, 0.12), 0 0 8px rgba(201, 169, 110, 0.12);
+}
+#search::placeholder { color: var(--muted); opacity: 0.7; }
+/* ── CANVAS ── */
+#canvas-wrap {
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0; left: 0;
+  z-index: 5;
+}
+canvas { display: block; width: 100%; height: 100%; }
+/* ── TOOLTIP ── */
+#tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 200;
+  background: rgba(12, 12, 18, 0.94);
+  border: 1px solid var(--border-gold);
+  border-radius: 12px;
+  padding: 16px 20px;
+  min-width: 240px;
+  max-width: 285px;
+  display: none;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transform: translate(15px, 15px);
+  transition: opacity 0.15s ease;
+}
+.tt-brand { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.15em; color: var(--accent); text-transform: uppercase; margin-bottom: 4px; }
+.tt-name { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; font-weight: 500; color: var(--text-bright); margin-bottom: 8px; line-height: 1.2; }
+.tt-family { display: inline-block; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; margin-bottom: 10px; }
+.tt-notes { font-size: 0.72rem; color: var(--muted); line-height: 1.6; }
+.tt-notes strong { color: rgba(232, 228, 220, 0.85); font-weight: 500; }
+.tt-score { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; font-size: 0.68rem; color: var(--muted); letter-spacing: 0.04em; }
+.tt-score span:last-child { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; }
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(4, 4, 6, 0.8);
+  z-index: 300;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, display 0.3s allow-discrete, overlay 0.3s allow-discrete;
+}
+.modal-overlay.open { display: flex; opacity: 1; pointer-events: all; }
+.modal-content {
+  background: var(--surface-opaque);
+  border: 1px solid var(--border-gold);
+  border-radius: 20px;
+  padding: 36px 40px;
+  max-width: 460px;
+  width: 90%;
+  position: relative;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  transform: scale(0.92) translateY(10px);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.modal-overlay.open .modal-content { transform: scale(1) translateY(0); }
+@starting-style {
+  .modal-overlay.open { opacity: 0; }
+  .modal-overlay.open .modal-content { transform: scale(0.92) translateY(10px); }
+}
+.modal-close {
+  position: absolute; top: 18px; right: 22px;
+  background: none; border: none; color: var(--muted);
+  font-size: 1.6rem; cursor: pointer; line-height: 1;
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s ease;
+}
+.modal-close:hover { color: var(--text-bright); background: rgba(255, 255, 255, 0.04); }
+.modal-header-block { margin-bottom: 20px; text-align: center; }
+.modal-brand { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.18em; color: var(--accent); text-transform: uppercase; margin-bottom: 6px; }
+.modal-name { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; font-weight: 300; color: var(--text-bright); line-height: 1.15; margin-bottom: 6px; }
+.modal-year { font-size: 0.75rem; color: var(--muted); margin-bottom: 12px; letter-spacing: 0.04em; }
+.modal-family-badge { display: inline-block; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; }
+.modal-body-scroll {
+  flex: 1; overflow-y: auto;
+  margin-right: -24px; padding-right: 24px;
+  scroll-behavior: smooth;
+}
+.modal-body-scroll::-webkit-scrollbar { width: 4px; }
+.modal-body-scroll::-webkit-scrollbar-track { background: transparent; }
+.modal-body-scroll::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 10px; }
+.modal-body-scroll::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+.modal-section { margin-bottom: 20px; }
+.modal-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+.notes-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.note-tag {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  color: rgba(232, 228, 220, 0.85);
+  transition: all 0.2s ease;
+}
+.note-tag--clickable { cursor: pointer; }
+.note-tag--clickable:hover {
+  border-color: rgba(201, 169, 110, 0.3);
+  color: var(--text-bright);
+}
+.modal-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; font-style: italic; }
+.modal-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px; margin-top: 24px; padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+.stat { text-align: center; }
+.stat-val { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; color: var(--accent); }
+.stat-lbl { font-size: 0.6rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px; }
+/* ── LEGEND ── */
+#legend {
+  position: fixed; bottom: 24px; left: 24px;
+  z-index: 100;
+  display: flex; flex-wrap: wrap; gap: 8px 16px; max-width: 520px;
+  background: rgba(7, 7, 10, 0.6); padding: 8px 12px; border-radius: 12px;
+  backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.02);
+}
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.68rem; font-weight: 500; color: var(--muted); letter-spacing: 0.05em; cursor: pointer; transition: all 0.2s ease; }
+.legend-item:hover { color: var(--text-bright); }
+.legend-item.active { color: var(--text-bright); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 6px rgba(255, 255, 255, 0.1); }
+/* ── HINTS ── */
+.hint {
+  position: fixed; bottom: 24px; right: 24px;
+  z-index: 100; display: flex; gap: 16px; pointer-events: none;
+  background: rgba(7, 7, 10, 0.6); padding: 8px 14px; border-radius: 12px;
+  backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.02);
+}
+.hint-item { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.04em; display: flex; align-items: center; gap: 4px; }
+.hint-key { color: var(--accent); font-weight: 700; }
+/* ── DUPES ── */
+.dupes-section { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.dupes-title { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.dupe-list { display: flex; flex-direction: column; gap: 8px; }
+.dupe-card {
+  display: flex; align-items: center; gap: 12px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  transition: border-color 0.2s ease;
+}
+.dupe-card:hover { border-color: var(--border-gold); }
+.dupe-sim {
+  flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 0.85rem; font-weight: 600;
+  border: 1.5px solid;
+}
+.dupe-info { flex: 1; min-width: 0; }
+.dupe-name { font-size: 0.78rem; color: var(--text); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dupe-brand { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+.dupe-price { flex-shrink: 0; font-size: 0.72rem; color: var(--accent); font-family: 'Cormorant Garamond', serif; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  .modal-content, .modal-overlay { transform: none !important; }
+}
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="logo" id="logo">Perfume<span>Bubbles</span></div>
+    <input id="search" type="text" placeholder="🔍  buscar..." autocomplete="off">
+    <div class="header-right">
+      <button class="filter-btn active" data-filter="all">Todos</button>
+      <button class="filter-btn" data-filter="floral">Floral</button>
+      <button class="filter-btn" data-filter="oriental">Oriental</button>
+      <button class="filter-btn" data-filter="woody">Amadeirado</button>
+      <button class="filter-btn" data-filter="fresh">Fresco</button>
+      <button class="filter-btn" data-filter="fougere">Fresco Aromático</button>
+      <button class="filter-btn" data-filter="chypre">Amadeirado Clássico</button>
+      <button class="filter-btn" data-filter="gourmand">Doce & Baunilha</button>
+      <button class="filter-btn" data-filter="aromatic">Aromático</button>
+    </div>
+  </header>
+
+  <!-- ── CANVAS ── -->
+  <div id="canvas-wrap">
+    <canvas id="c"></canvas>
+  </div>
+
+  <!-- ── TOOLTIP ── -->
+  <div id="tooltip" role="tooltip">
+    <div class="tt-brand" id="tt-brand"></div>
+    <div class="tt-name" id="tt-name"></div>
+    <div class="tt-family" id="tt-family"></div>
+    <div class="tt-notes" id="tt-notes"></div>
+    <div class="tt-score">
+      <span>popularidade</span>
+      <span id="tt-score"></span>
+    </div>
+  </div>
+
+  <!-- ── MODAL ── -->
+  <div id="modal-overlay" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div id="modal" class="modal-content">
+      <button class="modal-close" id="modal-close" aria-label="Fechar detalhes">&times;</button>
+      <div class="modal-header-block">
+        <div class="modal-brand" id="m-brand"></div>
+        <h2 class="modal-name" id="m-name"></h2>
+        <div class="modal-year" id="m-year"></div>
+        <span class="modal-family-badge" id="m-family"></span>
+      </div>
+      <div class="modal-body-scroll">
+        <div class="modal-section">
+          <h3 class="modal-label">Notas de Topo</h3>
+          <div class="notes-grid" id="m-top"></div>
+        </div>
+        <div class="modal-section">
+          <h3 class="modal-label">Notas de Coração</h3>
+          <div class="notes-grid" id="m-heart"></div>
+        </div>
+        <div class="modal-section">
+          <h3 class="modal-label">Notas de Base</h3>
+          <div class="notes-grid" id="m-base"></div>
+        </div>
+        <div class="modal-section">
+          <h3 class="modal-label">A Fragrância</h3>
+          <div class="modal-desc" id="m-desc"></div>
+        </div>
+      </div>
+      <div class="modal-stats">
+        <div class="stat"><div class="stat-val" id="m-pop"></div><div class="stat-lbl">Popularidade</div></div>
+        <div class="stat"><div class="stat-val" id="m-year2"></div><div class="stat-lbl">Lançamento</div></div>
+        <div class="stat"><div class="stat-val" id="m-gender"></div><div class="stat-lbl">Gênero</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LEGEND ── -->
+  <div id="legend"></div>
+
+  <!-- ── HINTS ── -->
+  <div class="hint">
+    <span class="hint-item"><span class="hint-key">Scroll / Pinch</span> Zoom</span>
+    <span class="hint-item"><span class="hint-key">Arraste</span> Mover Câmera</span>
+    <span class="hint-item"><span class="hint-key">Clique</span> Detalhes</span>
+  </div>
+
+<script>
+// ─────────────────────────────────────────
+//  DATA — Top 100 Perfumes
+// ─────────────────────────────────────────
+const FAMILIES = {
+  floral:   { label: 'Floral',      color: '#e8799a' },
+  oriental: { label: 'Oriental',    color: '#c97b38' },
+  woody:    { label: 'Amadeirado',  color: '#8b7355' },
+  fresh:    { label: 'Fresco',      color: '#6ab4c8' },
+  fougere:  { label: 'Fresco Aromático',    color: '#7ab87a' },
+  chypre:   { label: 'Amadeirado Clássico', color: '#9b72b0' },
+  gourmand: { label: 'Doce & Baunilha',    color: '#d4956a' },
+  aromatic: { label: 'Aromático',   color: '#5aab9b' },
+};
+
+const PERFUMES = [
+  { id:1,  brand:'Chanel',        name:'Bleu de Chanel',       year:2010, family:'woody',    pop:92, gender:'M', top:['Toranja','Limão','Hortelã'], heart:['Gengibre','Noz Moscada','Jasmim'], base:['Cedro','Sândalo','Patchouli','Âmbar Cinza'], desc:'Madeiroso fresco que define o homem moderno.', image:'Bleu de Chanel.avif' },
+  { id:2,  brand:'Creed',         name:'Aventus',              year:2010, family:'chypre',   pop:91, gender:'M', top:['Bergamota','Groselha Negra','Abacaxi','Maçã'], heart:['Patchouli','Rosa','Bétula'], base:['Âmbar Cinza','Almíscar','Carvalho'], desc:'O rei das fragrâncias masculinas de luxo.', image:'Aventus.avif' },
+  { id:3,  brand:'Sospiro',        name:'Vibrato',              year:2020, family:'aromatic', pop:88, gender:'U', top:['Toranja','Bergamota','Gengibre','Jasmim'], heart:['Notas Herbais','Magnólia','Notas Polvilhadas'], base:['Almíscar','Patchouli','Âmbar','Cedro'], desc:'Uma fragrância cítrica e aromática vibrante, com gengibre picante e um rastro sedutor de almíscar e madeiras.', image:'Vibrato.avif' },
+  { id:4,  brand:'Thierry Mugler', name:'Angel',               year:1992, family:'gourmand', pop:88, gender:'F', top:['Mel','Frutas Vermelhas'], heart:['Patchouli','Framboesa'], base:['Pralinê','Baunilha','Coumarina','Almíscar'], desc:'Um perfume audacioso, doce e celestial. O pioneiro que inventou a família gourmand.', image:'angel.avif' },
+  { id:5,  brand:'Dolce & Gabbana', name:'Light Blue',         year:2001, family:'fresh',    pop:86, gender:'F', top:['Ceder Maçã','Limão da Sicília','Bambu'], heart:['Jasmin','Bamboo','Gardênia Branca'], base:['Cedro','Âmbar','Almíscar'], desc:'Fresco e ensolarado. Captura o frescor e a brisa azul do Mar Mediterrâneo.', image:'light blue.avif' },
+  { id:6,  brand:'Jo Malone London', name:'Peony & Blush Suede', year:2013, family:'floral', pop:87, gender:'F', top:['Pêra','Toranja Vermelha'], heart:['Peônia','Rosa','Jasmim'], base:['Camurça','Almíscar Branco','Madeira'], desc:'A elegância britânica em plena floração — peônia exuberante envolta em camurça suave e seda.', image:'Jo Malone London.avif' },
+  { id:7,  brand:'Le Labo',        name:'Santal 33',            year:2011, family:'woody',    pop:85, gender:'U', top:['Cardamomo','Íris','Violeta'], heart:['Ameixa','Âmbar'], base:['Sândalo','Cedro','Couro','Almíscar'], desc:'O perfume de Brooklyn que conquistou o mundo. Sândalo cremoso, couro suave e mistério em cada gota.', image:'santal 33.avif' },
+  { id:8,  brand:'Jo Malone London', name:'Scarlet Poppy',     year:2020, family:'floral',   pop:82, gender:'U', top:['Papoula Vermelha','Alcaçuz','Pimenta Rosa'], heart:['Peônia','Amêndoa','Groselha Preta'], base:['Baunilha','Âmbar','Almíscar'], desc:'Ousado e vibrante. A papoula escarlate floresce sobre notas quentes de alcaçuz, amêndoa e baunilha.', image:'Scarlet Poppy.avif' },
+  { id:9,  brand:'Tom Ford',       name:'Tobacco Vanille',      year:2007, family:'oriental', pop:90, gender:'U', top:['Especiarias','Tabaco'], heart:['Tabaco','Baunilha','Cacau','Canela'], base:['Madeira de Tonka','Madeira Seca','Âmbar'], desc:'Opulento, sensual e viciante. Tabaco rico envolto em baunilha cremosa e especiarias exóticas — puro luxo.', image:'tobacco vanille.avif' },
+  { id:10, brand:'Tom Ford',       name:'Wild Vetiver',         year:2012, family:'woody',    pop:80, gender:'U', top:['Bergamota','Laranja Sanguínea'], heart:['Lavanda','Gerânio'], base:['Vetiver','Cedro','Almíscar','Patchouli'], desc:'Vetiver selvagem e sofisticado — terroso, fresco e irresistivelmente masculino com toque de lavanda.', image:'wild vetiver.avif' },
+];
+
+// ─────────────────────────────────────────
+//  DUPES DATA
+// ─────────────────────────────────────────
+let DUPES = {};
+async function loadDupes() {
+  try {
+    const res = await fetch('dupes.json');
+    if (res.ok) DUPES = await res.json();
+  } catch (_) { /* offline or missing — silently skip */ }
+}
+
+// ─────────────────────────────────────────
+//  ENGINE SETUP
+// ─────────────────────────────────────────
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+let bubbles = [];
+let pan = { x: 0, y: 0 };
+let scale = 1.0;
+let dragging = false;
+let dragMoved = false;
+let dragStart = { x: 0, y: 0 };
+let panStart = { x: 0, y: 0 };
+let hoveredBubble = null;
+let selectedBubble = null;
+let activeFilter = 'all';
+let searchQuery = '';
+let animFrame = 0;
+let connectionBadges = []; // [{cx, cy, hw, hh, note}] in world coords — hit-tested on click
+let hoveredBadgeNote = null;
+
+// Preload Images
+const imageCache = {};
+PERFUMES.forEach(p => {
+  if (p.image) {
+    const img = new Image();
+    img.src = p.image;
+    imageCache[p.id] = img;
+  }
+});
+
+function resize() {
+  const oldW = W, oldH = H;
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+  if (!oldW) {
+    pan.x = W / 2;
+    pan.y = H / 2;
+  } else {
+    pan.x += (W - oldW) / 2;
+    pan.y += (H - oldH) / 2;
+  }
+}
+
+function familyColor(f) {
+  return FAMILIES[f]?.color || '#999';
+}
+
+function initBubbles() {
+  bubbles = PERFUMES.map((p, i) => {
+    const r = 22 + (p.pop - 60) * 0.62;
+    // evenly spaced angles so bubbles start well-distributed
+    const angle = (i / PERFUMES.length) * Math.PI * 2 + Math.random() * 0.4;
+    const dist = 160 + Math.random() * 200;
+    return {
+      ...p,
+      r,
+      x: Math.cos(angle) * dist,
+      y: Math.sin(angle) * dist,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      color: familyColor(p.family),
+      alpha: 1.0,
+      targetAlpha: 1.0,
+      scaleFactor: 1.0,
+      targetScale: 1.0,
+      grayscale: false,
+    };
+  });
+  runPhysics(400);
+}
+
+function runPhysics(steps) {
+  for (let s = 0; s < steps; s++) physicsStep();
+}
+
+function physicsStep() {
+  const len = bubbles.length;
+  for (let i = 0; i < len; i++) {
+    const b = bubbles[i];
+    const distToCenter = Math.hypot(b.x, b.y);
+    if (distToCenter > 5) {
+      const pull = 0.04 * (b.targetAlpha > 0.5 ? 1 : 0.05);
+      b.vx -= (b.x / distToCenter) * pull;
+      b.vy -= (b.y / distToCenter) * pull;
+    }
+    b.x += b.vx;
+    b.y += b.vy;
+    b.vx *= 0.87;
+    b.vy *= 0.87;
+  }
+  for (let i = 0; i < len; i++) {
+    const a = bubbles[i];
+    for (let j = i + 1; j < len; j++) {
+      const b = bubbles[j];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const dist = Math.hypot(dx, dy);
+      const minD = a.r + b.r + 70;
+      if (dist < minD && dist > 0) {
+        const overlap = minD - dist;
+        const force = overlap * 0.18;
+        const nx = dx / dist;
+        const ny = dy / dist;
+        a.x -= nx * force * 0.5;
+        a.y -= ny * force * 0.5;
+        b.x += nx * force * 0.5;
+        b.y += ny * force * 0.5;
+      }
+    }
+  }
+}
+
+// ─────────────────────────────────────────
+//  BOTTLE DRAWERS (normalized: center=0,0 ref radius=72)
+// ─────────────────────────────────────────
+function drawBottle(ctx, family, col, hov) {
+  switch(family) {
+    case 'floral':   drawBottle_floral(ctx, col, hov);   break;
+    case 'oriental': drawBottle_oriental(ctx, col, hov); break;
+    case 'woody':    drawBottle_woody(ctx, col, hov);    break;
+    case 'fresh':    drawBottle_fresh(ctx, col, hov);    break;
+    case 'fougere':  drawBottle_fougere(ctx, col, hov);  break;
+    case 'chypre':   drawBottle_chypre(ctx, col, hov);   break;
+    case 'gourmand': drawBottle_gourmand(ctx, col, hov); break;
+    case 'aromatic': drawBottle_aromatic(ctx, col, hov); break;
+  }
+}
+
+function drawBottle_floral(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-11,-60,11,-47); cg.addColorStop(0,'rgba(215,205,185,0.92)'); cg.addColorStop(0.5,'rgba(250,244,230,0.96)'); cg.addColorStop(1,'rgba(185,175,155,0.9)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.roundRect(-11,-60,22,13,2); ctx.fill();
+  ctx.strokeStyle='rgba(195,180,155,0.5)'; ctx.lineWidth=0.6; ctx.stroke();
+  ctx.fillStyle='rgba(242,236,222,0.88)'; ctx.beginPath(); ctx.roundRect(-5,-48,10,9,1.5); ctx.fill();
+  var bg=ctx.createLinearGradient(-21,-38,21,-38); bg.addColorStop(0,'rgba(200,192,172,0.9)'); bg.addColorStop(0.2,'rgba(250,244,230,0.95)'); bg.addColorStop(0.55,'rgba(232,224,206,0.87)'); bg.addColorStop(1,'rgba(178,168,148,0.9)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.ellipse(0,-5,21,31,0,0,Math.PI*2); ctx.fill();
+  ctx.strokeStyle='rgba(195,182,158,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.ellipse(0,-5,19,29,0,0,Math.PI*2); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-34,0,28); lq.addColorStop(0,'rgba(222,182,112,0.52)'); lq.addColorStop(1,'rgba(168,128,58,0.42)');
+  ctx.fillStyle=lq; ctx.fillRect(-22,-40,44,78); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.ellipse(0,-5,19,29,0,0,Math.PI*2); ctx.clip();
+  var hl=ctx.createLinearGradient(-19,-5,-5,-5); hl.addColorStop(0,'rgba(255,255,255,0.38)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-20,-36,15,68); ctx.restore();
+  ctx.fillStyle='rgba(255,255,255,0.28)'; ctx.beginPath(); ctx.ellipse(-5,-30,8,3,0,0,Math.PI*2); ctx.fill();
+}
+
+function drawBottle_oriental(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-13,-62,13,-42); cg.addColorStop(0,'rgba(75,38,18,0.96)'); cg.addColorStop(0.5,'rgba(138,78,38,0.92)'); cg.addColorStop(1,'rgba(55,24,10,0.96)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.moveTo(-8,-62); ctx.lineTo(8,-62); ctx.lineTo(13,-44); ctx.lineTo(-13,-44); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(200,142,58,0.52)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(205,152,62,0.7)'; ctx.lineWidth=1.5; ctx.beginPath(); ctx.moveTo(-13,-44); ctx.lineTo(13,-44); ctx.stroke();
+  var bg=ctx.createLinearGradient(-18,-42,18,-42); bg.addColorStop(0,'rgba(32,14,28,0.96)'); bg.addColorStop(0.15,'rgba(72,28,58,0.93)'); bg.addColorStop(0.45,'rgba(88,34,68,0.88)'); bg.addColorStop(0.75,'rgba(52,18,42,0.93)'); bg.addColorStop(1,'rgba(22,8,18,0.96)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.moveTo(-17,-42); ctx.lineTo(17,-42); ctx.lineTo(19,38); ctx.lineTo(-19,38); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(115,48,95,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-15,-40); ctx.lineTo(15,-40); ctx.lineTo(17,36); ctx.lineTo(-17,36); ctx.closePath(); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-40,0,38); lq.addColorStop(0,'rgba(158,58,38,0.5)'); lq.addColorStop(1,'rgba(98,28,18,0.4)');
+  ctx.fillStyle=lq; ctx.fillRect(-20,-44,40,84); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-17,-42); ctx.lineTo(17,-42); ctx.lineTo(19,38); ctx.lineTo(-19,38); ctx.closePath(); ctx.clip();
+  var hl=ctx.createLinearGradient(-17,-42,-4,-42); hl.addColorStop(0,'rgba(195,95,178,0.28)'); hl.addColorStop(1,'rgba(195,95,178,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-20,-44,16,86); ctx.restore();
+  ctx.strokeStyle='rgba(202,152,62,0.48)'; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.moveTo(-12,-6); ctx.lineTo(12,-6); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-12,6); ctx.lineTo(12,6); ctx.stroke();
+}
+
+function drawBottle_woody(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-12,-60,12,-44); cg.addColorStop(0,'rgba(58,44,24,0.95)'); cg.addColorStop(0.5,'rgba(108,84,44,0.92)'); cg.addColorStop(1,'rgba(48,34,18,0.95)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.roundRect(-12,-60,24,16,2); ctx.fill();
+  ctx.strokeStyle='rgba(138,108,52,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.fillStyle='rgba(158,128,78,0.72)'; ctx.beginPath(); ctx.roundRect(-5,-45,10,7,1); ctx.fill();
+  var bg=ctx.createLinearGradient(-19,-38,19,-38); bg.addColorStop(0,'rgba(148,118,74,0.88)'); bg.addColorStop(0.18,'rgba(208,182,138,0.93)'); bg.addColorStop(0.5,'rgba(188,162,118,0.87)'); bg.addColorStop(0.82,'rgba(152,122,76,0.9)'); bg.addColorStop(1,'rgba(118,93,52,0.88)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect(-19,-38,38,76,2); ctx.fill();
+  ctx.strokeStyle='rgba(138,108,64,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-17,-36,34,72,2); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-36,0,38); lq.addColorStop(0,'rgba(178,128,58,0.5)'); lq.addColorStop(1,'rgba(128,88,28,0.4)');
+  ctx.fillStyle=lq; ctx.fillRect(-20,-38,40,80); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-19,-38,38,76,2); ctx.clip();
+  var hl=ctx.createLinearGradient(-19,-38,-6,-38); hl.addColorStop(0,'rgba(255,255,255,0.35)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-20,-40,14,80); ctx.restore();
+  ctx.strokeStyle='rgba(198,158,78,0.45)'; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.moveTo(-13,0); ctx.lineTo(13,0); ctx.stroke();
+}
+
+function drawBottle_fresh(ctx, col, hov) {
+  ctx.fillStyle='rgba(218,234,242,0.9)'; ctx.beginPath(); ctx.roundRect(-9,-60,18,14,2); ctx.fill();
+  ctx.strokeStyle='rgba(158,198,218,0.45)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.fillStyle='rgba(208,228,240,0.85)'; ctx.beginPath(); ctx.roundRect(-5,-47,10,8,1); ctx.fill();
+  var bg=ctx.createLinearGradient(-16,-39,16,-39); bg.addColorStop(0,'rgba(138,188,214,0.88)'); bg.addColorStop(0.18,'rgba(208,236,248,0.94)'); bg.addColorStop(0.5,'rgba(182,220,240,0.86)'); bg.addColorStop(1,'rgba(118,172,204,0.88)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.moveTo(-13,-39); ctx.lineTo(13,-39); ctx.lineTo(18,38); ctx.lineTo(-18,38); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(118,178,208,0.3)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-11,-37); ctx.lineTo(11,-37); ctx.lineTo(16,36); ctx.lineTo(-16,36); ctx.closePath(); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-37,0,38); lq.addColorStop(0,'rgba(98,178,218,0.4)'); lq.addColorStop(1,'rgba(58,138,188,0.35)');
+  ctx.fillStyle=lq; ctx.fillRect(-20,-40,40,82); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-13,-39); ctx.lineTo(13,-39); ctx.lineTo(18,38); ctx.lineTo(-18,38); ctx.closePath(); ctx.clip();
+  var hl=ctx.createLinearGradient(-16,-39,-4,-39); hl.addColorStop(0,'rgba(255,255,255,0.38)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-18,-41,15,82); ctx.restore();
+  ctx.strokeStyle='rgba(178,218,240,0.45)'; ctx.lineWidth=0.6;
+  ctx.beginPath(); ctx.moveTo(-10,4); ctx.quadraticCurveTo(-4,-3,0,4); ctx.quadraticCurveTo(4,11,10,4); ctx.stroke();
+}
+
+function drawBottle_fougere(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-14,-62,14,-44); cg.addColorStop(0,'rgba(14,44,80,0.96)'); cg.addColorStop(0.45,'rgba(28,74,130,0.94)'); cg.addColorStop(1,'rgba(9,28,58,0.96)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.roundRect(-14,-62,28,18,2); ctx.fill();
+  ctx.strokeStyle='rgba(38,88,150,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+  var bg=ctx.createLinearGradient(-17,-44,17,-44); bg.addColorStop(0,'rgba(16,53,93,0.93)'); bg.addColorStop(0.2,'rgba(33,83,144,0.95)'); bg.addColorStop(0.5,'rgba(26,68,124,0.9)'); bg.addColorStop(0.8,'rgba(13,43,83,0.93)'); bg.addColorStop(1,'rgba(9,28,63,0.92)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect(-17,-44,34,82,3); ctx.fill();
+  ctx.strokeStyle='rgba(33,83,148,0.4)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-15,-42,30,78,3); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-42,0,38); lq.addColorStop(0,'rgba(38,98,178,0.45)'); lq.addColorStop(1,'rgba(18,58,128,0.38)');
+  ctx.fillStyle=lq; ctx.fillRect(-18,-44,36,84); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-17,-44,34,82,3); ctx.clip();
+  var hl=ctx.createLinearGradient(-17,-44,-5,-44); hl.addColorStop(0,'rgba(98,168,255,0.32)'); hl.addColorStop(1,'rgba(98,168,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-18,-46,13,86); ctx.restore();
+  ctx.strokeStyle='rgba(78,138,218,0.4)'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(-17,-24); ctx.lineTo(17,-24); ctx.stroke();
+}
+
+function drawBottle_chypre(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-8,-62,8,-44); cg.addColorStop(0,'rgba(18,14,8,0.95)'); cg.addColorStop(0.5,'rgba(52,40,24,0.92)'); cg.addColorStop(1,'rgba(13,9,4,0.95)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.moveTo(-5,-62); ctx.lineTo(5,-62); ctx.lineTo(12,-44); ctx.lineTo(-12,-44); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(178,138,58,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.strokeStyle='rgba(202,162,68,0.65)'; ctx.lineWidth=1.2; ctx.beginPath(); ctx.moveTo(-12,-44); ctx.lineTo(12,-44); ctx.stroke();
+  var bg=ctx.createLinearGradient(-20,-42,20,-42); bg.addColorStop(0,'rgba(162,150,126,0.87)'); bg.addColorStop(0.18,'rgba(220,213,196,0.93)'); bg.addColorStop(0.5,'rgba(202,194,176,0.87)'); bg.addColorStop(1,'rgba(146,134,110,0.88)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect(-20,-42,40,80,3); ctx.fill();
+  ctx.strokeStyle='rgba(162,148,116,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-18,-40,36,76,3); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-40,0,38); lq.addColorStop(0,'rgba(148,183,148,0.45)'); lq.addColorStop(1,'rgba(98,143,98,0.38)');
+  ctx.fillStyle=lq; ctx.fillRect(-20,-42,40,82); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-20,-42,40,80,3); ctx.clip();
+  var hl=ctx.createLinearGradient(-20,-42,-7,-42); hl.addColorStop(0,'rgba(255,255,255,0.38)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-21,-44,14,84); ctx.restore();
+  ctx.strokeStyle='rgba(188,153,63,0.38)'; ctx.lineWidth=0.5;
+  for(var i=-2;i<=2;i++){ctx.beginPath();ctx.moveTo(i*4,-22);ctx.lineTo(i*4,6);ctx.stroke();}
+}
+
+function drawBottle_gourmand(ctx, col, hov) {
+  var cg=ctx.createLinearGradient(-10,-62,10,-44); cg.addColorStop(0,'rgba(178,128,28,0.95)'); cg.addColorStop(0.5,'rgba(238,198,68,0.92)'); cg.addColorStop(1,'rgba(148,98,18,0.95)');
+  ctx.fillStyle=cg; ctx.beginPath(); ctx.roundRect(-10,-62,20,18,2); ctx.fill();
+  ctx.strokeStyle='rgba(158,108,18,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.fillStyle='rgba(218,183,88,0.75)'; ctx.beginPath(); ctx.roundRect(-5,-45,10,7,1); ctx.fill();
+  var bg=ctx.createLinearGradient(-24,-38,24,-38); bg.addColorStop(0,'rgba(213,183,208,0.9)'); bg.addColorStop(0.2,'rgba(248,235,246,0.95)'); bg.addColorStop(0.5,'rgba(236,216,236,0.88)'); bg.addColorStop(1,'rgba(188,158,186,0.9)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.moveTo(-8,-38); ctx.bezierCurveTo(-32,-26,-30,35,-1,40); ctx.lineTo(1,40); ctx.bezierCurveTo(30,35,32,-26,8,-38); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(193,156,193,0.3)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-6,-36); ctx.bezierCurveTo(-28,-25,-26,33,0,39); ctx.bezierCurveTo(26,33,28,-25,6,-36); ctx.closePath(); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-36,0,40); lq.addColorStop(0,'rgba(233,148,188,0.48)'); lq.addColorStop(1,'rgba(193,98,153,0.38)');
+  ctx.fillStyle=lq; ctx.fillRect(-30,-40,60,88); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.moveTo(-8,-38); ctx.bezierCurveTo(-32,-26,-30,35,-1,40); ctx.lineTo(-4,38); ctx.bezierCurveTo(-24,30,-24,-24,-5,-36); ctx.closePath(); ctx.clip();
+  var hl=ctx.createLinearGradient(-26,-38,-8,-38); hl.addColorStop(0,'rgba(255,255,255,0.38)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-32,-40,26,86); ctx.restore();
+}
+
+function drawBottle_aromatic(ctx, col, hov) {
+  ctx.fillStyle='rgba(193,163,108,0.92)'; ctx.beginPath(); ctx.roundRect(-13,-60,26,14,1); ctx.fill();
+  ctx.strokeStyle='rgba(158,123,63,0.5)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.fillStyle='rgba(183,153,98,0.8)'; ctx.beginPath(); ctx.roundRect(-5,-47,10,7,1); ctx.fill();
+  var bg=ctx.createLinearGradient(-18,-40,18,-40); bg.addColorStop(0,'rgba(186,153,93,0.9)'); bg.addColorStop(0.2,'rgba(230,200,146,0.95)'); bg.addColorStop(0.5,'rgba(213,180,123,0.88)'); bg.addColorStop(0.8,'rgba(176,143,83,0.9)'); bg.addColorStop(1,'rgba(153,120,63,0.88)');
+  ctx.fillStyle=bg; ctx.beginPath(); ctx.roundRect(-18,-40,36,78,4); ctx.fill();
+  ctx.strokeStyle='rgba(173,136,70,0.35)'; ctx.lineWidth=0.5; ctx.stroke();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-16,-38,32,74,3); ctx.clip();
+  var lq=ctx.createLinearGradient(0,-38,0,38); lq.addColorStop(0,'rgba(208,148,48,0.5)'); lq.addColorStop(1,'rgba(158,98,18,0.42)');
+  ctx.fillStyle=lq; ctx.fillRect(-20,-40,40,82); ctx.restore();
+  ctx.save(); ctx.beginPath(); ctx.roundRect(-18,-40,36,78,4); ctx.clip();
+  var hl=ctx.createLinearGradient(-18,-40,-6,-40); hl.addColorStop(0,'rgba(255,255,255,0.38)'); hl.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=hl; ctx.fillRect(-19,-42,13,82); ctx.restore();
+  ctx.strokeStyle='rgba(238,193,98,0.42)'; ctx.lineWidth=0.5;
+  ctx.beginPath(); ctx.moveTo(-11,-8); ctx.lineTo(11,-8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(-11,8); ctx.lineTo(11,8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(0,-18); ctx.lineTo(0,18); ctx.stroke();
+}
+
+// ─────────────────────────────────────────
+//  RENDER LOOP
+// ─────────────────────────────────────────
+function draw() {
+  animFrame = requestAnimationFrame(draw);
+  physicsStep();
+
+  ctx.fillStyle = '#07070a';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.save();
+  ctx.translate(pan.x, pan.y);
+  ctx.scale(scale, scale);
+
+  // Subtle grid
+  if (scale > 0.4) {
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.012)';
+    ctx.lineWidth = 1;
+    const gs = 150;
+    const gRange = 2400;
+    ctx.beginPath();
+    for (let x = -gRange; x <= gRange; x += gs) { ctx.moveTo(x, -gRange); ctx.lineTo(x, gRange); }
+    for (let y = -gRange; y <= gRange; y += gs) { ctx.moveTo(-gRange, y); ctx.lineTo(gRange, y); }
+    ctx.stroke();
+  }
+
+  const drawList = [...bubbles].sort((a, b) => {
+    if (a === selectedBubble) return 1;
+    if (b === selectedBubble) return -1;
+    if (a === hoveredBubble) return 1;
+    if (b === hoveredBubble) return -1;
+    return a.r - b.r;
+  });
+
+  // Draw connection lines BEFORE bubbles (so they appear below)
+  drawConnections();
+
+  for (let b of drawList) {
+    b.alpha += (b.targetAlpha - b.alpha) * 0.12;
+    const isHov = b === hoveredBubble;
+    const isSel = b === selectedBubble;
+    b.targetScale = isSel ? 1.12 : isHov ? 1.08 : 1.0;
+    b.scaleFactor += (b.targetScale - b.scaleFactor) * 0.18;
+
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.scale(b.scaleFactor, b.scaleFactor);
+    ctx.globalAlpha = b.alpha;
+
+    // Grayscale filter for unrelated bubbles when something is selected
+    if (b.grayscale && selectedBubble) {
+      ctx.filter = 'grayscale(1) brightness(0.4)';
+    }
+
+    // Selected bubble: outer glow ring
+    if (isSel) {
+      ctx.save();
+      ctx.globalAlpha = b.alpha * 0.5;
+      const glow = ctx.createRadialGradient(0, 0, b.r * 0.8, 0, 0, b.r * 1.6);
+      glow.addColorStop(0, 'rgba(201, 169, 110, 0.4)');
+      glow.addColorStop(1, 'rgba(201, 169, 110, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath(); ctx.arc(0, 0, b.r * 1.6, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
+
+    // Shadow
+    const shadowGrad = ctx.createRadialGradient(0, 0, b.r - 12, 0, 0, b.r + 10);
+    shadowGrad.addColorStop(0, 'rgba(0,0,0,0)');
+    shadowGrad.addColorStop(0.8, 'rgba(0,0,0,0.4)');
+    shadowGrad.addColorStop(1, 'rgba(0,0,0,0.75)');
+    ctx.fillStyle = shadowGrad;
+    ctx.beginPath(); ctx.arc(0, 0, b.r + 10, 0, Math.PI * 2); ctx.fill();
+
+    // Background fill
+    const fillGrad = ctx.createRadialGradient(-b.r * 0.2, -b.r * 0.2, 0, 0, 0, b.r);
+    fillGrad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
+    fillGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.005)');
+    fillGrad.addColorStop(1, (isHov || isSel) ? 'rgba(255,255,255,0.07)' : 'rgba(255,255,255,0.02)');
+    ctx.fillStyle = fillGrad;
+    ctx.beginPath(); ctx.arc(0, 0, b.r, 0, Math.PI * 2); ctx.fill();
+
+    // Real image or vector bottle
+    const imgEl = imageCache[b.id];
+    if (imgEl && imgEl.complete && imgEl.naturalWidth !== 0) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0, 0, b.r - 4, 0, Math.PI * 2); ctx.clip();
+      const size = b.r * 2 * 0.72;
+      ctx.drawImage(imgEl, -size / 2, -size / 2, size, size);
+      ctx.restore();
+    } else {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(0, 0, b.r - 1, 0, Math.PI * 2); ctx.clip();
+      ctx.translate(0, -b.r * 0.08);
+      ctx.scale(b.r / 72, b.r / 72);
+      drawBottle(ctx, b.family, b.color, isHov || isSel);
+      ctx.restore();
+    }
+
+    // Glass border
+    ctx.strokeStyle = isSel
+      ? 'rgba(201, 169, 110, 1.0)'
+      : isHov
+        ? 'rgba(201, 169, 110, 0.95)'
+        : b.targetAlpha > 0.5 ? b.color : 'rgba(128,128,128,0.2)';
+    ctx.lineWidth = isSel ? 2.8 : isHov ? 2.2 : 1.2;
+    ctx.beginPath(); ctx.arc(0, 0, b.r, 0, Math.PI * 2); ctx.stroke();
+
+    // Glass shine
+    const shineGrad = ctx.createLinearGradient(-b.r * 0.5, -b.r * 0.5, b.r * 0.1, b.r * 0.1);
+    shineGrad.addColorStop(0, 'rgba(255, 255, 255, 0.32)');
+    shineGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.0)');
+    ctx.fillStyle = shineGrad;
+    ctx.beginPath();
+    ctx.arc(0, 0, b.r - 2, Math.PI * 0.95, Math.PI * 1.55);
+    ctx.bezierCurveTo(-b.r * 0.4, -b.r * 0.35, -b.r * 0.35, -b.r * 0.4, -b.r * 0.65, -b.r * 0.25);
+    ctx.closePath(); ctx.fill();
+
+    // Label — name only, counter-scaled so stays readable at any zoom
+    {
+      ctx.filter = 'none';
+      const fontSize = Math.min(Math.max(10, 13 / scale), b.r * 0.32);
+      ctx.font = `500 ${fontSize}px "Cormorant Garamond", serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Word-wrap inside ~80% of bubble diameter
+      const maxW = b.r * 1.5;
+      const words = b.name.split(' ');
+      const lines = [];
+      let cur = '';
+      for (const w of words) {
+        const test = cur ? cur + ' ' + w : w;
+        if (ctx.measureText(test).width > maxW && cur) { lines.push(cur); cur = w; }
+        else cur = test;
+      }
+      if (cur) lines.push(cur);
+
+      const lineH = fontSize * 1.2;
+      const totalH = lines.length * lineH;
+      const startY = b.r * 0.52 - totalH / 2 + lineH / 2;
+
+      // Subtle shadow so text is readable over the bottle image
+      ctx.shadowColor = 'rgba(0,0,0,0.85)';
+      ctx.shadowBlur = 4 / scale;
+      ctx.fillStyle = 'rgba(255,255,255,0.95)';
+      lines.forEach((line, i) => ctx.fillText(line, 0, startY + i * lineH));
+      ctx.shadowBlur = 0;
+      ctx.textBaseline = 'alphabetic';
+    }
+
+    // Dupe badge — shown only on selected bubble
+    if (isSel) {
+      const dupeKey = `${b.brand}|${b.name}`;
+      const dupeList = DUPES[dupeKey];
+      if (dupeList && dupeList.length > 0) {
+        const label = `◈ ${dupeList.length} inspirações`;
+        const fs = Math.min(Math.max(8, 10 / scale), 13);
+        ctx.font = `600 ${fs}px "DM Sans", sans-serif`;
+        const tw = ctx.measureText(label).width;
+        const pw = tw + 18 / scale;
+        const ph = fs + 10 / scale;
+        const badgeY = b.r + 16 / scale + ph / 2;
+
+        ctx.save();
+        ctx.shadowColor = 'rgba(0,0,0,0.6)';
+        ctx.shadowBlur = 8 / scale;
+        ctx.fillStyle = 'rgba(12, 10, 18, 0.95)';
+        ctx.beginPath();
+        ctx.roundRect(-pw / 2, badgeY - ph / 2, pw, ph, ph / 2);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(201, 169, 110, 0.7)';
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#c9a96e';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(label, 0, badgeY);
+        ctx.textBaseline = 'alphabetic';
+        ctx.restore();
+      }
+    }
+
+    ctx.filter = 'none';
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+// ─────────────────────────────────────────
+//  FILTER & SEARCH
+// ─────────────────────────────────────────
+function updateFilter() {
+  const isSearchEmpty = searchQuery === '';
+  const isFilterAll = activeFilter === 'all';
+  bubbles.forEach(b => {
+    const matchesFilter = isFilterAll || b.family === activeFilter;
+    const searchStr = `${b.brand} ${b.name} ${b.family} ${b.top.join(' ')} ${b.heart.join(' ')} ${b.base.join(' ')}`.toLowerCase();
+    const matchesSearch = isSearchEmpty || searchStr.includes(searchQuery);
+    b.targetAlpha = (matchesFilter && matchesSearch) ? 1.0 : 0.1;
+  });
+}
+
+function filterByNote(note) {
+  searchQuery = note.toLowerCase();
+  const searchInput = document.getElementById('search');
+  if (searchInput) searchInput.value = note;
+  activeFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    if (b.dataset.filter === 'all') b.classList.add('active');
+    else b.classList.remove('active');
+  });
+  document.querySelectorAll('.legend-item').forEach(li => {
+    if (li.dataset.filter === 'all') li.classList.add('active');
+    else li.classList.remove('active');
+  });
+  updateFilter();
+  closeDetailModal();
+}
+
+// ─────────────────────────────────────────
+//  SELECTION & CONNECTIONS
+// ─────────────────────────────────────────
+
+// Returns all notes of a perfume (top + heart + base), normalized lowercase
+function allNotes(p) {
+  return [...p.top, ...p.heart, ...p.base].map(n => n.toLowerCase().trim());
+}
+
+// Returns the single most "significant" shared note between two perfumes
+// Priority: shared heart notes > shared top notes (base excluded — too generic)
+function sharedNote(a, b) {
+  const heartA = a.heart.map(n => n.toLowerCase().trim());
+  const heartB = b.heart.map(n => n.toLowerCase().trim());
+  for (const n of heartA) if (heartB.includes(n)) return capitalize(n);
+
+  const topA = a.top.map(n => n.toLowerCase().trim());
+  const topB = b.top.map(n => n.toLowerCase().trim());
+  for (const n of topA) if (topB.includes(n)) return capitalize(n);
+
+  return null;
+}
+
+function capitalize(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// Connections cache: array of { bubble, sharedNote }
+let connections = [];
+
+function selectBubble(b) {
+  // If clicking the already selected bubble, open modal instead
+  if (selectedBubble === b) {
+    openDetailModal(b);
+    return;
+  }
+  selectedBubble = b;
+
+  // Build connections with every other visible bubble
+  const notesB = allNotes(b);
+  connections = [];
+  bubbles.forEach(other => {
+    if (other === b) return;
+    const note = sharedNote(b, other);
+    if (note) connections.push({ bubble: other, note });
+  });
+
+  const relatedSet = new Set(connections.map(c => c.bubble));
+
+  // Update alphas: selected=1, related=0.75, unrelated=0.08 (desaturated via grayscale flag)
+  bubbles.forEach(bub => {
+    if (bub === b) {
+      bub.targetAlpha = 1.0;
+      bub.grayscale = false;
+    } else if (relatedSet.has(bub)) {
+      bub.targetAlpha = 0.85;
+      bub.grayscale = false;
+    } else {
+      bub.targetAlpha = 0.12;
+      bub.grayscale = true;
+    }
+  });
+}
+
+function deselectBubble() {
+  selectedBubble = null;
+  connections = [];
+  connectionBadges = [];
+  hoveredBadgeNote = null;
+  bubbles.forEach(b => { b.grayscale = false; });
+  // Full reset: clear search and filter
+  searchQuery = '';
+  activeFilter = 'all';
+  const searchEl = document.getElementById('search');
+  if (searchEl) searchEl.value = '';
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === 'all');
+  });
+  document.querySelectorAll('.legend-item').forEach(li => {
+    li.classList.toggle('active', li.dataset.filter === 'all');
+  });
+  updateFilter();
+}
+
+function hitTestBadge(worldX, worldY) {
+  for (const b of connectionBadges) {
+    if (Math.abs(worldX - b.cx) <= b.hw && Math.abs(worldY - b.cy) <= b.hh) return b.note;
+  }
+  return null;
+}
+
+// Draw connection lines with note badge — called BEFORE drawing bubbles
+function drawConnections() {
+  if (!selectedBubble || connections.length === 0) return;
+  connectionBadges = [];
+
+  connections.forEach(({ bubble: other, note }) => {
+    const sx = selectedBubble.x;
+    const sy = selectedBubble.y;
+    const ex = other.x;
+    const ey = other.y;
+    const mx = (sx + ex) / 2;
+    const my = (sy + ey) / 2;
+
+    // Perpendicular offset so badge floats above the line in clear space
+    const dx = ex - sx;
+    const dy = ey - sy;
+    const len = Math.hypot(dx, dy) || 1;
+    // Perpendicular unit vector (rotated 90°)
+    const px = -dy / len;
+    const py =  dx / len;
+    // Offset magnitude: enough to clear bubbles, scales with zoom
+    const offset = 28 / scale;
+    const bx = mx + px * offset;
+    const by = my + py * offset;
+
+    // Line
+    const lineGrad = ctx.createLinearGradient(sx, sy, ex, ey);
+    lineGrad.addColorStop(0, 'rgba(201, 169, 110, 0.7)');
+    lineGrad.addColorStop(0.5, 'rgba(201, 169, 110, 0.95)');
+    lineGrad.addColorStop(1, 'rgba(201, 169, 110, 0.4)');
+    ctx.strokeStyle = lineGrad;
+    ctx.lineWidth = 1.5 / scale;
+    ctx.setLineDash([6 / scale, 4 / scale]);
+    ctx.beginPath();
+    ctx.moveTo(sx, sy);
+    ctx.lineTo(ex, ey);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Small tick from line midpoint to badge
+    ctx.strokeStyle = 'rgba(201, 169, 110, 0.4)';
+    ctx.lineWidth = 1 / scale;
+    ctx.beginPath();
+    ctx.moveTo(mx, my);
+    ctx.lineTo(bx, by);
+    ctx.stroke();
+
+    // Badge
+    const badgePadX = 10 / scale;
+    const badgePadY = 5 / scale;
+    const fontSize = Math.max(8, 11 / scale);
+    ctx.font = `600 ${fontSize}px "DM Sans", sans-serif`;
+    const tw = ctx.measureText(note).width;
+    const bw = tw + badgePadX * 2;
+    const bh = fontSize + badgePadY * 2;
+    const br = bh / 2;
+
+    // Store world-space bounds for hit testing
+    connectionBadges.push({ cx: bx, cy: by, hw: bw / 2 + 2, hh: bh / 2 + 2, note });
+
+    const isHovBadge = hoveredBadgeNote === note;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,0.6)';
+    ctx.shadowBlur = 10 / scale;
+
+    // Pill background
+    ctx.fillStyle = isHovBadge ? 'rgba(201, 169, 110, 0.22)' : 'rgba(12, 10, 18, 0.95)';
+    ctx.beginPath();
+    ctx.roundRect(bx - bw / 2, by - bh / 2, bw, bh, br);
+    ctx.fill();
+
+    // Gold border
+    ctx.strokeStyle = 'rgba(201, 169, 110, 0.85)';
+    ctx.lineWidth = 1 / scale;
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    // Note text
+    ctx.fillStyle = '#c9a96e';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(note, bx, by);
+    ctx.restore();
+  });
+}
+
+// ─────────────────────────────────────────
+//  INTERACTIONS
+// ─────────────────────────────────────────
+function initInteraction() {
+  window.addEventListener('resize', resize);
+
+  document.getElementById('logo').addEventListener('click', () => {
+    pan.x = W / 2;
+    pan.y = H / 2;
+    scale = 1.0;
+  });
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.dataset.filter;
+      updateFilter();
+      document.querySelectorAll('.legend-item').forEach(li => {
+        if (li.dataset.filter === activeFilter) li.classList.add('active');
+        else li.classList.remove('active');
+      });
+    });
+  });
+
+  document.getElementById('search').addEventListener('input', e => {
+    searchQuery = e.target.value.toLowerCase().trim();
+    updateFilter();
+  });
+
+  canvas.addEventListener('wheel', e => {
+    e.preventDefault();
+    const zf = 1.08;
+    const next = e.deltaY < 0 ? scale * zf : scale / zf;
+    if (next >= 0.15 && next <= 6.0) {
+      pan.x = e.clientX - (e.clientX - pan.x) * (next / scale);
+      pan.y = e.clientY - (e.clientY - pan.y) * (next / scale);
+      scale = next;
+    }
+  }, { passive: false });
+
+  canvas.addEventListener('mousedown', e => {
+    dragging = true;
+    dragMoved = false;
+    dragStart.x = e.clientX;
+    dragStart.y = e.clientY;
+    panStart.x = pan.x;
+    panStart.y = pan.y;
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (dragging) {
+      const dx = e.clientX - dragStart.x;
+      const dy = e.clientY - dragStart.y;
+      if (Math.hypot(dx, dy) > 3) dragMoved = true;
+      pan.x = panStart.x + dx;
+      pan.y = panStart.y + dy;
+      canvas.style.cursor = 'grabbing';
+      document.getElementById('tooltip').style.display = 'none';
+      return;
+    }
+    const worldX = (e.clientX - pan.x) / scale;
+    const worldY = (e.clientY - pan.y) / scale;
+
+    // Check badge hover first
+    const badgeNote = hitTestBadge(worldX, worldY);
+    if (badgeNote !== hoveredBadgeNote) hoveredBadgeNote = badgeNote;
+
+    let nextHovered = null;
+    for (let i = bubbles.length - 1; i >= 0; i--) {
+      const b = bubbles[i];
+      if (b.grayscale) continue;
+      if (b.targetAlpha < 0.5) continue;
+      if (Math.hypot(b.x - worldX, b.y - worldY) <= b.r) { nextHovered = b; break; }
+    }
+    hoveredBubble = nextHovered;
+    canvas.style.cursor = (badgeNote || hoveredBubble) ? 'pointer' : 'grab';
+    const tooltip = document.getElementById('tooltip');
+    if (hoveredBubble) {
+      document.getElementById('tt-brand').innerText = hoveredBubble.brand;
+      document.getElementById('tt-name').innerText = hoveredBubble.name;
+      const famInfo = FAMILIES[hoveredBubble.family];
+      const ttFam = document.getElementById('tt-family');
+      ttFam.innerText = famInfo.label;
+      ttFam.style.background = famInfo.color;
+      ttFam.style.color = '#fff';
+      document.getElementById('tt-notes').innerHTML = `<strong>Topo:</strong> ${hoveredBubble.top.join(', ')}<br><strong>Coração:</strong> ${hoveredBubble.heart.slice(0, 2).join(', ')}`;
+      document.getElementById('tt-score').innerText = hoveredBubble.pop + '%';
+      tooltip.style.left = `${e.clientX}px`;
+      tooltip.style.top = `${e.clientY}px`;
+      tooltip.style.display = 'block';
+    } else {
+      tooltip.style.display = 'none';
+    }
+  });
+
+  window.addEventListener('mouseup', e => {
+    if (!dragging) return;
+    dragging = false;
+    canvas.style.cursor = hoveredBubble ? 'pointer' : 'grab';
+    if (!dragMoved) {
+      const worldX = (e.clientX - pan.x) / scale;
+      const worldY = (e.clientY - pan.y) / scale;
+      const clickedBadge = hitTestBadge(worldX, worldY);
+      if (clickedBadge) {
+        filterByNote(clickedBadge);
+      } else if (hoveredBubble) {
+        selectBubble(hoveredBubble);
+      } else {
+        deselectBubble();
+      }
+    }
+  });
+
+  document.getElementById('modal-close').addEventListener('click', closeDetailModal);
+  document.getElementById('modal-overlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('modal-overlay')) closeDetailModal();
+  });
+  window.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeDetailModal();
+      deselectBubble();
+    }
+  });
+}
+
+// ─────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────
+function openDetailModal(perfume) {
+  document.getElementById('m-brand').innerText = perfume.brand;
+  document.getElementById('m-name').innerText = perfume.name;
+  document.getElementById('m-year').innerText = `Criado em ${perfume.year}`;
+
+  const famInfo = FAMILIES[perfume.family];
+  const mFam = document.getElementById('m-family');
+  mFam.innerText = famInfo.label;
+  mFam.style.background = famInfo.color;
+  mFam.style.color = '#fff';
+
+  const createTags = arr => arr.map(note =>
+    `<span class="note-tag note-tag--clickable" data-note="${note}">${note}</span>`
+  ).join('');
+  document.getElementById('m-top').innerHTML = createTags(perfume.top);
+  document.getElementById('m-heart').innerHTML = createTags(perfume.heart);
+  document.getElementById('m-base').innerHTML = createTags(perfume.base);
+  document.querySelectorAll('.note-tag--clickable').forEach(tag => {
+    tag.addEventListener('click', () => filterByNote(tag.dataset.note));
+  });
+
+  document.getElementById('m-desc').innerText = `"${perfume.desc}"`;
+
+  // Dupes section
+  const dupeKey = `${perfume.brand}|${perfume.name}`;
+  const dupeList = DUPES[dupeKey] || [];
+  let mDupes = document.getElementById('m-dupes-section');
+  if (!mDupes) {
+    mDupes = document.createElement('div');
+    mDupes.id = 'm-dupes-section';
+    mDupes.className = 'modal-section dupes-section';
+    document.getElementById('m-desc').closest('.modal-section').after(mDupes);
+  }
+  if (dupeList.length > 0) {
+    function simColor(s) {
+      if (s >= 85) return '#7ab87a';
+      if (s >= 70) return '#c9a96e';
+      return '#9b72b0';
+    }
+    mDupes.innerHTML = `
+      <h3 class="modal-label dupes-title">Inspirações & Dupes</h3>
+      <div class="dupe-list">
+        ${dupeList.map(d => `
+          <div class="dupe-card">
+            <div class="dupe-sim" style="color:${simColor(d.similarity)};border-color:${simColor(d.similarity)}33">
+              ${d.similarity}%
+            </div>
+            <div class="dupe-info">
+              <div class="dupe-name">${d.name}</div>
+              <div class="dupe-brand">${d.brand}</div>
+            </div>
+            <div class="dupe-price">${d.price}</div>
+          </div>`).join('')}
+      </div>`;
+    mDupes.style.display = 'block';
+  } else {
+    mDupes.style.display = 'none';
+  }
+
+  document.getElementById('m-pop').innerText = perfume.pop + '%';
+  document.getElementById('m-year2').innerText = perfume.year;
+  const genderMap = { 'F': 'Feminino', 'M': 'Masculino', 'U': 'Unissex' };
+  document.getElementById('m-gender').innerText = genderMap[perfume.gender] || 'Unissex';
+
+  // Image container
+  let mImg = document.getElementById('m-image-container');
+  if (!mImg) {
+    mImg = document.createElement('div');
+    mImg.id = 'm-image-container';
+    Object.assign(mImg.style, {
+      display: 'flex', justifyContent: 'center', marginBottom: '16px',
+      background: 'rgba(255,255,255,0.02)', padding: '12px',
+      borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)'
+    });
+    document.querySelector('.modal-header-block').after(mImg);
+  }
+  if (perfume.image) {
+    mImg.innerHTML = `<img src="${perfume.image}" alt="${perfume.name}" style="height:120px;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,0.5));transition:transform 0.3s;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">`;
+    mImg.style.display = 'flex';
+  } else {
+    mImg.style.display = 'none';
+  }
+
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+}
+
+function closeDetailModal() {
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+}
+
+// ─────────────────────────────────────────
+//  LEGEND
+// ─────────────────────────────────────────
+function buildLegend() {
+  const legend = document.getElementById('legend');
+  legend.innerHTML = '';
+  Object.keys(FAMILIES).forEach(key => {
+    const f = FAMILIES[key];
+    const item = document.createElement('div');
+    item.className = 'legend-item';
+    item.dataset.filter = key;
+    item.innerHTML = `<span class="legend-dot" style="background:${f.color}"></span><span>${f.label}</span>`;
+    item.addEventListener('click', () => {
+      if (activeFilter === key) {
+        activeFilter = 'all';
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          if (b.dataset.filter === 'all') b.classList.add('active');
+          else b.classList.remove('active');
+        });
+      } else {
+        activeFilter = key;
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          if (b.dataset.filter === key) b.classList.add('active');
+          else b.classList.remove('active');
+        });
+      }
+      document.querySelectorAll('.legend-item').forEach(li => {
+        li.classList.toggle('active', li.dataset.filter === activeFilter);
+      });
+      updateFilter();
+    });
+    legend.appendChild(item);
+  });
+}
+
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+async function init() {
+  await loadDupes();
+  resize();
+  initBubbles();
+  buildLegend();
+  initInteraction();
+  draw();
+}
+
+window.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>

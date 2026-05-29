@@ -1,0 +1,23 @@
+{
+  "Creed|Aventus": [
+    { "name": "Club de Nuit Intense Man", "brand": "Armaf",         "price": "~$30",  "similarity": 92 },
+    { "name": "Preferred Oud",            "brand": "Dua Fragrances","price": "~$45",  "similarity": 87 },
+    { "name": "Sauvage Elixir",           "brand": "Dior",          "price": "~$180", "similarity": 71 },
+    { "name": "Invictus Legend",          "brand": "Paco Rabanne",  "price": "~$95",  "similarity": 68 },
+    { "name": "Aventus Cologne",          "brand": "Creed",         "price": "~$380", "similarity": 85 }
+  ],
+  "Chanel|Bleu de Chanel": [
+    { "name": "Preferred Oud Blue",       "brand": "Preferred",     "price": "~$15",  "similarity": 88 },
+    { "name": "Versace Pour Homme",       "brand": "Versace",       "price": "~$55",  "similarity": 74 },
+    { "name": "Individual",               "brand": "Coty",          "price": "~$20",  "similarity": 79 },
+    { "name": "Eros",                     "brand": "Versace",       "price": "~$75",  "similarity": 70 },
+    { "name": "L'Homme",                  "brand": "Yves Saint Laurent", "price": "~$90", "similarity": 72 }
+  ],
+  "Thierry Mugler|Angel": [
+    { "name": "Alien",                    "brand": "Thierry Mugler","price": "~$80",  "similarity": 82 },
+    { "name": "Flowerbomb",               "brand": "Viktor & Rolf", "price": "~$130", "similarity": 76 },
+    { "name": "Black Opium",              "brand": "YSL",           "price": "~$120", "similarity": 73 },
+    { "name": "La Vie est Belle",         "brand": "Lancôme",       "price": "~$95",  "similarity": 69 },
+    { "name": "Candy",                    "brand": "Prada",         "price": "~$90",  "similarity": 71 }
+  ]
+}

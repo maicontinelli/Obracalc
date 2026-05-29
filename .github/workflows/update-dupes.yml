@@ -1,0 +1,36 @@
+name: Update Dupes
+
+on:
+  schedule:
+    - cron: '0 6 1 * *'   # 1st of every month at 06:00 UTC
+  workflow_dispatch:        # manual trigger from GitHub UI
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write       # needed to commit dupes.json back to the repo
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install @anthropic-ai/sdk
+
+      - name: Delete dupes.json to force full regeneration
+        run: rm -f dupes.json
+
+      - name: Generate dupes
+        run: node generate-dupes.js
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Commit updated dupes.json
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: refresh dupes.json [skip ci]'
+          file_pattern: dupes.json
